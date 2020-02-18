@@ -3,27 +3,98 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A7BEB6488A298B079707F690 /* Pods_Puhelin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89432E5DA64663D6447F3141 /* Pods_Puhelin.framework */; };
+		BF02AF8823F50C150021551B /* TabBarConrtroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF8723F50C150021551B /* TabBarConrtroller.swift */; };
+		BF02AF8A23F6A1DB0021551B /* Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF8923F6A1DB0021551B /* Region.swift */; };
+		BF02AF8D23F6B7F80021551B /* Confirm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF8C23F6B7F80021551B /* Confirm.swift */; };
+		BF02AF9223F6C0750021551B /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF9123F6C0750021551B /* Const.swift */; };
+		BF02AF9423F816F00021551B /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF9323F816F00021551B /* DatePicker.swift */; };
+		BF02AF9623F82E130021551B /* dayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF9523F82E130021551B /* dayCell.swift */; };
+		BF02AF9823F942760021551B /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF9723F942760021551B /* NavigationController.swift */; };
 		BF0FDE1823F2D34500C02B76 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0FDE1723F2D34500C02B76 /* AppDelegate.swift */; };
 		BF0FDE1A23F2D34500C02B76 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0FDE1923F2D34500C02B76 /* SceneDelegate.swift */; };
-		BF0FDE1C23F2D34500C02B76 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0FDE1B23F2D34500C02B76 /* ViewController.swift */; };
 		BF0FDE1F23F2D34500C02B76 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF0FDE1D23F2D34500C02B76 /* Main.storyboard */; };
 		BF0FDE2123F2D34600C02B76 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF0FDE2023F2D34600C02B76 /* Assets.xcassets */; };
 		BF0FDE2423F2D34600C02B76 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF0FDE2223F2D34600C02B76 /* LaunchScreen.storyboard */; };
+		BF91954D23F98D8900DDD69E /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91954C23F98D8900DDD69E /* SplashViewController.swift */; };
+		BF91954F23FA7DF500DDD69E /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91954E23FA7DF500DDD69E /* UserData.swift */; };
+		BFB0997C23FBBD37004604E9 /* ChatRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB0997B23FBBD37004604E9 /* ChatRoom.swift */; };
+		BFB0997E23FBD4CB004604E9 /* MessageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB0997D23FBD4CB004604E9 /* MessageData.swift */; };
+		BFD0D05F23F2D600009B1ADF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFD0D05E23F2D600009B1ADF /* GoogleService-Info.plist */; };
+		BFD0D06223F2D7DA009B1ADF /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06123F2D7DA009B1ADF /* StartScreen.swift */; };
+		BFD0D06523F2E203009B1ADF /* PhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06423F2E203009B1ADF /* PhoneNumber.swift */; };
+		BFD0D06723F2E218009B1ADF /* SMS.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06623F2E218009B1ADF /* SMS.swift */; };
+		BFD0D06923F2E22B009B1ADF /* NickName.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06823F2E22B009B1ADF /* NickName.swift */; };
+		BFD0D06B23F2E247009B1ADF /* Age.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06A23F2E247009B1ADF /* Age.swift */; };
+		BFD0D06D23F2E252009B1ADF /* Gender.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06C23F2E252009B1ADF /* Gender.swift */; };
+		BFD0D06F23F2E25F009B1ADF /* MailAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06E23F2E25F009B1ADF /* MailAddress.swift */; };
+		BFD0D07123F2E26B009B1ADF /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D07023F2E26B009B1ADF /* Photo.swift */; };
+		BFD82C5723F3BCF40058EBC4 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C5623F3BCF40058EBC4 /* Search.swift */; };
+		BFD82C5923F3BCFE0058EBC4 /* Good.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C5823F3BCFE0058EBC4 /* Good.swift */; };
+		BFD82C5B23F3BD0B0058EBC4 /* Talk.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C5A23F3BD0B0058EBC4 /* Talk.swift */; };
+		BFD82C5D23F3BD190058EBC4 /* MyProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C5C23F3BD190058EBC4 /* MyProfile.swift */; };
+		BFD82C5F23F3C96E0058EBC4 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C5E23F3C96E0058EBC4 /* Profile.swift */; };
+		BFD82C6123F3CC880058EBC4 /* SearchCoditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C6023F3CC880058EBC4 /* SearchCoditions.swift */; };
+		BFD82C6523F3CDFB0058EBC4 /* SearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C6323F3CDFB0058EBC4 /* SearchCell.swift */; };
+		BFD82C6623F3CDFB0058EBC4 /* SearchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFD82C6423F3CDFB0058EBC4 /* SearchCell.xib */; };
+		BFD82C7123F3CE7B0058EBC4 /* GoodCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C6F23F3CE7B0058EBC4 /* GoodCell.swift */; };
+		BFD82C7223F3CE7B0058EBC4 /* GoodCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFD82C7023F3CE7B0058EBC4 /* GoodCell.xib */; };
+		BFD82C7523F3CE8A0058EBC4 /* TalkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C7323F3CE8A0058EBC4 /* TalkCell.swift */; };
+		BFD82C7623F3CE8A0058EBC4 /* TalkCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFD82C7423F3CE8A0058EBC4 /* TalkCell.xib */; };
+		BFD82C7D23F3CEC90058EBC4 /* MyProfileCell_2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C7B23F3CEC90058EBC4 /* MyProfileCell_2.swift */; };
+		BFD82C7E23F3CEC90058EBC4 /* MyProfileCell_2.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFD82C7C23F3CEC90058EBC4 /* MyProfileCell_2.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		89432E5DA64663D6447F3141 /* Pods_Puhelin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Puhelin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		95BA7E76471B5AE1DD3AC8AF /* Pods-Puhelin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Puhelin.debug.xcconfig"; path = "Target Support Files/Pods-Puhelin/Pods-Puhelin.debug.xcconfig"; sourceTree = "<group>"; };
+		BF02AF8723F50C150021551B /* TabBarConrtroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarConrtroller.swift; sourceTree = "<group>"; };
+		BF02AF8923F6A1DB0021551B /* Region.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Region.swift; sourceTree = "<group>"; };
+		BF02AF8B23F6A83E0021551B /* Puhelin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Puhelin.entitlements; sourceTree = "<group>"; };
+		BF02AF8C23F6B7F80021551B /* Confirm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Confirm.swift; sourceTree = "<group>"; };
+		BF02AF9123F6C0750021551B /* Const.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
+		BF02AF9323F816F00021551B /* DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
+		BF02AF9523F82E130021551B /* dayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dayCell.swift; sourceTree = "<group>"; };
+		BF02AF9723F942760021551B /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		BF0FDE1423F2D34500C02B76 /* Puhelin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Puhelin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF0FDE1723F2D34500C02B76 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BF0FDE1923F2D34500C02B76 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		BF0FDE1B23F2D34500C02B76 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		BF0FDE1E23F2D34500C02B76 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BF0FDE2023F2D34600C02B76 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF0FDE2323F2D34600C02B76 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BF0FDE2523F2D34600C02B76 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF91954C23F98D8900DDD69E /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		BF91954E23FA7DF500DDD69E /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
+		BFB0997B23FBBD37004604E9 /* ChatRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoom.swift; sourceTree = "<group>"; };
+		BFB0997D23FBD4CB004604E9 /* MessageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageData.swift; sourceTree = "<group>"; };
+		BFD0D05E23F2D600009B1ADF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BFD0D06123F2D7DA009B1ADF /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
+		BFD0D06423F2E203009B1ADF /* PhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumber.swift; sourceTree = "<group>"; };
+		BFD0D06623F2E218009B1ADF /* SMS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMS.swift; sourceTree = "<group>"; };
+		BFD0D06823F2E22B009B1ADF /* NickName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NickName.swift; sourceTree = "<group>"; };
+		BFD0D06A23F2E247009B1ADF /* Age.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Age.swift; sourceTree = "<group>"; };
+		BFD0D06C23F2E252009B1ADF /* Gender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gender.swift; sourceTree = "<group>"; };
+		BFD0D06E23F2E25F009B1ADF /* MailAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailAddress.swift; sourceTree = "<group>"; };
+		BFD0D07023F2E26B009B1ADF /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		BFD82C5623F3BCF40058EBC4 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
+		BFD82C5823F3BCFE0058EBC4 /* Good.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Good.swift; sourceTree = "<group>"; };
+		BFD82C5A23F3BD0B0058EBC4 /* Talk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Talk.swift; sourceTree = "<group>"; };
+		BFD82C5C23F3BD190058EBC4 /* MyProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyProfile.swift; sourceTree = "<group>"; };
+		BFD82C5E23F3C96E0058EBC4 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		BFD82C6023F3CC880058EBC4 /* SearchCoditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCoditions.swift; sourceTree = "<group>"; };
+		BFD82C6323F3CDFB0058EBC4 /* SearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCell.swift; sourceTree = "<group>"; };
+		BFD82C6423F3CDFB0058EBC4 /* SearchCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchCell.xib; sourceTree = "<group>"; };
+		BFD82C6F23F3CE7B0058EBC4 /* GoodCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoodCell.swift; sourceTree = "<group>"; };
+		BFD82C7023F3CE7B0058EBC4 /* GoodCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GoodCell.xib; sourceTree = "<group>"; };
+		BFD82C7323F3CE8A0058EBC4 /* TalkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TalkCell.swift; sourceTree = "<group>"; };
+		BFD82C7423F3CE8A0058EBC4 /* TalkCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TalkCell.xib; sourceTree = "<group>"; };
+		BFD82C7B23F3CEC90058EBC4 /* MyProfileCell_2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyProfileCell_2.swift; sourceTree = "<group>"; };
+		BFD82C7C23F3CEC90058EBC4 /* MyProfileCell_2.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MyProfileCell_2.xib; sourceTree = "<group>"; };
+		CAB59543EF5C2063F74F3AAD /* Pods-Puhelin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Puhelin.release.xcconfig"; path = "Target Support Files/Pods-Puhelin/Pods-Puhelin.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +102,47 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7BEB6488A298B079707F690 /* Pods_Puhelin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2643A2D8E16921227529B068 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				89432E5DA64663D6447F3141 /* Pods_Puhelin.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		91FBDCCF9C82534EF9A117A6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				95BA7E76471B5AE1DD3AC8AF /* Pods-Puhelin.debug.xcconfig */,
+				CAB59543EF5C2063F74F3AAD /* Pods-Puhelin.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		BF02AF8E23F6C0000021551B /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				BF02AF9123F6C0750021551B /* Const.swift */,
+				BF91954E23FA7DF500DDD69E /* UserData.swift */,
+				BFB0997D23FBD4CB004604E9 /* MessageData.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		BF0FDE0B23F2D34500C02B76 = {
 			isa = PBXGroup;
 			children = (
 				BF0FDE1623F2D34500C02B76 /* Puhelin */,
 				BF0FDE1523F2D34500C02B76 /* Products */,
+				91FBDCCF9C82534EF9A117A6 /* Pods */,
+				2643A2D8E16921227529B068 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,15 +157,71 @@
 		BF0FDE1623F2D34500C02B76 /* Puhelin */ = {
 			isa = PBXGroup;
 			children = (
+				BF02AF8E23F6C0000021551B /* Data */,
+				BFD82C6223F3CDCB0058EBC4 /* CustomCell */,
+				BFD82C5523F3BCDF0058EBC4 /* Contents */,
+				BFD0D06323F2E1DD009B1ADF /* Login */,
 				BF0FDE1723F2D34500C02B76 /* AppDelegate.swift */,
 				BF0FDE1923F2D34500C02B76 /* SceneDelegate.swift */,
-				BF0FDE1B23F2D34500C02B76 /* ViewController.swift */,
+				BF02AF9723F942760021551B /* NavigationController.swift */,
+				BF02AF8723F50C150021551B /* TabBarConrtroller.swift */,
+				BF91954C23F98D8900DDD69E /* SplashViewController.swift */,
 				BF0FDE1D23F2D34500C02B76 /* Main.storyboard */,
 				BF0FDE2023F2D34600C02B76 /* Assets.xcassets */,
 				BF0FDE2223F2D34600C02B76 /* LaunchScreen.storyboard */,
+				BF02AF8B23F6A83E0021551B /* Puhelin.entitlements */,
 				BF0FDE2523F2D34600C02B76 /* Info.plist */,
+				BFD0D05E23F2D600009B1ADF /* GoogleService-Info.plist */,
 			);
 			path = Puhelin;
+			sourceTree = "<group>";
+		};
+		BFD0D06323F2E1DD009B1ADF /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				BFD0D06123F2D7DA009B1ADF /* StartScreen.swift */,
+				BFD0D06423F2E203009B1ADF /* PhoneNumber.swift */,
+				BFD0D06623F2E218009B1ADF /* SMS.swift */,
+				BFD0D06823F2E22B009B1ADF /* NickName.swift */,
+				BFD0D06A23F2E247009B1ADF /* Age.swift */,
+				BFD0D06C23F2E252009B1ADF /* Gender.swift */,
+				BF02AF8923F6A1DB0021551B /* Region.swift */,
+				BFD0D06E23F2E25F009B1ADF /* MailAddress.swift */,
+				BF02AF8C23F6B7F80021551B /* Confirm.swift */,
+				BFD0D07023F2E26B009B1ADF /* Photo.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		BFD82C5523F3BCDF0058EBC4 /* Contents */ = {
+			isa = PBXGroup;
+			children = (
+				BFD82C5623F3BCF40058EBC4 /* Search.swift */,
+				BFD82C5823F3BCFE0058EBC4 /* Good.swift */,
+				BFD82C5A23F3BD0B0058EBC4 /* Talk.swift */,
+				BFD82C5C23F3BD190058EBC4 /* MyProfile.swift */,
+				BFD82C5E23F3C96E0058EBC4 /* Profile.swift */,
+				BFD82C6023F3CC880058EBC4 /* SearchCoditions.swift */,
+				BF02AF9323F816F00021551B /* DatePicker.swift */,
+				BF02AF9523F82E130021551B /* dayCell.swift */,
+				BFB0997B23FBBD37004604E9 /* ChatRoom.swift */,
+			);
+			path = Contents;
+			sourceTree = "<group>";
+		};
+		BFD82C6223F3CDCB0058EBC4 /* CustomCell */ = {
+			isa = PBXGroup;
+			children = (
+				BFD82C6323F3CDFB0058EBC4 /* SearchCell.swift */,
+				BFD82C6423F3CDFB0058EBC4 /* SearchCell.xib */,
+				BFD82C6F23F3CE7B0058EBC4 /* GoodCell.swift */,
+				BFD82C7023F3CE7B0058EBC4 /* GoodCell.xib */,
+				BFD82C7323F3CE8A0058EBC4 /* TalkCell.swift */,
+				BFD82C7423F3CE8A0058EBC4 /* TalkCell.xib */,
+				BFD82C7B23F3CEC90058EBC4 /* MyProfileCell_2.swift */,
+				BFD82C7C23F3CEC90058EBC4 /* MyProfileCell_2.xib */,
+			);
+			path = CustomCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +231,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BF0FDE2823F2D34600C02B76 /* Build configuration list for PBXNativeTarget "Puhelin" */;
 			buildPhases = (
+				76033F8B313C1FBCE3D60CBA /* [CP] Check Pods Manifest.lock */,
 				BF0FDE1023F2D34500C02B76 /* Sources */,
 				BF0FDE1123F2D34500C02B76 /* Frameworks */,
 				BF0FDE1223F2D34500C02B76 /* Resources */,
+				695FA4C2484D59147EBE43FE /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -125,7 +284,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD82C6623F3CDFB0058EBC4 /* SearchCell.xib in Resources */,
 				BF0FDE2423F2D34600C02B76 /* LaunchScreen.storyboard in Resources */,
+				BFD82C7223F3CE7B0058EBC4 /* GoodCell.xib in Resources */,
+				BFD0D05F23F2D600009B1ADF /* GoogleService-Info.plist in Resources */,
+				BFD82C7E23F3CEC90058EBC4 /* MyProfileCell_2.xib in Resources */,
+				BFD82C7623F3CE8A0058EBC4 /* TalkCell.xib in Resources */,
 				BF0FDE2123F2D34600C02B76 /* Assets.xcassets in Resources */,
 				BF0FDE1F23F2D34500C02B76 /* Main.storyboard in Resources */,
 			);
@@ -133,14 +297,84 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		695FA4C2484D59147EBE43FE /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Puhelin/Pods-Puhelin-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Puhelin/Pods-Puhelin-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Puhelin/Pods-Puhelin-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		76033F8B313C1FBCE3D60CBA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Puhelin-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		BF0FDE1023F2D34500C02B76 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF0FDE1C23F2D34500C02B76 /* ViewController.swift in Sources */,
+				BF02AF8A23F6A1DB0021551B /* Region.swift in Sources */,
+				BFD82C5723F3BCF40058EBC4 /* Search.swift in Sources */,
+				BFD82C5F23F3C96E0058EBC4 /* Profile.swift in Sources */,
+				BFB0997E23FBD4CB004604E9 /* MessageData.swift in Sources */,
+				BFD82C6123F3CC880058EBC4 /* SearchCoditions.swift in Sources */,
 				BF0FDE1823F2D34500C02B76 /* AppDelegate.swift in Sources */,
+				BFD0D06723F2E218009B1ADF /* SMS.swift in Sources */,
+				BFD82C7D23F3CEC90058EBC4 /* MyProfileCell_2.swift in Sources */,
+				BF02AF9423F816F00021551B /* DatePicker.swift in Sources */,
+				BFD0D06223F2D7DA009B1ADF /* StartScreen.swift in Sources */,
+				BFD82C5B23F3BD0B0058EBC4 /* Talk.swift in Sources */,
+				BF02AF9623F82E130021551B /* dayCell.swift in Sources */,
+				BF02AF8823F50C150021551B /* TabBarConrtroller.swift in Sources */,
 				BF0FDE1A23F2D34500C02B76 /* SceneDelegate.swift in Sources */,
+				BF02AF9823F942760021551B /* NavigationController.swift in Sources */,
+				BFD0D07123F2E26B009B1ADF /* Photo.swift in Sources */,
+				BFD82C5923F3BCFE0058EBC4 /* Good.swift in Sources */,
+				BF02AF8D23F6B7F80021551B /* Confirm.swift in Sources */,
+				BFD82C7123F3CE7B0058EBC4 /* GoodCell.swift in Sources */,
+				BFB0997C23FBBD37004604E9 /* ChatRoom.swift in Sources */,
+				BFD0D06F23F2E25F009B1ADF /* MailAddress.swift in Sources */,
+				BF91954D23F98D8900DDD69E /* SplashViewController.swift in Sources */,
+				BFD0D06D23F2E252009B1ADF /* Gender.swift in Sources */,
+				BFD0D06523F2E203009B1ADF /* PhoneNumber.swift in Sources */,
+				BF91954F23FA7DF500DDD69E /* UserData.swift in Sources */,
+				BF02AF9223F6C0750021551B /* Const.swift in Sources */,
+				BFD82C7523F3CE8A0058EBC4 /* TalkCell.swift in Sources */,
+				BFD82C5D23F3BD190058EBC4 /* MyProfile.swift in Sources */,
+				BFD0D06B23F2E247009B1ADF /* Age.swift in Sources */,
+				BFD82C6523F3CDFB0058EBC4 /* SearchCell.swift in Sources */,
+				BFD0D06923F2E22B009B1ADF /* NickName.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,8 +516,10 @@
 		};
 		BF0FDE2923F2D34600C02B76 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 95BA7E76471B5AE1DD3AC8AF /* Pods-Puhelin.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Puhelin/Puhelin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YTQ2PNQMMN;
 				INFOPLIST_FILE = Puhelin/Info.plist;
@@ -294,14 +530,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = shion.maruko.Puhelin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		BF0FDE2A23F2D34600C02B76 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CAB59543EF5C2063F74F3AAD /* Pods-Puhelin.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Puhelin/Puhelin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YTQ2PNQMMN;
 				INFOPLIST_FILE = Puhelin/Info.plist;
@@ -312,7 +550,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = shion.maruko.Puhelin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

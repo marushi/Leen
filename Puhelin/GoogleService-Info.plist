@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>25938610952-jj4c5b8jc7h11la0rgpn21sed1f7ju6o.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.25938610952-jj4c5b8jc7h11la0rgpn21sed1f7ju6o</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD080mNIB2JDQr65sfpu6EIhWiUM0A0isw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>25938610952</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>shion.maruko.Puhelin</string>
+	<key>PROJECT_ID</key>
+	<string>puhelin-1befe</string>
+	<key>STORAGE_BUCKET</key>
+	<string>puhelin-1befe.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:25938610952:ios:9887d3a35613d1809ffabd</string>
+	<key>DATABASE_URL</key>
+	<string>https://puhelin-1befe.firebaseio.com</string>
+</dict>
+</plist>
