@@ -15,22 +15,26 @@ class SearchCell: UICollectionViewCell {
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var age: UILabel!
     @IBOutlet weak var introLabel: UILabel!
-    let intro = "初めまして！プロフィールを見ていただきありがとうございます！"
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        introLabel.text = intro
+        photo.layer.cornerRadius = photo.frame.size.width * 0.1
+        photo.layer.borderColor = CGColor.init(srgbRed: 0, green: 1, blue: 1, alpha: 1)
+        photo.layer.borderWidth = 0.5
     }
     
-    
+    //データセット
     func setData(_ userData: UserData) {
+        
         // 画像の表示
         photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(userData.uid + ".jpg")
+        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(userData.photoId!)
         photo.sd_setImage(with: imageRef)
         
+        //その他データ
         name.text = userData.name
         age.text = "\(userData.age!)" + "才　" + "\(userData.region!)"
+        introLabel.text = userData.intro
         
     }
 

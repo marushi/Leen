@@ -14,4 +14,5 @@ struct Const {
     static let ImagePath = "Images"
     static let GoodPath = "Good_Users"
     static let ChatPath = "ChatRooms"
+    static let MessagePath = "Messages"
 }

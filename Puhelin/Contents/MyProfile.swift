@@ -12,88 +12,64 @@ import FirebaseUI
 class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
 
     @IBOutlet weak var photo: UIImageView!
-    
-    @IBOutlet weak var tableView0: UITableView!
-    @IBOutlet weak var tableView1: UITableView!
+    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         //テーブルビューの設定
-        tableView0.delegate = self
-        tableView0.dataSource = self
-        tableView1.delegate = self
-        tableView1.dataSource = self
-        
-        tableView0.isScrollEnabled = false
-        tableView1.isScrollEnabled = false
-        tableView0.rowHeight = 50
-        tableView0.allowsSelection = false
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.isScrollEnabled = false
+        tableView.rowHeight = 65
         
         //セルの登録
-        let nib_1 = UINib(nibName: "MyProfileCell_2", bundle: nil)
-        tableView1.register(nib_1, forCellReuseIdentifier: "MyProfileCell_2")
+        let nib_1 = UINib(nibName: "MyProfileCell", bundle: nil)
+        tableView.register(nib_1, forCellReuseIdentifier: "MyProfileCell")
         
-        
-        //背景色
-        self.view.backgroundColor = .brown
-        
+        //画像を丸くする
+        photo.layer.cornerRadius = photo.frame.size.width * 0.5
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        tableView0.reloadData()
-        
         // 画像の表示
-               
         photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(UserDefaults.standard.string(forKey: "uid")! + ".jpg")
+        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(UserDefaults.standard.string(forKey: "photoId")!)
         photo.sd_setImage(with: imageRef)
     }
 
+    //セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        var num:Int = 0
-        if tableView.tag == 0 {
-            num = 3
-        }else if tableView.tag == 1 {
-            num = 5
-        }
-        
-        return num
+        return 5
     }
     
+    //セルの中身
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let MyProfileCell_1 = tableView0.dequeueReusableCell(withIdentifier: "MyProfileCell_1", for: indexPath) as! dayCell
-        let MyProfileCell_2 = tableView1.dequeueReusableCell(withIdentifier: "MyProfileCell_2", for: indexPath)
-        var cell:UITableViewCell = MyProfileCell_1
-        
-        if tableView.tag == 0 {
-            let day = UserDefaults.standard.string(forKey: "callday_\(indexPath.row)")
-            if day == nil {
-                MyProfileCell_1.dayLabel.text = "設定なし"
-            }
-            MyProfileCell_1.dayLabel.text = day
-            // セル内のボタンのアクションをソースコードで設定する
-            MyProfileCell_1.button.addTarget(self, action:#selector(handleButton(_:forEvent:)), for: .touchUpInside)
-            cell = MyProfileCell_1
-        }else if tableView.tag == 1 {
-            cell = MyProfileCell_2
-        }
-        
-        
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MyProfileCell", for: indexPath) as! MyProfileCell
+        cell.setData(indexPath.row)
         return cell
     }
     
-   @objc func handleButton(_ sender: UIButton, forEvent event: UIEvent) {
-
-   // タップされたセルのインデックスを求める
-   let touch = event.allTouches?.first
-   let point = touch!.location(in: self.tableView0)
-   let indexPath = tableView0.indexPathForRow(at: point)
-    
-    let datePicker = self.storyboard?.instantiateViewController(identifier: "DatePicker") as! DatePicker
-    datePicker.num = indexPath!.row
-    present(datePicker,animated: true,completion: nil)
-    
+    //セルをタップした時の処理
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            let personality = self.storyboard?.instantiateViewController(identifier: "Personality") as! Personality
+            self.present(personality,animated: true,completion: nil)
+        case 1:
+            let Identification = self.storyboard?.instantiateViewController(identifier: "Identification") as! Identification
+            self.present(Identification,animated: true,completion: nil)
+        case 2:
+            let Usage = self.storyboard?.instantiateViewController(identifier: "Usage") as! Usage
+            self.present(Usage,animated: true,completion: nil)
+        case 3:
+            let Information = self.storyboard?.instantiateViewController(identifier: "Information") as! Information
+            self.present(Information,animated: true,completion: nil)
+        case 4:
+            let Billing = self.storyboard?.instantiateViewController(identifier: "Billing") as! Billing
+            self.present(Billing,animated: true,completion: nil)
+        default:
+            return
+        }
     }
 }

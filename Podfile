@@ -13,7 +13,11 @@ target 'Puhelin' do
   pod 'Firebase/Storage'
   pod 'FirebaseUI/Storage'
   pod 'FBSDKLoginKit'
-  pod 'SVProgressHUD','2.2.5'
   pod 'CLImageEditor/AllTools','0.2.4'
-  pod ‘JSQMessagesViewController’
+  pod 'JSQMessagesViewController'
+  pod 'RSKImageCropper'
+  pod 'PKHUD', '~> 5.0'
+  pod 'SkyWay'
+  pod 'SCLAlertView'
+  pod 'YSRadioButton', :git => 'https://github.com/sekies/YSRadioButton.git'
 end

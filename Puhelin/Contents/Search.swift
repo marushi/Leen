@@ -14,9 +14,13 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
     
     @IBOutlet weak var collectionView: UICollectionView!
     
+    //変数設定
     var UserArray: [UserData] = []
     var listener: ListenerRegistration!
     var DB = ""
+    let userDefaults = UserDefaults.standard
+    var searchRef:Query? = Firestore.firestore().collection(UserDefaults.standard.string(forKey: "DB")!)
+    
     //レイアウト設定
     let sectionInsets = UIEdgeInsets(top: 10, left: 1, bottom: 10 , right: 0)
     let itemsPerRow: CGFloat = 2
@@ -27,15 +31,12 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
         //コレクションビューの設定
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.showsHorizontalScrollIndicator = false
         
         //コレクションセルを登録
         collectionView.register(UINib(nibName: "SearchCell", bundle: nil), forCellWithReuseIdentifier: "SearchCell")
         
-        self.view.backgroundColor = .brown
-        
-        UserDefaults.standard.set(Auth.auth().currentUser?.uid, forKey: "uid")
-        
-        
+        //異性の相手をビューに表示
         if UserDefaults.standard.integer(forKey: "gender") == 1 {
             DB = Const.FemalePath
             UserDefaults.standard.set(DB, forKey: "DB")
@@ -47,11 +48,20 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
+        self.setUp()
+    }
+
+    //ユーザーを画面に表示する
+    func setUp(){
         if listener == nil{
-        // listener未登録なら、登録してスナップショットを受信する
-        let Ref = Firestore.firestore().collection(DB)
-        listener = Ref.addSnapshotListener() { (querySnapshot, error) in
+            var Ref:Query!
+            // listener未登録なら、登録してスナップショットを受信する
+            if userDefaults.bool(forKey: "searchCondition") == false {
+                Ref = Firestore.firestore().collection(DB)
+            } else {
+                Ref = searchRef
+            }
+            listener = Ref.addSnapshotListener() { (querySnapshot, error) in
             if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
                 return
@@ -64,17 +74,22 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
             }
             // TableViewの表示を更新する
             self.collectionView.reloadData()
-            
             }
         }
     }
-
+    
     //検索条件ボタン押した時
     @IBAction func SearchConditionButton(_ sender: Any) {
         
         //検索条件画面へ遷移
         let SearchConditions = self.storyboard?.instantiateViewController(identifier: "SearchConditions")
         present(SearchConditions!,animated: true,completion: nil)
+    }
+    
+    //リセットボタンを押した時
+    @IBAction func resetButton(_ sender: Any) {
+        userDefaults.set(false, forKey: "searchCondition")
+        self.setUp()
     }
     
     //セクションの数
@@ -94,6 +109,7 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
         }
     }
     
+    //一番上のセクションの設定
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
 
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Section", for: indexPath)
@@ -114,8 +130,11 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
             TopCell.isUserInteractionEnabled = false
             return TopCell
         case 1:
-            SearchCell.backgroundColor = .lightGray
+            SearchCell.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
             SearchCell.setData(UserArray[indexPath.row])
+            SearchCell.layer.cornerRadius = SearchCell.frame.size.width * 0.1
+            SearchCell.layer.borderColor = CGColor.init(srgbRed: 0, green: 1, blue: 1, alpha: 1)
+            SearchCell.layer.borderWidth = 0
             return SearchCell
         default:
             return TopCell
@@ -129,7 +148,7 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
             return CGSize(width: view.frame.width, height: 50)
         case 1:
             let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
-                   let availableWidth = view.frame.width - paddingSpace
+                   let availableWidth = view.frame.width - 20 - paddingSpace
                    let widthPerItem = availableWidth / itemsPerRow
                    return CGSize(width: widthPerItem, height: 280)
         default:
@@ -146,7 +165,7 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
     //セルを選択した時
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let Profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
-        Profile.userInfo = UserArray[indexPath.row]
+        Profile.setData(UserArray[indexPath.row])
         present(Profile,animated: true,completion: nil)
     }
 }

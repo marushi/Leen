@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SCLAlertView
 
 class Region: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource {
     
@@ -54,6 +55,7 @@ class Region: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource {
     //ボタン押す前に確認
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         if region.text == "都道府県" {
+            SCLAlertView().showInfo("都道府県を選択してください。", subTitle: "現在お住いの地域を選択してください。")
             return false
         }
         UserDefaults.standard.set(region.text, forKey: "region")

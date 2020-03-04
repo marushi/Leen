@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import PKHUD
 import Firebase
-import SVProgressHUD
+import SCLAlertView
 
 class Confirm: UIViewController {
 
@@ -16,11 +17,11 @@ class Confirm: UIViewController {
     @IBOutlet weak var age: UITextField!
     @IBOutlet weak var gender: UITextField!
     @IBOutlet weak var region: UITextField!
-    @IBOutlet weak var mailAddress: UITextField!
     
 
     let userDefaults = UserDefaults.standard
     let uid = Auth.auth().currentUser?.uid
+    let introText = "初めまして！プロフィールを見ていただきありがとうございます。気軽にいいねしてください！まずはお話ししてみましょう！"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,27 +30,41 @@ class Confirm: UIViewController {
         age.isEnabled = false
         gender.isEnabled = false
         region.isEnabled = false
-        mailAddress.isEnabled = false
     }
     
     override func viewWillAppear(_ animated: Bool) {
         var gendertext = ""
         if userDefaults.integer(forKey: "gender") == 1 {
-            gendertext = "男"
+            gendertext = "男性"
         }else if userDefaults.integer(forKey: "gender") == 2 {
-            gendertext = "女"
+            gendertext = "女性"
         }
         nickName.text = userDefaults.string(forKey: "name")
         age.text = userDefaults.string(forKey: "age")
         gender.text = gendertext
         region.text = userDefaults.string(forKey: "region")
-        mailAddress.text = userDefaults.string(forKey: "mailaddress")
     }
     
+    //登録処理
     @IBAction func Button(_ sender: Any) {
         
-        //投稿中表示
-        SVProgressHUD.show()
+        let appearance = SCLAlertView.SCLAppearance(
+            showCloseButton: false
+        )
+        let alertView = SCLAlertView(appearance: appearance)
+        alertView.addButton("登録する") {
+            //HUD
+            HUD.show(.progress)
+            //登録関数
+            self.regist()
+        }
+        alertView.addButton("変更する",backgroundColor: .lightGray,textColor: .black) {
+            return
+        }
+        alertView.showSuccess("この内容で登録しますか？", subTitle: "一部情報は登録後変更できません。")
+    }
+    
+    func regist(){
         
         //保存先を指定
         var DB = ""
@@ -59,21 +74,25 @@ class Confirm: UIViewController {
             DB = Const.FemalePath
         }
         let Ref = Firestore.firestore().collection(DB).document(uid!)
-        let Dic = ["name": userDefaults.string(forKey: "name")
+        let Dic = [
+            "name": userDefaults.string(forKey: "name")!
             ,"age": userDefaults.integer(forKey: "age")
-            ,"region": userDefaults.string(forKey: "region")
-        ,"mailaddress": userDefaults.string(forKey: "mailaddress")] as [String: Any]
+            ,"region": userDefaults.string(forKey: "region")!
+            ,"intro": self.introText
+            ] as [String: Any]
         Ref.setData(Dic)
-        userDefaults.set(uid, forKey: "uid")
         
-        SVProgressHUD.showSuccess(withStatus: "登録完了")
+        //ユーザーデフォルト処理
+        userDefaults.set(false, forKey: "FirstLaunch")
         
-        if userDefaults.bool(forKey: "photoUP") == false {
+        //HUD
+        HUD.flash(.success, delay: 1) { _ in
+            //写真選択画面に移行
             let photo = self.storyboard?.instantiateViewController(identifier: "photo")
-            present(photo!,animated: true,completion: nil)
+            self.present(photo!,animated: true,completion: nil)
         }
-        UIApplication.shared.windows.first{ $0.isKeyWindow }?.rootViewController?.dismiss(animated: true, completion: nil)
+        
+        
     }
-    
    
 }

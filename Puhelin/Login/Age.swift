@@ -7,33 +7,48 @@
 //
 
 import UIKit
+import SCLAlertView
 
-class Age: UIViewController ,UITextFieldDelegate {
-
-    @IBOutlet weak var textField: UITextField!
+class Age: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource {
     
+    
+
+    @IBOutlet weak var pickerView: UIPickerView!
+    
+    var ageText: Int?
+    let numArray:[Int] = Array(20...99)
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        textField.delegate = self
-    }
-
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-       
-        let resultText: String = (textField.text! as NSString).replacingCharacters(in: range, with: string)
-        if resultText.count <= 2 {
-            return Int(string) != nil
-        }
-        return false
+        pickerView.delegate = self
+        pickerView.dataSource = self
     }
     
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return numArray.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return String(numArray[row]) + "才"
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        ageText = numArray[row]
+    }
+    
+    
+    
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-           
-           if textField?.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == true{
-               return false
-           }else{
-            UserDefaults.standard.set(textField.text, forKey: "age")
-            return true
-           }
+        if ageText == nil {
+            SCLAlertView().showInfo("年齢を選択してください。", subTitle: "現在の年齢を選択してください。")
+            return false
+        }
+        UserDefaults.standard.set(ageText, forKey: "age")
+        return true
     }
 }

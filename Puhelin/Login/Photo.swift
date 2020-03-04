@@ -8,10 +8,23 @@
 
 import UIKit
 import Firebase
-import SVProgressHUD
-import CLImageEditor
+import RSKImageCropper
 
-class Photo: UIViewController, UIImagePickerControllerDelegate ,UINavigationControllerDelegate,CLImageEditorDelegate{
+extension Photo: RSKImageCropViewControllerDelegate {
+  //キャンセルを押した時の処理
+  func imageCropViewControllerDidCancelCrop(_ controller: RSKImageCropViewController) {
+    dismiss(animated: true, completion: nil)
+  }
+  //完了を押した後の処理
+  func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
+    dismiss(animated: true)
+    imageView.image = croppedImage
+    Button.isEnabled = true
+  }
+}
+
+
+class Photo: UIViewController, UIImagePickerControllerDelegate ,UINavigationControllerDelegate{
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var Button: UIButton!
@@ -20,6 +33,7 @@ class Photo: UIViewController, UIImagePickerControllerDelegate ,UINavigationCont
         super.viewDidLoad()
 
         Button.isEnabled = false
+        imageView.layer.cornerRadius = imageView.frame.size.width * 0.1
     }
     
     
@@ -34,57 +48,44 @@ class Photo: UIViewController, UIImagePickerControllerDelegate ,UINavigationCont
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if info[.originalImage] != nil {
-            // 撮影/選択された画像を取得する
-            let image = info[.originalImage] as! UIImage
-
-            // あとでCLImageEditorライブラリで加工する
-            print("DEBUG_PRINT: image = \(image)")
-            // CLImageEditorにimageを渡して、加工画面を起動する。
-            let editor = CLImageEditor(image: image)!
-            editor.delegate = self
-            picker.present(editor, animated: true, completion: nil)
-
-        }
-    }
-    // CLImageEditorで加工が終わったときに呼ばれるメソッド
-    func imageEditor(_ editor: CLImageEditor!, didFinishEditingWith image: UIImage!) {
-        // 写真選択画面に戻る
-        imageView.image = image
-        self.Button.isEnabled = true
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    // CLImageEditorの編集がキャンセルされた時に呼ばれるメソッド
-    func imageEditorDidCancel(_ editor: CLImageEditor!) {
-        // ImageSelectViewController画面を閉じてタブ画面に戻る
-        self.dismiss(animated: true, completion: nil)
-    }
-
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        // ImageSelectViewController画面を閉じてタブ画面に戻る
-        self.dismiss(animated: true, completion: nil)
+      let image = info[.originalImage] as! UIImage
+      self.dismiss(animated: true, completion: nil)
+      let imageCropVC = RSKImageCropViewController(image: image, cropMode: .square)
+        imageCropVC.moveAndScaleLabel.text = "切り取り範囲を選択"
+        imageCropVC.cancelButton.setTitle("キャンセル", for: .normal)
+        imageCropVC.chooseButton.setTitle("完了", for: .normal)
+      imageCropVC.delegate = self as RSKImageCropViewControllerDelegate
+      present(imageCropVC, animated: true)
     }
     
     @IBAction func Button(_ sender: Any) {
         
-        SVProgressHUD.show()
+        let date:Date = Date()
         
         //firebaseに写真をアップロード
         let registImage = imageView.image!.jpegData(compressionQuality: 0.75)
         let uid = Auth.auth().currentUser?.uid
-        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid! + ".jpg")
+        let photoId:String = uid! + "\(date)" + ".jpg"
+        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
         imageRef.putData(registImage!, metadata: metadata) { (metadata, error) in
             if error != nil {
                 // 画像のアップロード失敗
                 print(error!)
-                SVProgressHUD.showError(withStatus: "画像のアップロードが失敗しました")
                 return
             }
-            SVProgressHUD.showSuccess(withStatus: "設定完了")
-            UserDefaults.standard.set(true, forKey: "photoUP")
+            if UserDefaults.standard.integer(forKey: "gender") == 1 {
+                let Ref = Firestore.firestore().collection(Const.MalePath).document(uid!)
+                let dic = ["photoId": photoId]
+                Ref.setData(dic,merge: true)
+            }else{
+                let Ref = Firestore.firestore().collection(Const.FemalePath).document(uid!)
+                let dic = ["photoId": photoId]
+                Ref.setData(dic,merge: true)
+            }
+            
+            UserDefaults.standard.set(photoId, forKey: "photoId")
             UIApplication.shared.windows.first{ $0.isKeyWindow }?.rootViewController?.dismiss(animated: true, completion: nil)
             
  

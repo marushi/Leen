@@ -16,9 +16,10 @@
                 <rect key="frame" x="0.0" y="0.0" width="387" height="237"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ahu-1a-QLH">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ahu-1a-QLH">
                         <rect key="frame" x="0.0" y="3.5" width="230" height="230"/>
                         <constraints>
+                            <constraint firstAttribute="width" secondItem="Ahu-1a-QLH" secondAttribute="height" multiplier="1:1" id="MZF-YH-HG6"/>
                             <constraint firstAttribute="width" constant="230" id="Tdj-l5-GJ3"/>
                             <constraint firstAttribute="height" constant="230" id="jOC-BH-4qg"/>
                         </constraints>
@@ -46,7 +47,10 @@
                             <constraint firstAttribute="height" constant="35" id="6fY-Nh-uNR"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                        <state key="normal" title="話してみる！" backgroundImage="Button_3"/>
+                        <state key="normal" title="プロフィールを見る" backgroundImage="Button_3"/>
+                        <connections>
+                            <action selector="Button:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="IGZ-Zg-nLk"/>
+                        </connections>
                     </button>
                 </subviews>
                 <constraints>

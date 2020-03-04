@@ -7,29 +7,36 @@
 //
 
 import UIKit
+import SCLAlertView
 
-class Gender: UIViewController {
-
+class Gender: UIViewController{
+    
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
+    
     var gender:Int = 0
-    @IBOutlet weak var ManButton: UIButton!
-    @IBOutlet weak var WomanButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+ 
+        
     }
     
-    @IBAction func Man(_ sender: Any) {
-        gender = 1
-    }
-    
-    @IBAction func Woman(_ sender: Any) {
-        gender = 2
+    @IBAction func segmentedButton(_ sender: Any) {
+        if segmentedControl.selectedSegmentIndex == 0 {
+            gender = 0
+        }
+        if segmentedControl.selectedSegmentIndex == 1 {
+            gender = 1
+        }
+        if segmentedControl.selectedSegmentIndex == 2 {
+            gender = 2
+        }
+        
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         if gender == 0 {
+            SCLAlertView().showInfo("性別を選択してください。", subTitle: "")
             return false
         }
         UserDefaults.standard.set(gender, forKey: "gender")
