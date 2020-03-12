@@ -18,6 +18,8 @@ class GoodCell: UITableViewCell {
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var intro: UITextView!
     @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var goodButton: UIButton!
+    @IBOutlet weak var age: UILabel!
     
     var UserArray: UserData!
     var listener: ListenerRegistration!
@@ -28,17 +30,24 @@ class GoodCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        self.backgroundColor = .init(red: 1, green: 248/255, blue: 240/255, alpha: 1)
+        
         textView.textContainer.lineBreakMode = .byTruncatingTail
         textView.textContainer.maximumNumberOfLines = 5
-        textView.isEditable = false
+        textView.isUserInteractionEnabled = false
+        textView.backgroundColor = .init(red: 1, green: 248/255, blue: 240/255, alpha: 1)
         
         photo.layer.cornerRadius = photo.frame.size.width * 0.1
+        
+        goodButton.layer.cornerRadius = 10
+        goodButton.backgroundColor = UIColor.init(red: 1, green: 0.5, blue: 0.5, alpha: 1)
+        goodButton.setTitleColor(.white, for: .normal)
+        goodButton.setTitle("話してみる！", for: .normal)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        // Configure the view for the selected state
     }
     
     func setData(_ userData: UserData) {
@@ -57,18 +66,20 @@ class GoodCell: UITableViewCell {
         if listener == nil{
         // listener未登録なら、登録してスナップショットを受信する
             let Ref = Firestore.firestore().collection(Users!).document(opUserId!)
-        listener = Ref.addSnapshotListener() { (querySnapshot, error) in
+            listener = Ref.addSnapshotListener() { (querySnapshot, error) in
             if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
                 return
             }
             //画像設定
-            self.photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot?.get("photoId") as! String)
+            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot!.get("photoId") as! String)
             self.photo.sd_setImage(with: imageRef)
             //その他情報設定
-            self.name.text = querySnapshot?.get("name") as! String
-            self.intro.text = querySnapshot?.get("intro") as! String
+            self.name.text = querySnapshot?.get("name") as? String
+            self.intro.text = querySnapshot?.get("intro") as? String
+            let age = querySnapshot?.get("age")
+            let region = querySnapshot?.get("region")
+            self.age.text = "\(age!)" + "才　" + "\(region!)"
             }
         }
     }

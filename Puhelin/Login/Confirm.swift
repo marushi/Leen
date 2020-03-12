@@ -17,11 +17,13 @@ class Confirm: UIViewController {
     @IBOutlet weak var age: UITextField!
     @IBOutlet weak var gender: UITextField!
     @IBOutlet weak var region: UITextField!
+    @IBOutlet weak var registButton: UIButton!
     
 
     let userDefaults = UserDefaults.standard
     let uid = Auth.auth().currentUser?.uid
     let introText = "初めまして！プロフィールを見ていただきありがとうございます。気軽にいいねしてください！まずはお話ししてみましょう！"
+    let sentenceMes = "よろしくお願いします！"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +32,9 @@ class Confirm: UIViewController {
         age.isEnabled = false
         gender.isEnabled = false
         region.isEnabled = false
+        
+        registButton.backgroundColor = ColorData.salmon
+        registButton.layer.cornerRadius = registButton.frame.height * 0.5
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,11 +84,15 @@ class Confirm: UIViewController {
             ,"age": userDefaults.integer(forKey: "age")
             ,"region": userDefaults.string(forKey: "region")!
             ,"intro": self.introText
-            ] as [String: Any]
+            ,"sentenceMessage": self.sentenceMes
+            ,"Personality":
+            ["0":["どちらでも"]
+            ,"1":["どちらでも"]
+            ,"2":["どちらでも"]]] as [String: Any]
         Ref.setData(Dic)
         
         //ユーザーデフォルト処理
-        userDefaults.set(false, forKey: "FirstLaunch")
+        userDefaults.set(true, forKey: "FirstLaunch")
         
         //HUD
         HUD.flash(.success, delay: 1) { _ in

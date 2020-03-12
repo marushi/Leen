@@ -12,7 +12,6 @@
 		BF02AF8A23F6A1DB0021551B /* Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF8923F6A1DB0021551B /* Region.swift */; };
 		BF02AF8D23F6B7F80021551B /* Confirm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF8C23F6B7F80021551B /* Confirm.swift */; };
 		BF02AF9223F6C0750021551B /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF9123F6C0750021551B /* Const.swift */; };
-		BF02AF9423F816F00021551B /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF9323F816F00021551B /* DatePicker.swift */; };
 		BF02AF9623F82E130021551B /* dayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF9523F82E130021551B /* dayCell.swift */; };
 		BF02AF9823F942760021551B /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF9723F942760021551B /* NavigationController.swift */; };
 		BF0FDE1823F2D34500C02B76 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0FDE1723F2D34500C02B76 /* AppDelegate.swift */; };
@@ -21,18 +20,23 @@
 		BF0FDE2123F2D34600C02B76 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF0FDE2023F2D34600C02B76 /* Assets.xcassets */; };
 		BF0FDE2423F2D34600C02B76 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF0FDE2223F2D34600C02B76 /* LaunchScreen.storyboard */; };
 		BF91954F23FA7DF500DDD69E /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91954E23FA7DF500DDD69E /* UserData.swift */; };
-		BFA5DB722402510E00DDE066 /* ProfilePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5DB712402510E00DDE066 /* ProfilePreview.swift */; };
-		BFAAB7EF2402BBB600A1F992 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAAB7EE2402BBB600A1F992 /* EditProfile.swift */; };
 		BFB0997C23FBBD37004604E9 /* ChatRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB0997B23FBBD37004604E9 /* ChatRoom.swift */; };
 		BFB0997E23FBD4CB004604E9 /* MessageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB0997D23FBD4CB004604E9 /* MessageData.swift */; };
 		BFB0998023FC36C9004604E9 /* ChatRoomData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB0997F23FC36C9004604E9 /* ChatRoomData.swift */; };
-		BFB738BC240D1CCF000AA02A /* Personality.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB738BB240D1CCE000AA02A /* Personality.swift */; };
 		BFB738BE240D1E2E000AA02A /* Identification.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB738BD240D1E2E000AA02A /* Identification.swift */; };
 		BFB738C0240D1E94000AA02A /* Usage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB738BF240D1E94000AA02A /* Usage.swift */; };
 		BFB738C2240D1EA6000AA02A /* Information.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB738C1240D1EA6000AA02A /* Information.swift */; };
 		BFB738C4240D1EC8000AA02A /* Billing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB738C3240D1EC8000AA02A /* Billing.swift */; };
 		BFBD23062403D0A4000DBDA5 /* VideoCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBD23052403D0A4000DBDA5 /* VideoCall.swift */; };
 		BFBD2308240418DD000DBDA5 /* PrepareRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFBD2307240418DD000DBDA5 /* PrepareRoom.swift */; };
+		BFCD98D42412521000E27BD3 /* SearchConditionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCD98D22412521000E27BD3 /* SearchConditionsCell.swift */; };
+		BFCD98D52412521000E27BD3 /* SearchConditionsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFCD98D32412521000E27BD3 /* SearchConditionsCell.xib */; };
+		BFCD98D7241255CB00E27BD3 /* SearchConditions2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCD98D6241255CB00E27BD3 /* SearchConditions2.swift */; };
+		BFCD98DD24130E4B00E27BD3 /* cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCD98DC24130E4B00E27BD3 /* cell.swift */; };
+		BFCD98DF2413BA0F00E27BD3 /* schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCD98DE2413BA0F00E27BD3 /* schedule.swift */; };
+		BFCD98E12413C68900E27BD3 /* scheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCD98E02413C68900E27BD3 /* scheduleCell.swift */; };
+		BFCD98E32414EFBA00E27BD3 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCD98E22414EFB900E27BD3 /* ProfileCell.swift */; };
+		BFCD98E52415617700E27BD3 /* NGView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCD98E42415617700E27BD3 /* NGView.swift */; };
 		BFD0D05F23F2D600009B1ADF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFD0D05E23F2D600009B1ADF /* GoogleService-Info.plist */; };
 		BFD0D06223F2D7DA009B1ADF /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06123F2D7DA009B1ADF /* StartScreen.swift */; };
 		BFD0D06523F2E203009B1ADF /* PhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06423F2E203009B1ADF /* PhoneNumber.swift */; };
@@ -56,6 +60,13 @@
 		BFD82C7623F3CE8A0058EBC4 /* TalkCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFD82C7423F3CE8A0058EBC4 /* TalkCell.xib */; };
 		BFD82C7D23F3CEC90058EBC4 /* MyProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD82C7B23F3CEC90058EBC4 /* MyProfileCell.swift */; };
 		BFD82C7E23F3CEC90058EBC4 /* MyProfileCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFD82C7C23F3CEC90058EBC4 /* MyProfileCell.xib */; };
+		BFD849EE24161C080089DF97 /* MyProfileData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD849ED24161C080089DF97 /* MyProfileData.swift */; };
+		BFD849F024168C8F0089DF97 /* profileDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD849EF24168C8F0089DF97 /* profileDetail.swift */; };
+		BFD849F22416A7BE0089DF97 /* Personality2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD849F12416A7BE0089DF97 /* Personality2.swift */; };
+		BFD849F42418C7E40089DF97 /* ColorData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD849F32418C7E30089DF97 /* ColorData.swift */; };
+		BFD849F62418CC4B0089DF97 /* ClassFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD849F52418CC4B0089DF97 /* ClassFile.swift */; };
+		BFD849F82418E7450089DF97 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD849F72418E7450089DF97 /* EditProfile.swift */; };
+		BFD849FA24193A150089DF97 /* editProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD849F924193A150089DF97 /* editProfileCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,7 +77,6 @@
 		BF02AF8B23F6A83E0021551B /* Puhelin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Puhelin.entitlements; sourceTree = "<group>"; };
 		BF02AF8C23F6B7F80021551B /* Confirm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Confirm.swift; sourceTree = "<group>"; };
 		BF02AF9123F6C0750021551B /* Const.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
-		BF02AF9323F816F00021551B /* DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
 		BF02AF9523F82E130021551B /* dayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dayCell.swift; sourceTree = "<group>"; };
 		BF02AF9723F942760021551B /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		BF0FDE1423F2D34500C02B76 /* Puhelin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Puhelin.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,18 +87,23 @@
 		BF0FDE2323F2D34600C02B76 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BF0FDE2523F2D34600C02B76 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF91954E23FA7DF500DDD69E /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
-		BFA5DB712402510E00DDE066 /* ProfilePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePreview.swift; sourceTree = "<group>"; };
-		BFAAB7EE2402BBB600A1F992 /* EditProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfile.swift; sourceTree = "<group>"; };
 		BFB0997B23FBBD37004604E9 /* ChatRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoom.swift; sourceTree = "<group>"; };
 		BFB0997D23FBD4CB004604E9 /* MessageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageData.swift; sourceTree = "<group>"; };
 		BFB0997F23FC36C9004604E9 /* ChatRoomData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomData.swift; sourceTree = "<group>"; };
-		BFB738BB240D1CCE000AA02A /* Personality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Personality.swift; sourceTree = "<group>"; };
 		BFB738BD240D1E2E000AA02A /* Identification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identification.swift; sourceTree = "<group>"; };
 		BFB738BF240D1E94000AA02A /* Usage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Usage.swift; sourceTree = "<group>"; };
 		BFB738C1240D1EA6000AA02A /* Information.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Information.swift; sourceTree = "<group>"; };
 		BFB738C3240D1EC8000AA02A /* Billing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Billing.swift; sourceTree = "<group>"; };
 		BFBD23052403D0A4000DBDA5 /* VideoCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCall.swift; sourceTree = "<group>"; };
 		BFBD2307240418DD000DBDA5 /* PrepareRoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrepareRoom.swift; sourceTree = "<group>"; };
+		BFCD98D22412521000E27BD3 /* SearchConditionsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchConditionsCell.swift; sourceTree = "<group>"; };
+		BFCD98D32412521000E27BD3 /* SearchConditionsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchConditionsCell.xib; sourceTree = "<group>"; };
+		BFCD98D6241255CB00E27BD3 /* SearchConditions2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchConditions2.swift; sourceTree = "<group>"; };
+		BFCD98DC24130E4B00E27BD3 /* cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cell.swift; sourceTree = "<group>"; };
+		BFCD98DE2413BA0F00E27BD3 /* schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = schedule.swift; sourceTree = "<group>"; };
+		BFCD98E02413C68900E27BD3 /* scheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = scheduleCell.swift; sourceTree = "<group>"; };
+		BFCD98E22414EFB900E27BD3 /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
+		BFCD98E42415617700E27BD3 /* NGView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NGView.swift; sourceTree = "<group>"; };
 		BFD0D05E23F2D600009B1ADF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BFD0D06123F2D7DA009B1ADF /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
 		BFD0D06423F2E203009B1ADF /* PhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumber.swift; sourceTree = "<group>"; };
@@ -112,6 +127,13 @@
 		BFD82C7423F3CE8A0058EBC4 /* TalkCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TalkCell.xib; sourceTree = "<group>"; };
 		BFD82C7B23F3CEC90058EBC4 /* MyProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyProfileCell.swift; sourceTree = "<group>"; };
 		BFD82C7C23F3CEC90058EBC4 /* MyProfileCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MyProfileCell.xib; sourceTree = "<group>"; };
+		BFD849ED24161C080089DF97 /* MyProfileData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyProfileData.swift; sourceTree = "<group>"; };
+		BFD849EF24168C8F0089DF97 /* profileDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = profileDetail.swift; sourceTree = "<group>"; };
+		BFD849F12416A7BE0089DF97 /* Personality2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Personality2.swift; sourceTree = "<group>"; };
+		BFD849F32418C7E30089DF97 /* ColorData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorData.swift; sourceTree = "<group>"; };
+		BFD849F52418CC4B0089DF97 /* ClassFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassFile.swift; sourceTree = "<group>"; };
+		BFD849F72418E7450089DF97 /* EditProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfile.swift; sourceTree = "<group>"; };
+		BFD849F924193A150089DF97 /* editProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = editProfileCell.swift; sourceTree = "<group>"; };
 		CAB59543EF5C2063F74F3AAD /* Pods-Puhelin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Puhelin.release.xcconfig"; path = "Target Support Files/Pods-Puhelin/Pods-Puhelin.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -148,9 +170,12 @@
 			isa = PBXGroup;
 			children = (
 				BF02AF9123F6C0750021551B /* Const.swift */,
+				BFD849F32418C7E30089DF97 /* ColorData.swift */,
 				BF91954E23FA7DF500DDD69E /* UserData.swift */,
+				BFD849ED24161C080089DF97 /* MyProfileData.swift */,
 				BFB0997D23FBD4CB004604E9 /* MessageData.swift */,
 				BFB0997F23FC36C9004604E9 /* ChatRoomData.swift */,
+				BFD849F52418CC4B0089DF97 /* ClassFile.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -218,16 +243,17 @@
 				BFD82C5823F3BCFE0058EBC4 /* Good.swift */,
 				BFD82C5A23F3BD0B0058EBC4 /* Talk.swift */,
 				BFD82C5C23F3BD190058EBC4 /* MyProfile.swift */,
-				BFA5DB712402510E00DDE066 /* ProfilePreview.swift */,
-				BFAAB7EE2402BBB600A1F992 /* EditProfile.swift */,
+				BFD849F72418E7450089DF97 /* EditProfile.swift */,
 				BFD82C5E23F3C96E0058EBC4 /* Profile.swift */,
 				BFD82C6023F3CC880058EBC4 /* SearchCoditions.swift */,
-				BF02AF9323F816F00021551B /* DatePicker.swift */,
+				BFCD98D6241255CB00E27BD3 /* SearchConditions2.swift */,
 				BF02AF9523F82E130021551B /* dayCell.swift */,
 				BFB0997B23FBBD37004604E9 /* ChatRoom.swift */,
+				BFCD98E42415617700E27BD3 /* NGView.swift */,
+				BFCD98DE2413BA0F00E27BD3 /* schedule.swift */,
 				BFBD2307240418DD000DBDA5 /* PrepareRoom.swift */,
 				BFBD23052403D0A4000DBDA5 /* VideoCall.swift */,
-				BFB738BB240D1CCE000AA02A /* Personality.swift */,
+				BFD849F12416A7BE0089DF97 /* Personality2.swift */,
 				BFB738BD240D1E2E000AA02A /* Identification.swift */,
 				BFB738BF240D1E94000AA02A /* Usage.swift */,
 				BFB738C1240D1EA6000AA02A /* Information.swift */,
@@ -247,6 +273,13 @@
 				BFD82C7423F3CE8A0058EBC4 /* TalkCell.xib */,
 				BFD82C7B23F3CEC90058EBC4 /* MyProfileCell.swift */,
 				BFD82C7C23F3CEC90058EBC4 /* MyProfileCell.xib */,
+				BFCD98D22412521000E27BD3 /* SearchConditionsCell.swift */,
+				BFCD98D32412521000E27BD3 /* SearchConditionsCell.xib */,
+				BFCD98DC24130E4B00E27BD3 /* cell.swift */,
+				BFCD98E02413C68900E27BD3 /* scheduleCell.swift */,
+				BFCD98E22414EFB900E27BD3 /* ProfileCell.swift */,
+				BFD849EF24168C8F0089DF97 /* profileDetail.swift */,
+				BFD849F924193A150089DF97 /* editProfileCell.swift */,
 			);
 			path = CustomCell;
 			sourceTree = "<group>";
@@ -313,6 +346,7 @@
 			files = (
 				BFD82C6623F3CDFB0058EBC4 /* SearchCell.xib in Resources */,
 				BF0FDE2423F2D34600C02B76 /* LaunchScreen.storyboard in Resources */,
+				BFCD98D52412521000E27BD3 /* SearchConditionsCell.xib in Resources */,
 				BFD82C7223F3CE7B0058EBC4 /* GoodCell.xib in Resources */,
 				BFD0D05F23F2D600009B1ADF /* GoogleService-Info.plist in Resources */,
 				BFD82C7E23F3CEC90058EBC4 /* MyProfileCell.xib in Resources */,
@@ -373,10 +407,10 @@
 			files = (
 				BF02AF8A23F6A1DB0021551B /* Region.swift in Sources */,
 				BFD82C5723F3BCF40058EBC4 /* Search.swift in Sources */,
-				BFAAB7EF2402BBB600A1F992 /* EditProfile.swift in Sources */,
+				BFCD98E32414EFBA00E27BD3 /* ProfileCell.swift in Sources */,
 				BFD82C5F23F3C96E0058EBC4 /* Profile.swift in Sources */,
-				BFA5DB722402510E00DDE066 /* ProfilePreview.swift in Sources */,
 				BFB0997E23FBD4CB004604E9 /* MessageData.swift in Sources */,
+				BFD849FA24193A150089DF97 /* editProfileCell.swift in Sources */,
 				BFB738BE240D1E2E000AA02A /* Identification.swift in Sources */,
 				BFB0998023FC36C9004604E9 /* ChatRoomData.swift in Sources */,
 				BFD82C6123F3CC880058EBC4 /* SearchCoditions.swift in Sources */,
@@ -384,30 +418,40 @@
 				BFD0D06723F2E218009B1ADF /* SMS.swift in Sources */,
 				BFB738C0240D1E94000AA02A /* Usage.swift in Sources */,
 				BFD82C7D23F3CEC90058EBC4 /* MyProfileCell.swift in Sources */,
-				BF02AF9423F816F00021551B /* DatePicker.swift in Sources */,
+				BFD849EE24161C080089DF97 /* MyProfileData.swift in Sources */,
 				BFD0D06223F2D7DA009B1ADF /* StartScreen.swift in Sources */,
 				BFD82C5B23F3BD0B0058EBC4 /* Talk.swift in Sources */,
+				BFD849F62418CC4B0089DF97 /* ClassFile.swift in Sources */,
 				BF02AF9623F82E130021551B /* dayCell.swift in Sources */,
 				BF02AF8823F50C150021551B /* TabBarConrtroller.swift in Sources */,
+				BFCD98E52415617700E27BD3 /* NGView.swift in Sources */,
 				BFB738C2240D1EA6000AA02A /* Information.swift in Sources */,
+				BFCD98E12413C68900E27BD3 /* scheduleCell.swift in Sources */,
 				BF0FDE1A23F2D34500C02B76 /* SceneDelegate.swift in Sources */,
 				BF02AF9823F942760021551B /* NavigationController.swift in Sources */,
+				BFD849F024168C8F0089DF97 /* profileDetail.swift in Sources */,
 				BFD0D07123F2E26B009B1ADF /* Photo.swift in Sources */,
 				BFD82C5923F3BCFE0058EBC4 /* Good.swift in Sources */,
+				BFCD98DD24130E4B00E27BD3 /* cell.swift in Sources */,
+				BFD849F22416A7BE0089DF97 /* Personality2.swift in Sources */,
 				BF02AF8D23F6B7F80021551B /* Confirm.swift in Sources */,
 				BFD82C7123F3CE7B0058EBC4 /* GoodCell.swift in Sources */,
+				BFCD98DF2413BA0F00E27BD3 /* schedule.swift in Sources */,
 				BFB738C4240D1EC8000AA02A /* Billing.swift in Sources */,
-				BFB738BC240D1CCF000AA02A /* Personality.swift in Sources */,
+				BFCD98D42412521000E27BD3 /* SearchConditionsCell.swift in Sources */,
 				BFB0997C23FBBD37004604E9 /* ChatRoom.swift in Sources */,
 				BFD0D06F23F2E25F009B1ADF /* MailAddress.swift in Sources */,
+				BFD849F42418C7E40089DF97 /* ColorData.swift in Sources */,
 				BFD0D06D23F2E252009B1ADF /* Gender.swift in Sources */,
 				BFD0D06523F2E203009B1ADF /* PhoneNumber.swift in Sources */,
 				BF91954F23FA7DF500DDD69E /* UserData.swift in Sources */,
 				BF02AF9223F6C0750021551B /* Const.swift in Sources */,
 				BFD82C7523F3CE8A0058EBC4 /* TalkCell.swift in Sources */,
 				BFD82C5D23F3BD190058EBC4 /* MyProfile.swift in Sources */,
+				BFD849F82418E7450089DF97 /* EditProfile.swift in Sources */,
 				BFBD2308240418DD000DBDA5 /* PrepareRoom.swift in Sources */,
 				BFD0D06B23F2E247009B1ADF /* Age.swift in Sources */,
+				BFCD98D7241255CB00E27BD3 /* SearchConditions2.swift in Sources */,
 				BFBD23062403D0A4000DBDA5 /* VideoCall.swift in Sources */,
 				BFD82C6523F3CDFB0058EBC4 /* SearchCell.swift in Sources */,
 				BFD0D06923F2E22B009B1ADF /* NickName.swift in Sources */,

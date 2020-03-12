@@ -19,12 +19,17 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     var listener: ListenerRegistration!
     var DB = ""
     
+    let titleLabel = UILabel() // ラベルの生成
+    let textLabel = UILabel()
+    let profilebutton = UIButton(type: .system)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //tableviewの設定
         tableView.delegate = self
         tableView.dataSource  = self
+        tableView.tableFooterView = UIView(frame: .zero)
 
         //セルの登録
         let nib = UINib(nibName: "GoodCell", bundle: nil)
@@ -39,11 +44,12 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = true
         
         if listener == nil{
         // listener未登録なら、登録してスナップショットを受信する
             let Ref = Firestore.firestore().collection(DB).document(Auth.auth().currentUser!.uid).collection(Const.GoodPath)
-        listener = Ref.addSnapshotListener() { (querySnapshot, error) in
+            listener = Ref.addSnapshotListener() { (querySnapshot, error) in
             if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
                 return
@@ -56,24 +62,36 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
             }
             // TableViewの表示を更新する
             self.tableView.reloadData()
-            
+            self.topLabel.text = String(self.UserArray.count) + "人からいいねが来ています！"
+            //いいねがゼロの場合の画面表示
+            if self.UserArray.count == 0 {
+                self.tableView.isHidden = true
+                self.topLabel.isHidden = true
+                self.setUp()
+            } else {
+                self.tableView.isHidden = false
+                self.topLabel.isHidden = false
+                self.titleLabel.isHidden = true
+                self.textLabel.isHidden = true
+                self.profilebutton.isHidden = true
             }
-        }
-        
-        //いいねがゼロの場合の画面表示
-        if UserArray.count == 0 {
-            tableView.isHidden = true
-            topLabel.isHidden = true
-            setUp()
-        } else {
-            tableView.isHidden = false
-            topLabel.isHidden = false
+            }
         }
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        self.navigationController?.navigationBar.isHidden = false
+    }
+    
     func setUp(){
+
+        //三つを表示
+        titleLabel.isHidden = false
+        textLabel.isHidden = false
+        profilebutton.isHidden = false
+        
         // UILabelの設定
-        let titleLabel = UILabel() // ラベルの生成
         titleLabel.frame = CGRect(x: (self.view.frame.width - 187)/2, y: 60, width: 187, height: 30) // 位置とサイズの指定
         titleLabel.textAlignment = NSTextAlignment.center // 横揃えの設定
         titleLabel.text = "いいね！がありません" // テキストの設定
@@ -85,7 +103,6 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         self.view.addSubview(titleLabel) // ラベルの追加
         
         //UIlabelテキストの設定
-        let textLabel = UILabel()
         textLabel.frame = CGRect(x: 0, y: self.view.frame.height/2 - 90, width: self.view.frame.width, height: 44)
         textLabel.textAlignment = NSTextAlignment.center
         textLabel.text = "プロフィールを充実させていいね！をもらおう！"
@@ -94,13 +111,21 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         self.view.addSubview(textLabel)
         
         //UIButtonの設定
-        let profilebutton = UIButton(type: .system)
+        profilebutton.addTarget(self, action: #selector(moovToProfile(_:)), for: UIControl.Event.touchUpInside)
         profilebutton.frame = CGRect(x: 30, y: self.view.frame.height/2 - 44, width: self.view.frame.width - 60, height: 44)
         profilebutton.layer.cornerRadius = 10
-        profilebutton.setTitle("プロフィールを編集する", for: .normal)
-        profilebutton.backgroundColor = .systemPink
+        profilebutton.setTitle("マイプロフィールを確認する", for: .normal)
+        profilebutton.backgroundColor = ColorData.salmon
         profilebutton.setTitleColor(.white, for: .normal)
         self.view.addSubview(profilebutton)
+    }
+    
+    //プロフィールへ移動
+    @objc func moovToProfile(_ sender: UIButton){
+        let profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
+        profile.profileSetData()
+        self.navigationController!.pushViewController(profile,animated: true)
+        
     }
     
     
@@ -121,6 +146,7 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         }else{
             tableView.rowHeight = 240
             GoodCell.setData(UserArray[indexPath.row - 1])
+            GoodCell.selectionStyle = UITableViewCell.SelectionStyle.none
             return GoodCell
         }
     }
@@ -129,7 +155,7 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let Profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
         Profile.setData(UserArray[indexPath.row - 1])
-        Profile.ButtonAppear = false
+        Profile.ButtonMode = 2
         present(Profile,animated: true,completion: nil)
     }
     

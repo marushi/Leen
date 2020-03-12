@@ -34,6 +34,9 @@ class Photo: UIViewController, UIImagePickerControllerDelegate ,UINavigationCont
 
         Button.isEnabled = false
         imageView.layer.cornerRadius = imageView.frame.size.width * 0.1
+        
+        Button.layer.cornerRadius = 10
+        Button.backgroundColor = UIColor.init(red: 1, green: 0.5, blue: 0.5, alpha: 1)
     }
     
     

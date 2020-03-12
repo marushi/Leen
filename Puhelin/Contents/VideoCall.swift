@@ -25,8 +25,9 @@ class VideoCall: UIViewController{
         var localStream: SKWMediaStream?
         var sfuRoom: SKWSFURoom?
 
-        @IBOutlet var localView: SKWVideo!
-        
+    @IBOutlet var remoteView: SKWVideo!
+    @IBOutlet weak var localView: SKWVideo!
+    
         override func viewDidLoad() {
             super.viewDidLoad()
         }
@@ -34,6 +35,7 @@ class VideoCall: UIViewController{
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
             UIApplication.shared.isIdleTimerDisabled = true
+            self.setupStream(peer: peer!)
             self.joinRoom()
         }
 
@@ -47,7 +49,14 @@ class VideoCall: UIViewController{
             sfuRoom = nil
             peer = nil
         }
-
+    
+    //ローカルストリームの設定
+    func setupStream(peer:SKWPeer){
+        SKWNavigator.initialize(peer);
+        let constraints:SKWMediaConstraints = SKWMediaConstraints()
+        self.localStream = SKWNavigator.getUserMedia(constraints)
+        self.localStream?.addVideoRenderer(self.localView, track: 0)
+    }
     
     
         func joinRoom() {

@@ -15,4 +15,5 @@ struct Const {
     static let GoodPath = "Good_Users"
     static let ChatPath = "ChatRooms"
     static let MessagePath = "Messages"
+    static let MatchingPath = "MatchingRooms"
 }

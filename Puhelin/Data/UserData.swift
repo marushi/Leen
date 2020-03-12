@@ -16,6 +16,7 @@ class UserData: NSObject {
     var age: Int?
     var region: String?
     var photoId: String?
+    var sentenceMessage: String?
     
     init(document: QueryDocumentSnapshot) {
         self.uid = document.documentID
@@ -25,5 +26,6 @@ class UserData: NSObject {
         self.age = Dic ["age"] as? Int
         self.region = Dic["region"] as? String
         self.photoId = Dic["photoId"] as? String
+        self.sentenceMessage = Dic["sentenceMessage"] as? String
     }
 }

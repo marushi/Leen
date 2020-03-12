@@ -12,15 +12,23 @@ import FirebaseUI
 class SearchCell: UICollectionViewCell {
 
     @IBOutlet weak var photo: UIImageView!
-    @IBOutlet weak var name: UILabel!
     @IBOutlet weak var age: UILabel!
-    @IBOutlet weak var introLabel: UILabel!
+    @IBOutlet weak var sentenceMes: UITextView!
+    @IBOutlet weak var view: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         photo.layer.cornerRadius = photo.frame.size.width * 0.1
-        photo.layer.borderColor = CGColor.init(srgbRed: 0, green: 1, blue: 1, alpha: 1)
-        photo.layer.borderWidth = 0.5
+        //photo.layer.maskedCorners = [.layerMinXMinYCorner,.layerMaxXMinYCorner]
+        
+        view.layer.cornerRadius = 5
+        view.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
+        //view.backgroundColor = .init(red: 1, green: 248/255, blue: 240/255, alpha: 1)
+        
+        sentenceMes.textContainerInset = UIEdgeInsets.zero
+        sentenceMes.textContainer.lineFragmentPadding = 0
+        //sentenceMes.backgroundColor = .init(red: 1, green: 248/255, blue: 240/255, alpha: 1)
+        sentenceMes.isUserInteractionEnabled = false
     }
     
     //データセット
@@ -32,9 +40,8 @@ class SearchCell: UICollectionViewCell {
         photo.sd_setImage(with: imageRef)
         
         //その他データ
-        name.text = userData.name
         age.text = "\(userData.age!)" + "才　" + "\(userData.region!)"
-        introLabel.text = userData.intro
+        sentenceMes.text = userData.sentenceMessage
         
     }
 

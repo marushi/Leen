@@ -7,179 +7,143 @@
 //
 
 import UIKit
+import PKHUD
 import Firebase
 import SCLAlertView
 
-extension UIScrollView {
-    open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.next?.touchesBegan(touches, with: event)
-    }
-}
-
-//テキストフィールドの制限
-extension SearchCoditions: UITextFieldDelegate{
-    //キーボードを閉じる
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        firstNum.resignFirstResponder()
-        lastNum.resignFirstResponder()
-    }
-}
-
-
 class SearchCoditions: UIViewController {
     
-    @IBOutlet weak var pickerView0: UIPickerView!
-    @IBOutlet weak var firstNum: UITextField!
-    @IBOutlet weak var lastNum: UITextField!
+    @IBOutlet weak var tableView: UITableView!
     
-    var region = "未選択"
-    var firstnum = 20
-    var lastnum = 99
-    var Ref:Query!
-    let picker1 = UIPickerView()
-    let picker2 = UIPickerView()
     let userDefaults = UserDefaults.standard
-    var firstAgeNumArray:[Int] = []
-    var lastAgeNumArray:[Int] = []
-    let prefectures = ["未選択","北海道", "青森県", "岩手県", "宮城県", "秋田県",
-    "山形県", "福島県", "茨城県", "栃木県", "群馬県",
-    "埼玉県", "千葉県", "東京都", "神奈川県","新潟県",
-    "富山県", "石川県", "福井県", "山梨県", "長野県",
-    "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県",
-    "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県",
-    "鳥取県", "島根県", "岡山県", "広島県", "山口県",
-    "徳島県", "香川県", "愛媛県", "高知県", "福岡県",
-    "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県",
-    "鹿児島県", "沖縄県"]
+    var UserArray:[UserData] = []
+    var DB = ""
+    
+    //検索条件用の変数
+    var region:String!
+    var regionArray:[String] = []
+    var minAge:Int = 20
+    var maxAge:Int = 30
+    var personality1:Int! = 0
+    var personality2:Int! = 0
+    var personality3:Int! = 0
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //pickerViewの設定
-        pickerView0.delegate = self
-        pickerView0.dataSource = self
-        picker1.delegate = self
-        picker1.delegate = self
-        picker1.tag = 1
-        picker2.delegate = self
-        picker2.delegate = self
-        picker2.tag = 2
-        firstAgeNumArray = Array(20...lastnum)
-        lastAgeNumArray = Array(firstnum...99)
+        //tableviewの設定
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.tableFooterView = UIView(frame: .zero)
+        tableView.rowHeight = 50
         
-        //textviewの設定
-        firstNum.delegate = self
-        lastNum.delegate = self
-        self.firstNum.inputView = picker1
-        self.lastNum.inputView = picker2
+        
+        //セルの登録
+        let nib = UINib(nibName: "SearchConditionsCell", bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: "SearchConditionsCell")
+        
+        //UIbuttonの設定
+        let button = UIButton(type: .system)
+        button.addTarget(self, action: #selector(Button(_:)), for: UIControl.Event.touchUpInside)
+        button.layer.cornerRadius = 10
+        button.backgroundColor = ColorData.salmon
+        button.setTitleColor(.white, for: .normal)
+        button.setTitle("条件変更", for: .normal)
+        button.frame = CGRect(x: (self.view.frame.width - 200) / 2, y: self.view.frame.height - 150, width: 200, height: 40)
+        self.view.addSubview(button)
+        
+        //異性の相手をビューに表示
+        if UserDefaults.standard.integer(forKey: "gender") == 1 {
+            DB = Const.FemalePath
+            UserDefaults.standard.set(DB, forKey: "DB")
+        } else if UserDefaults.standard.integer(forKey: "gender") == 2 {
+            DB = Const.MalePath
+            UserDefaults.standard.set(DB, forKey: "DB")
+        }
+        
+    }
+    
+    @objc func Button(_ sender: Any) {
+        //インジゲーター
+        HUD.show(.progress)
+        
+        let Ref = Firestore.firestore().collection(DB)
+            .whereField("region", isEqualTo: region as Any)
+            .whereField("personality.1.\(personality1!)", isEqualTo: true)
+            .whereField("personality.2.\(personality2!)", isEqualTo: true)
+            .whereField("personality.3.\(personality3!)", isEqualTo: true)
+            .whereField("age", isGreaterThanOrEqualTo: minAge)
+            .whereField("age", isLessThanOrEqualTo: maxAge)
+        
+        Ref.getDocuments() { (querySnapshot, error) in
+        if let error = error {
+            print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
+            HUD.hide()
+            return
+            }
+            // 取得したdocumentをもとにPostDataを作成し、postArrayの配列にする。
+            self.UserArray = querySnapshot!.documents.map { document in               print("DEBUG_PRINT: document取得 \(document.documentID)")
+                let userData = UserData(document: document)
+                return userData
+            }
+            //PKHUD
+            HUD.hide()
+            let nav = self.presentingViewController as! TabBarConrtroller
+            let search = nav.viewControllers![0] as! Search
+            search.UserArray = self.UserArray
+            search.searchCondition = true
+            search.collectionView.reloadData()
+            self.dismiss(animated: true,completion: nil)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if userDefaults.integer(forKey: "gender") == 1 {
-            Ref = Firestore.firestore().collection(Const.FemalePath)
-        }else{
-            Ref = Firestore.firestore().collection(Const.MalePath)
-        }
     }
     
     @IBAction func CancelButton(_ sender: Any) {
-        //探す画面に戻る
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    @IBAction func changeButton(_ sender: Any) {
-        if firstNum.text?.trimmingCharacters(in: .whitespacesAndNewlines) != nil {
-            
-        }
-        let selectedFirstNum:Int! = Int(firstnum)
-        let selectedLastNum:Int! = Int(lastnum)
-        let numArray = Array(selectedFirstNum...selectedLastNum)
-        userDefaults.set(true, forKey: "searchCondition")
-        let search = self.storyboard?.instantiateViewController(identifier: "Search") as! Search
-        search.searchRef = Ref.whereField("age", isEqualTo: numArray)
-        self.dismiss(animated: true, completion: nil)    
-    }
-}
-
-extension SearchCoditions:UIPickerViewDelegate,UIPickerViewDataSource {
-    
-    //ドラムロールの列数
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-            return 1
-    }
-    
-    //ドラムロールの行数
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        if pickerView.tag == 1 {
-            return firstAgeNumArray.count
-        }else if pickerView.tag == 2 {
-            return lastAgeNumArray.count
-        }
-        else{
-        return prefectures.count
-        }
-    }
-    
-    //ドラムロールの各項目
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if pickerView.tag == 1{
-            return String(firstAgeNumArray[row]) + "才"
-        }else if pickerView.tag == 2 {
-            return String(lastAgeNumArray[row]) + "才"
-        }
-        else{
-        return prefectures[row]
-        }
-    }
-
-    //選択時の処理
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if pickerView.tag == 1 {
-            firstnum = firstAgeNumArray[row]
-            firstNum.text = String(firstnum) + "才"
-            lastAgeNumArray = Array(firstnum + 1...99)
-            picker2.reloadAllComponents()
-        }else if pickerView.tag == 2 {
-            lastnum = lastAgeNumArray[row]
-            lastNum.text = String(lastnum) + "才"
-            firstAgeNumArray = Array(20...lastnum - 1)
-            picker1.reloadAllComponents()
-        }else{
-            region = prefectures[row]
-            if region != "未選択" {
-                Ref = Ref.whereField("region", isEqualTo: region)
+        //アラート
+        let appearance = SCLAlertView.SCLAppearance(
+                showCloseButton: false
+            )
+            let alertView = SCLAlertView(appearance: appearance)
+            alertView.addButton("さがす画面へ") {
+                //探す画面に戻る
+                self.dismiss(animated: true, completion: nil)
             }
+            alertView.addButton("戻る",backgroundColor: .lightGray,textColor: .black) {
+                return
+            }
+            alertView.showSuccess("検索条件は保存されません。よろしいですか？", subTitle: "")
         }
-    }
-    
-    @objc func cancelBarButton(_ sender: UIBarButtonItem) {
-        firstNum.text = nil
-        lastNum.text = nil
-    }
-    
-    @objc func doneBarButton(_ sender: UIBarButtonItem) {
-        firstNum.resignFirstResponder()
-        lastNum.resignFirstResponder()
-    }
-    
+        
 }
 
-//ピッカービューをtoolbarに設定
-extension SearchCoditions{
-    override var inputAccessoryView: UIView? {
-        let toolbar = UIToolbar()
-        toolbar.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 44)
 
-        let space = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: self, action: nil)
-        space.width = 12
-        let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelBarButton(_:)))
-        let flexSpaceItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-        let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneBarButton(_:)))
-
-        let toolbarItems = [space, cancelItem, flexSpaceItem, doneButtonItem, space]
-
-        toolbar.setItems(toolbarItems, animated: true)
-
-        return toolbar
+//tableviewの設定
+extension SearchCoditions:UITableViewDelegate,UITableViewDataSource{
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchConditionsCell") as! SearchConditionsCell
+        cell.selectionStyle = UITableViewCell.SelectionStyle.none
+        cell.personality1 = self.personality1
+        cell.personality2 = self.personality2
+        cell.personality3 = self.personality3
+        cell.setUp(indexPath.row)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let SearchConditions2 = self.storyboard?.instantiateViewController(identifier: "SearchConditions2") as! SearchConditions2
+        if indexPath.row == 1{
+            return
+        }else{
+            SearchConditions2.setUp(indexPath.row)
+        }
+        self.navigationController?.pushViewController(SearchConditions2, animated: true)
     }
 }

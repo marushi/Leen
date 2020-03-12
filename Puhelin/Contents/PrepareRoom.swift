@@ -21,12 +21,17 @@ class PrepareRoom: UIViewController {
     fileprivate var localStream: SKWMediaStream?
     
     @IBOutlet weak var localStreamView: SKWVideo!
-
+    @IBOutlet weak var joinButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //アウトレット設定
         localStreamView.layer.borderWidth = 1
-        localStreamView.layer.borderColor = UIColor.black.cgColor
+        localStreamView.layer.borderColor = ColorData.darkturquoise.cgColor
+        localStreamView.layer.cornerRadius = 10
+        joinButton.layer.cornerRadius = joinButton.frame.size.width * 0.5
+        joinButton.backgroundColor = ColorData.salmon
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -50,7 +55,6 @@ class PrepareRoom: UIViewController {
     @IBAction func joinButton(_ sender: Any) {
         let VideoCall = self.storyboard?.instantiateViewController(identifier: "VideoCall") as! VideoCall
         VideoCall.peer = peer
-        VideoCall.localStream = localStream
         VideoCall.roomName = roomName
         self.navigationController?.pushViewController(VideoCall, animated: true)
     }

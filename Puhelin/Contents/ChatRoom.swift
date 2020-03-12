@@ -52,6 +52,10 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
             return greetMessages.count
         case 2:
             return scheduleMessages.count
+        case 3:
+            return scheduleChangeMessages.count
+        case 4:
+            return cancelMessages.count
         case 5:
             return missMessages.count
         case 22:
@@ -78,6 +82,10 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
             return greetMessages[row]
         case 2:
             return scheduleMessages[row]
+        case 3:
+            return scheduleChangeMessages[row]
+        case 4:
+            return cancelMessages[row]
         case 5:
             return missMessages[row]
         case 22:
@@ -125,6 +133,18 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
                 }
             case 2:
                 scheduleadjustMode = row
+            case 3:
+                if row == 0 {
+                pickerText = ""
+                }else{
+                pickerText = scheduleChangeMessages[row]
+                }
+            case 4:
+                if row == 0 {
+                pickerText = ""
+                }else{
+                pickerText = cancelMessages[row]
+                }
             case 5:
                 if row == 0 {
                 pickerText = ""
@@ -172,7 +192,8 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
             case 0:
                 return
             case 1:
-                return
+                let schedule = self.storyboard?.instantiateViewController(identifier: "schedule")
+                self.present(schedule!,animated: true,completion: nil)
             case 2:
                 pickerMode = 22
                 self.keyboardController.textView.text = "ご提案ありがとうございます。では" + okayText_1 + okayText_2 + okayText_3
@@ -198,8 +219,10 @@ class ChatRoom: JSQMessagesViewController {
     var scheduleadjustMode = 0
     let picker = UIPickerView()
     let selectMessages = ["未選択","挨拶","日程調整","日程変更","キャンセル","送信ミス"]
-    let greetMessages = ["未選択","初めまして！マッチングありがとうございます！","ありがとうございます！","承知しました！"]
+    let greetMessages = ["未選択","初めまして！マッチングありがとうございます！","ありがとうございます！","承知しました！","すみません！","日程調整しましょう！"]
     let scheduleMessages = ["未選択","日時を提案","返信ー了承","返信ー再提案"]
+    let scheduleChangeMessages = ["未選択","すみません、諸事情により予定の日時にビデオチャットすることができません。日程を変更しませんか？"]
+    let cancelMessages = ["未選択","すみません、諸事情により予定していた時間にビデオチャットすることができません。また、今後も日程調整が厳しいため通話はなかったことにしてください。"]
     let missMessages = ["未選択","すみません、間違えました。上記のメッセージは無視してください。"]
     let okayMes_1 = Array(1...31)
     let okayMes_2 = Array(0...24)
@@ -235,6 +258,7 @@ class ChatRoom: JSQMessagesViewController {
         
         //test
         self.keyboardController.textView.inputView = picker
+        self.keyboardController.textView.isEditable = false
         
         //pickerの設定
         picker.delegate = self
@@ -301,6 +325,7 @@ class ChatRoom: JSQMessagesViewController {
                         print(error)
                     } else {
                         self.topImage = UIImage(data: data!)!
+                        self.collectionView.reloadData()
                     }
                 }
             }
@@ -308,11 +333,30 @@ class ChatRoom: JSQMessagesViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        //上のバーを表示、下のバーを消す
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        //下のバーを消す
+        self.navigationController?.navigationBar.isHidden = false
         self.tabBarController?.tabBar.isHidden = true
         //送信を反映
         self.finishReceivingMessage(animated: true)
+        
+        //日時提案画面から戻ったとき
+        let app:AppDelegate = (UIApplication.shared.delegate as! AppDelegate)
+        if app.globalDateText != [] {
+            var settext:String = ""
+            for text in app.globalDateText{
+                settext = settext + text! + "、"
+            }
+            self.keyboardController.textView.text = settext + "以上の日程はどうでしょうか？"
+            app.globalDateText = []
+            self.keyboardController.textView.becomeFirstResponder()
+            self.inputToolbar.contentView.rightBarButtonItem.isEnabled = true
+        }
+        
+        /*if userDefaults.bool(forKey: "identification") == false {
+            let vc = self.storyboard?.instantiateViewController(identifier: "NGView") as! NGView
+            present(vc,animated: false,completion: nil)
+        }*/
+        
     }
     
      //アイテムごとに参照するメッセージデータを返す
@@ -391,27 +435,17 @@ class ChatRoom: JSQMessagesViewController {
         
         //firebaseに保存
         let Ref = Firestore.firestore().collection(Const.ChatPath).document(roomId!).collection(Const.MessagePath).document()
-        let Dic = ["senderId": senderId,"displayName": senderDisplayName,"text": text,"sendTime": date] as [String:Any]
+        let Dic = ["senderId": senderId as Any
+            ,"displayName": senderDisplayName as Any
+            ,"text": text as Any
+            ,"sendTime": date as Any] as [String:Any]
         Ref.setData(Dic)
         
         //textFieldをクリアする
         self.inputToolbar.contentView.textView.text = ""
         
         self.finishSendingMessage()
-        
-        testRecvMessage()
     }
-    
-    //テスト用「マグロならあるよ！」を返す
-    func testRecvMessage() {
-           
-        let message = JSQMessage(senderId: "sushi", displayName: "B", text: "マグロならあるよ！")
-        let Ref = Firestore.firestore().collection(Const.ChatPath).document(roomId!).collection(Const.MessagePath).document()
-        let Dic = ["senderId": message?.senderId,"displayName": message?.senderDisplayName,"text": message?.text,"sendTime": Date()] as [String:Any]
-        Ref.setData(Dic)
-        self.finishReceivingMessage(animated: true)
-    }
-
     
     //時刻表示のための高さ調整
     override func collectionView(_ collectionView: JSQMessagesCollectionView!, attributedTextForCellTopLabelAt indexPath: IndexPath!) -> NSAttributedString! {
