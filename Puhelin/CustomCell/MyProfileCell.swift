@@ -30,11 +30,11 @@ class MyProfileCell: UITableViewCell {
         
         switch row {
         case 0:
-            photo.image = UIImage(systemName: "tag")
-            titleLabel.text = "使い方"
-        case 1:
             photo.image = UIImage(systemName: "folder")
             titleLabel.text = "本人確認"
+        case 1:
+            photo.image = UIImage(systemName: "tag")
+            titleLabel.text = "使い方"
         case 2:
             photo.image = UIImage(systemName: "yensign.circle")
             titleLabel.text = "コイン購入"

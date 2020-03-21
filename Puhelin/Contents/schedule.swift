@@ -10,10 +10,11 @@ import UIKit
 
 class schedule: UIViewController,UITableViewDelegate,UITableViewDataSource {
     
-
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
     var dateArray:[String] = []
+    var delegate: ModalViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +22,12 @@ class schedule: UIViewController,UITableViewDelegate,UITableViewDataSource {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView(frame: .zero)
-        tableView.rowHeight = 50
+        tableView.rowHeight = 45
+        titleLabel.backgroundColor = ColorData.whitesmoke
+        
+        //Modalの設定
+        let nav = self.presentingViewController as? UINavigationController
+        delegate = nav?.topViewController as? ChatRoom
         
         //UIbuttonの設定
         let button = UIButton(type: .system)
@@ -34,6 +40,11 @@ class schedule: UIViewController,UITableViewDelegate,UITableViewDataSource {
         self.view.addSubview(button)
     }
     
+    @IBAction func modoru(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    
     @objc func Button(_ sender:Any) {
         tableView.reloadData()
         for _ in 1...5{
@@ -43,9 +54,8 @@ class schedule: UIViewController,UITableViewDelegate,UITableViewDataSource {
                 dateArray.remove(value: "")
             }
         }
-        let app:AppDelegate = (UIApplication.shared.delegate as! AppDelegate)
-        app.globalDateText = dateArray
-        self.dismiss(animated: true, completion: nil)
+        self.delegate?.modalDidFinished(modalText: self.dateArray)
+        self.dismiss(animated:false, completion: nil)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -59,10 +69,9 @@ class schedule: UIViewController,UITableViewDelegate,UITableViewDataSource {
         return cell
     }
 }
-extension Array where Element: Equatable {
-    mutating func remove(value: Element) {
-        if let i = self.firstIndex(of: value) {
-            self.remove(at: i)
-        }
-    }
+
+protocol ModalViewControllerDelegate{
+    func modalDidFinished(modalText: [String])
 }
+
+

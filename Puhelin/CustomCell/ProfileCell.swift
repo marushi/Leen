@@ -10,14 +10,13 @@ import UIKit
 
 class ProfileCell: UITableViewCell {
 
+    //部品
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var contentLabel: UILabel!
-    
-    let titleArray = ["いつも話す時：","出会いの目的：","デートするなら："]
-    
-    var personality0: [String]?
-    var personality1: [String]?
-    var personality2: [String]?
+    //定数
+    let titleArray = ["居住地","身長","体型","会話","目的"]
+    //変数
+    var profileData:MyProfileData?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -31,34 +30,28 @@ class ProfileCell: UITableViewCell {
     }
     
     func setUp(_ row:Int) {
+        if profileData != nil {
         switch row {
         case 0:
+            contentLabel.text = profileData?.region
             titleLabel.text = titleArray[0]
-            if personality0?.count == 1 {
-                contentLabel.text = "どちらでも"
-            }else{
-                contentLabel.text = personality0![1]
-            }
-        
         case 1:
+            contentLabel.text = "\(profileData!.tall!)" + "cm"
             titleLabel.text = titleArray[1]
-            if personality1?.count == 1 {
-                contentLabel.text = "どちらでも"
-            }else{
-                contentLabel.text = personality1![1]
-            }
-        
         case 2:
+            contentLabel.text = profileData?.bodyType
             titleLabel.text = titleArray[2]
-            if personality2?.count == 1 {
-                contentLabel.text = "どちらでも"
-            }else{
-                contentLabel.text = personality2![1]
-            }
-            
+        case 3:
+            contentLabel.text = profileData?.talk
+            titleLabel.text = titleArray[3]
+        case 4:
+            contentLabel.text = profileData?.purpose
+            titleLabel.text = titleArray[4]
+
         default:
             return
-        }
+            }}
+    
     }
 
 }

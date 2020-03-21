@@ -17,6 +17,12 @@ class UserData: NSObject {
     var region: String?
     var photoId: String?
     var sentenceMessage: String?
+    var tall: Int?
+    var bodyType: String?
+    var purpose: String?
+    var talk: String?
+    var identification: Bool?
+    var signupDate: Timestamp?
     
     init(document: QueryDocumentSnapshot) {
         self.uid = document.documentID
@@ -27,5 +33,11 @@ class UserData: NSObject {
         self.region = Dic["region"] as? String
         self.photoId = Dic["photoId"] as? String
         self.sentenceMessage = Dic["sentenceMessage"] as? String
+        self.talk = Dic["talk"] as? String
+        self.purpose = Dic["purpose"] as? String
+        self.bodyType = Dic["bodyType"] as? String
+        self.tall = Dic["tall"] as? Int
+        self.identification = Dic["identification"] as? Bool
+        self.signupDate = Dic["signupDate"] as? Timestamp
     }
 }

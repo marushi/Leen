@@ -35,7 +35,7 @@
                                 <color key="textColor" red="1" green="0.50196078431372548" blue="0.44705882352941173" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tag" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="ehC-QX-mR3">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tag.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="ehC-QX-mR3">
                                 <rect key="frame" x="5" y="5" width="15" height="16"/>
                                 <color key="tintColor" red="0.0" green="0.80784313725490198" blue="0.81960784313725488" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
@@ -43,22 +43,22 @@
                                     <constraint firstAttribute="width" secondItem="ehC-QX-mR3" secondAttribute="height" multiplier="1:1" id="bq9-5N-1Ug"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pencil.and.ellipsis.rectangle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Y0U-65-qH4">
-                                <rect key="frame" x="5" y="25" width="15" height="13.5"/>
-                                <color key="tintColor" red="0.3921568627" green="0.3921568627" blue="0.3921568627" alpha="1" colorSpace="calibratedRGB"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="message.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="Y0U-65-qH4">
+                                <rect key="frame" x="5" y="25" width="15" height="14.5"/>
+                                <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="15" id="QZ8-Gi-TiI"/>
                                     <constraint firstAttribute="width" secondItem="Y0U-65-qH4" secondAttribute="height" multiplier="1:1" id="eIc-mn-yav"/>
                                 </constraints>
                             </imageView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K3B-t3-6yg">
-                                <rect key="frame" x="25" y="27.5" width="150" height="35"/>
+                                <rect key="frame" x="25" y="25" width="150" height="35"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="ftS-94-eJx"/>
                                 </constraints>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                <color key="textColor" red="0.39215686274509803" green="0.39215686274509803" blue="0.39215686274509803" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -71,18 +71,30 @@
                             <constraint firstItem="ehC-QX-mR3" firstAttribute="leading" secondItem="pjf-ip-h4O" secondAttribute="leading" constant="5" id="IXu-5n-jyb"/>
                             <constraint firstItem="ehC-QX-mR3" firstAttribute="top" secondItem="pjf-ip-h4O" secondAttribute="top" constant="5" id="Jbt-gc-JqL"/>
                             <constraint firstItem="Sde-25-y3o" firstAttribute="centerY" secondItem="ehC-QX-mR3" secondAttribute="centerY" id="YO3-mu-S6E"/>
-                            <constraint firstItem="K3B-t3-6yg" firstAttribute="top" secondItem="Sde-25-y3o" secondAttribute="bottom" constant="5" id="aAU-u5-xLA"/>
                             <constraint firstAttribute="trailing" secondItem="K3B-t3-6yg" secondAttribute="trailing" constant="5" id="dbY-o5-bPD"/>
                             <constraint firstAttribute="height" constant="70" id="gMa-WL-XUB"/>
                             <constraint firstItem="Y0U-65-qH4" firstAttribute="leading" secondItem="pjf-ip-h4O" secondAttribute="leading" constant="5" id="kMy-mx-okX"/>
+                            <constraint firstItem="K3B-t3-6yg" firstAttribute="top" secondItem="Y0U-65-qH4" secondAttribute="top" id="qJN-M6-H6l"/>
                         </constraints>
                     </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="今週入会" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PNc-Lb-n9g">
+                        <rect key="frame" x="18.5" y="140" width="65" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="65" id="pqB-hi-9od"/>
+                            <constraint firstAttribute="height" constant="20" id="tKI-ZM-VFt"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
             </view>
             <constraints>
                 <constraint firstItem="WOj-5G-OYf" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="E46-9n-jxi"/>
                 <constraint firstItem="pjf-ip-h4O" firstAttribute="top" secondItem="WOj-5G-OYf" secondAttribute="bottom" id="EmS-P3-UeC"/>
+                <constraint firstItem="PNc-Lb-n9g" firstAttribute="leading" secondItem="WOj-5G-OYf" secondAttribute="leading" id="Rh7-ir-kiX"/>
                 <constraint firstItem="WOj-5G-OYf" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="aEb-OC-ghG"/>
+                <constraint firstItem="pjf-ip-h4O" firstAttribute="top" secondItem="PNc-Lb-n9g" secondAttribute="bottom" constant="20" id="gse-75-0le"/>
                 <constraint firstItem="pjf-ip-h4O" firstAttribute="leading" secondItem="WOj-5G-OYf" secondAttribute="leading" id="iRe-25-2Qj"/>
                 <constraint firstItem="pjf-ip-h4O" firstAttribute="trailing" secondItem="WOj-5G-OYf" secondAttribute="trailing" id="kQw-R0-ABV"/>
             </constraints>
@@ -90,15 +102,17 @@
             <size key="customSize" width="217" height="296"/>
             <connections>
                 <outlet property="age" destination="Sde-25-y3o" id="Pre-Av-Pkm"/>
+                <outlet property="dateLabel" destination="PNc-Lb-n9g" id="rWi-Tx-O6D"/>
                 <outlet property="photo" destination="WOj-5G-OYf" id="Lnk-2P-R8l"/>
                 <outlet property="sentenceMes" destination="K3B-t3-6yg" id="JdN-3N-J1d"/>
+                <outlet property="tagImage" destination="ehC-QX-mR3" id="TYj-kE-h7P"/>
                 <outlet property="view" destination="pjf-ip-h4O" id="HMJ-EV-tLp"/>
             </connections>
             <point key="canvasLocation" x="257.24637681159425" y="-56.919642857142854"/>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="pencil.and.ellipsis.rectangle" catalog="system" width="64" height="40"/>
-        <image name="tag" catalog="system" width="64" height="58"/>
+        <image name="message.fill" catalog="system" width="64" height="56"/>
+        <image name="tag.fill" catalog="system" width="64" height="58"/>
     </resources>
 </document>

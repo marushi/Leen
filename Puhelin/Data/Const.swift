@@ -9,9 +9,10 @@
 import Foundation
 
 struct Const {
+    static let ImagePath = "Images"
+    static let IdentificationPath = "IdentificationPhotos"
     static let MalePath = "Male_Users"
     static let FemalePath = "Female_Users"
-    static let ImagePath = "Images"
     static let GoodPath = "Good_Users"
     static let ChatPath = "ChatRooms"
     static let MessagePath = "Messages"

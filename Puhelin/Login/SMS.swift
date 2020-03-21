@@ -11,7 +11,8 @@ import Firebase
 
 class SMS: UIViewController {
 
-    @IBOutlet weak var verificationCode: UITextField!
+    @IBOutlet weak var confirmCodeTextField: UITextField!
+    let userDefaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,18 +21,27 @@ class SMS: UIViewController {
     }
     
     @IBAction func Button(_ sender: Any) {
-        let VerificationCode = verificationCode.text
-        let verificationID = UserDefaults.standard.string(forKey: "authVerificationID")
-        let credential = PhoneAuthProvider.provider().credential(
-            withVerificationID: verificationID!,
-            verificationCode: VerificationCode!)
-
-        Auth.auth().signIn(with: credential) { (authResult, error) in
-          if let error = error {
-            print("ログインエラー")
-            return
-          }
-          print("ログイン成功")
+        // 確認コードを変数に代入
+        if let verificationCode = confirmCodeTextField.text {
+            // 先ほどの画面で保存した値を取得
+            if (userDefaults.object(forKey: "verificationID") != nil) {
+                let verificationID = userDefaults.object(forKey: "verificationID") as! String
+                // IDとコードをろログインに使用する形式にセット
+                let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationID, verificationCode: verificationCode)
+                // 電話番号認証を行う
+                Auth.auth().signIn(with: credential) {(authResult, error) in
+                    if let error = error {
+                        print(error)
+                        
+                        return
+                    }
+                    if let authResult = authResult {
+                        print(authResult)
+                        let NickName = self.storyboard?.instantiateViewController(identifier: "NickName")
+                        self.navigationController?.pushViewController(NickName!, animated: true)
+                    }
+                }
+            }
         }
     }
     

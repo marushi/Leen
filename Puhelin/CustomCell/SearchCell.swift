@@ -15,20 +15,20 @@ class SearchCell: UICollectionViewCell {
     @IBOutlet weak var age: UILabel!
     @IBOutlet weak var sentenceMes: UITextView!
     @IBOutlet weak var view: UIView!
+    @IBOutlet weak var tagImage: UIImageView!
+    @IBOutlet weak var dateLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        photo.layer.cornerRadius = photo.frame.size.width * 0.1
-        //photo.layer.maskedCorners = [.layerMinXMinYCorner,.layerMaxXMinYCorner]
-        
-        view.layer.cornerRadius = 5
-        view.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
-        //view.backgroundColor = .init(red: 1, green: 248/255, blue: 240/255, alpha: 1)
-        
+        //アウトレットの設定
+        photo.layer.cornerRadius = 20
         sentenceMes.textContainerInset = UIEdgeInsets.zero
         sentenceMes.textContainer.lineFragmentPadding = 0
-        //sentenceMes.backgroundColor = .init(red: 1, green: 248/255, blue: 240/255, alpha: 1)
         sentenceMes.isUserInteractionEnabled = false
+        dateLabel.backgroundColor = ColorData.salmon
+        dateLabel.layer.cornerRadius = 10
+        dateLabel.clipsToBounds = true
+        dateLabel.layer.maskedCorners = [.layerMaxXMinYCorner,.layerMaxXMaxYCorner]
     }
     
     //データセット
@@ -42,6 +42,21 @@ class SearchCell: UICollectionViewCell {
         //その他データ
         age.text = "\(userData.age!)" + "才　" + "\(userData.region!)"
         sentenceMes.text = userData.sentenceMessage
+        
+        //本人確認済みかどうか
+        if userData.identification == true {
+            tagImage.tintColor = ColorData.darkturquoise
+        } else {
+            tagImage.tintColor = ColorData.naplesYellow
+        }
+        
+        let weekAgo = Date(timeIntervalSinceNow: -60*60*24*4)
+        let signupDate: Date = userData.signupDate!.dateValue()
+        if signupDate < weekAgo {
+            dateLabel.isHidden = true
+        }else{
+            dateLabel.isHidden = false
+        }
         
     }
 

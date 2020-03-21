@@ -14,7 +14,10 @@ class PrepareRoom: UIViewController {
     // SkyWay Configuration Parameter
     let apikey = "7dc43da3-26d9-4c5b-bb15-b16ac1570364"
     let domain = "localhost"
+    var topImage: UIImage?
     var roomName: String?
+    var opid: String?
+    var modalmode = 0
     
     fileprivate var peer: SKWPeer?
     fileprivate var mediaConnection: SKWMediaConnection?
@@ -35,7 +38,17 @@ class PrepareRoom: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        //new peerIdと同じことをする＝peerOpenも発火
+        self.navigationController?.navigationBar.isHidden = false
+        
+        if modalmode == 1{
+            let AfterVideoCall = self.storyboard?.instantiateViewController(identifier: "AfterVideoCall") as! AfterVideoCall
+            AfterVideoCall.modalTransitionStyle = .crossDissolve
+            AfterVideoCall.roomName = roomName
+            AfterVideoCall.opid = opid
+            AfterVideoCall.topImage = topImage
+            self.present(AfterVideoCall,animated: true,completion: nil)
+        }else{
+         //new peerIdと同じことをする＝peerOpenも発火
         let option: SKWPeerOption = SKWPeerOption.init();
         option.key = apikey
         option.domain = domain
@@ -48,9 +61,8 @@ class PrepareRoom: UIViewController {
         }else{
             print("failed to create peer setup")
         }
+        }
     }
-    
-    
     
     @IBAction func joinButton(_ sender: Any) {
         let VideoCall = self.storyboard?.instantiateViewController(identifier: "VideoCall") as! VideoCall
@@ -59,8 +71,6 @@ class PrepareRoom: UIViewController {
         self.navigationController?.pushViewController(VideoCall, animated: true)
     }
     
-    
-    
     //ローカルストリームの設定
     func setupStream(peer:SKWPeer){
         SKWNavigator.initialize(peer);
@@ -68,13 +78,21 @@ class PrepareRoom: UIViewController {
         self.localStream = SKWNavigator.getUserMedia(constraints)
         self.localStream?.addVideoRenderer(self.localStreamView, track: 0)
     }
+    
+    @IBAction func lemoveButton(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+        peer = nil
+        roomName = nil
+        localStream = nil
+        localStreamView = nil
+    }
+    
 }
 
 //初期設定peerIdの設定
 extension PrepareRoom{
     
     func setupPeerCallBacks(peer:SKWPeer){
-        
         //Open発火処理
         peer.on(.PEER_EVENT_OPEN, callback: {obj in
             if let peerId = obj as? String{
@@ -89,7 +107,11 @@ extension PrepareRoom{
                 print("\(error)")
             }
         })
-        
-        
+    }
+}
+
+extension PrepareRoom:VideoModal{
+    func videomodal(modalmode: Int) {
+        self.modalmode = modalmode
     }
 }

@@ -39,3 +39,67 @@ extension UIButton {
             ? .forceLeftToRight : .forceRightToLeft
     }
 }
+
+extension Array where Element: Equatable {
+    mutating func remove(value: Element) {
+        if let i = self.firstIndex(of: value) {
+            self.remove(at: i)
+        }
+    }
+}
+
+//UIimageの角丸
+extension UIImage {
+    
+    func imageWithCornerRadius(cornerRadius: CGFloat) -> UIImage{
+        
+        var imageBounds: CGRect
+        let scaleForDisplay = UIScreen.main.scale     //1ポイント当たり何ピクセルか
+        let cornerRadius = cornerRadius * scaleForDisplay     //ポイントからピクセルへの変換
+        imageBounds = CGRect(x: 0, y: 0, width: self.size.height, height: self.size.height)
+ 
+        //角丸のマスクを作成する
+        let path = UIBezierPath.init(roundedRect: imageBounds, cornerRadius: cornerRadius)
+        UIGraphicsBeginImageContextWithOptions(path.bounds.size, false, 0.0)
+        let fillColor = UIColor.blue
+        fillColor.setFill()
+        path.fill()
+        let maskImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        //元イメージにマスクをかける
+        UIGraphicsBeginImageContextWithOptions(path.bounds.size, false, 0.0)
+        let context = UIGraphicsGetCurrentContext()
+        context!.clip(to: imageBounds, mask: (maskImage?.cgImage)!)
+        self.draw(at: .zero)
+        
+        let resultImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return resultImage!
+        
+    }
+    
+}
+//
+//行数を取得する
+//
+extension UITextView {
+    var numberOfLines: Int {
+        // prepare
+        var computingLineIndex = 0
+        var computingGlyphIndex = 0
+        // compute
+        while computingGlyphIndex < layoutManager.numberOfGlyphs {
+            var lineRange = NSRange()
+            layoutManager.lineFragmentRect(forGlyphAt: computingGlyphIndex, effectiveRange: &lineRange)
+            computingGlyphIndex = NSMaxRange(lineRange)
+            computingLineIndex += 1
+        }
+        // return
+        if textContainer.maximumNumberOfLines > 0 {
+            return min(textContainer.maximumNumberOfLines, computingLineIndex)
+        } else {
+            return computingLineIndex
+        }
+    }
+}

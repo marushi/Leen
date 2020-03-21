@@ -8,7 +8,7 @@ import FirebaseUI
 import SCLAlertView
 import RSKImageCropper
 
-class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigationControllerDelegate{
+class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigationControllerDelegate,UITextFieldDelegate{
     
     @IBOutlet weak var photochange: UIImageView!
     @IBOutlet weak var photoView: UIView!
@@ -16,9 +16,11 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
     @IBOutlet weak var MessageButton: UIButton!
     @IBOutlet weak var introTextView: UITextView!
     @IBOutlet weak var tableView: UITableView!
-    
+    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var savesentenceButton: UIButton!
     //定数
     let userDefaults = UserDefaults.standard
+    let uid = UserDefaults.standard.string(forKey: "uid")
     
     //データ
     var profileData:MyProfileData?
@@ -44,14 +46,19 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
         MessageButton.backgroundColor = .white
         MessageButton.contentHorizontalAlignment = .left
         MessageButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-        MessageButton.imageEdgeInsets = UIEdgeInsets.init(top: 0, left: MessageButton.frame.width * 3 / 4, bottom: 0, right: 0)
+        MessageButton.imageEdgeInsets = UIEdgeInsets.init(top: 0, left: self.view.frame.size.width - 30, bottom: 0, right: 0)
         MessageButton.titleEdgeInsets = UIEdgeInsets.init(top: 0, left: 20, bottom: 0, right: 0)
         introTextView.isEditable = false
+        textField.isHidden = true
+        textField.delegate = self
+        savesentenceButton.isHidden = true
+        savesentenceButton.isEnabled = false
         
         //tableViewの設定
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView(frame: .zero)
+        tableView.rowHeight = tableView.frame.height / 5
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,46 +74,9 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
         self.tabBarController?.tabBar.isHidden = false
     }
     
-    //更新ボタン
-    @IBAction func registButton(_ sender: Any) {
-        
-        HUD.show(.progress)
-        
-        let userDefaults = UserDefaults.standard
-        let ref = Firestore.firestore()
-        var DB = ""
-        if userDefaults.integer(forKey: "gender") == 1 {
-            DB = Const.MalePath
-        } else {
-            DB = Const.FemalePath
-        }
-        
-        let userRef = ref.collection(DB).document(userDefaults.string(forKey: "uid")!)
-        let Dic = ["Personality":
-            ["0":["どちらでも",personality0]
-            ,"1":["どちらでも",personality1]
-            ,"2":["どちらでも",personality2]]]
-        userRef.updateData(Dic)
-        
-        HUD.hide()
-        
-        self.navigationController?.popViewController(animated: true)
-    }
-    
     //戻るボタン
     @IBAction func modoru(_ sender: Any) {
-        let appearance = SCLAlertView.SCLAppearance(
-            showCloseButton: false
-        )
-        let alertView = SCLAlertView(appearance: appearance)
-        alertView.addButton("マイページへ") {
-            //探す画面に戻る
-            self.navigationController?.popViewController(animated: true)
-        }
-        alertView.addButton("戻る",backgroundColor: .lightGray,textColor: .black) {
-            return
-        }
-        alertView.showSuccess("入力情報は保存されません。よろしいですか？", subTitle: "")
+        self.navigationController?.popViewController(animated: true)
     }
     
     @IBAction func photoButton(_ sender: Any) {
@@ -117,6 +87,59 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
             self.present(pickerController, animated: true, completion: nil)
         }
     }
+    
+    @IBAction func sentenceMes(_ sender: Any) {
+        if textField.isHidden == true {
+            textField.isHidden = false
+            savesentenceButton.isHidden = false
+        }else{
+            textField.isHidden = true
+            savesentenceButton.isHidden = true
+        }
+    }
+    
+    @IBAction func saveSentence(_ sender: Any) {
+        textField.isHidden = true
+        savesentenceButton.isHidden = true
+        //保存先を指定
+        var DB = ""
+        if userDefaults.integer(forKey: "gender") == 1 {
+            DB = Const.MalePath
+        }else if userDefaults.integer(forKey: "gender") == 2 {
+            DB = Const.FemalePath
+        }
+        let Ref = Firestore.firestore().collection(DB).document(uid!)
+        Ref.setData(["sentenceMessage":self.textField.text as Any], merge: true)
+        self.MessageButton.setTitle(textField.text, for: .normal)
+        savesentenceButton.isEnabled = false
+        textField.resignFirstResponder()
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let textNum = textField.text?.count else {
+            print("nilです")
+            return true
+        }
+        if textNum > 2 && textNum < 20 {
+            savesentenceButton.isEnabled = true
+            return true
+        }else{
+            savesentenceButton.isEnabled = false
+            return true
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        return self.textField.resignFirstResponder()
+    }
+    
+    
+    @IBAction func introduction(_ sender: Any) {
+        let EditIntroduction = self.storyboard?.instantiateViewController(identifier: "EditIntroduction") as! EditIntroduction
+        EditIntroduction.savedtext = self.profileData?.intro
+        self.navigationController?.pushViewController(EditIntroduction, animated: true)
+    }
+    
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
       let image = info[.originalImage] as! UIImage
@@ -139,12 +162,7 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
         introTextView.text = profileData?.intro
     }
     
-    @objc func pushButton(_ sender: UIButton, forEvent event:UIEvent){
-        let row = sender.tag
-        let Personality2 = self.storyboard?.instantiateViewController(identifier: "Personality2") as! Personality2
-        Personality2.setUp(row)
-        self.present(Personality2,animated: false, completion: nil)
-    }
+    
 }
 
 extension EditProfile: RSKImageCropViewControllerDelegate {
@@ -160,9 +178,12 @@ extension EditProfile: RSKImageCropViewControllerDelegate {
     
 }
 
+//
+//基本情報
+//
 extension EditProfile: UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        return 5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -172,9 +193,42 @@ extension EditProfile: UITableViewDelegate,UITableViewDataSource{
         editProfileCell.content.tag = indexPath.row
         editProfileCell.setUp(indexPath.row)
         editProfileCell.content.addTarget(self, action:#selector(self.pushButton(_:forEvent:)), for:.touchUpInside)
-        
         return editProfileCell
     }
     
-    
+    @objc func pushButton(_ sender: UIButton, forEvent event:UIEvent){
+        let row = sender.tag
+        if row == 1 {
+            return
+        }else{
+        let Personality2 = self.storyboard?.instantiateViewController(identifier: "Personality2") as! Personality2
+        Personality2.setUp(row)
+        Personality2.modalTransitionStyle = .crossDissolve
+        self.present(Personality2,animated: true, completion: nil)
+        }
+    }
 }
+
+//
+//値受け
+//
+extension EditProfile:perToEdit {
+    func perToEditText(text: String, row: Int) {
+        switch row {
+        case 0:
+            self.profileData?.region = text
+        case 1:
+            self.profileData?.bodyType = text
+        case 2:
+            self.profileData?.talk = text
+        case 3:
+            self.profileData?.purpose = text
+        default:
+            return
+        }
+        self.tableView.reloadData()
+    }
+
+}
+    
+

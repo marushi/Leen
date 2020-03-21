@@ -12,23 +12,24 @@ import Firebase
 import FirebaseUI
 
 class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
-    
-
+    //部品
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var menuLabel: UILabel!
+    //@IBOutlet weak var menuLabel: UILabel!
     @IBOutlet weak var button1: UIButton!
+    @IBOutlet weak var collectionView: UICollectionView!
     
-    
+    //変数
     var DB = ""
     var ProfileData:MyProfileData?
     
+    //定数
     let userDefaults = UserDefaults.standard
+    let sectionInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0 , right: 0)
+    let itemsPerRow: CGFloat = 3
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
         //異性の相手をビューに表示
         if UserDefaults.standard.integer(forKey: "gender") == 1 {
             DB = Const.MalePath
@@ -42,28 +43,25 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
         tableView.tableFooterView = UIView(frame: .zero)
         tableView.isScrollEnabled = false
         tableView.rowHeight = 50
-        
+        collectionView.delegate = self
+        collectionView.dataSource = self
         //ラベルの設定
-        menuLabel.backgroundColor = .init(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
-        
+        //menuLabel.backgroundColor = .init(red: 235/255, green: 235/255, blue: 235/255, alpha: 1)
         //button設定
         button1.backgroundColor = .white
         button1.layer.cornerRadius = 25
         button1.layer.borderColor = ColorData.darkturquoise.cgColor
         button1.layer.borderWidth = 1
-        
         //セルの登録
         let nib_1 = UINib(nibName: "MyProfileCell", bundle: nil)
         tableView.register(nib_1, forCellReuseIdentifier: "MyProfileCell")
-        
+        collectionView.register(UINib(nibName: "MypageHeader", bundle: nil), forCellWithReuseIdentifier: "MypageHeader")
         //画像を丸くする
         photo.layer.cornerRadius = photo.frame.size.width * 0.5
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
         self.navigationController?.navigationBar.isHidden = true
-        
         // 画像の表示
         photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
         let imageRef = Storage.storage().reference().child(Const.ImagePath).child(UserDefaults.standard.string(forKey: "photoId")!)
@@ -71,7 +69,6 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        
         self.navigationController?.navigationBar.isHidden = false
     }
 
@@ -93,7 +90,7 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
         switch indexPath.row {
         case 0:
             let Identification = self.storyboard?.instantiateViewController(identifier: "Identification") as! Identification
-            self.present(Identification,animated: true,completion: nil)
+            self.navigationController?.pushViewController(Identification, animated: true)
         case 1:
             let Usage = self.storyboard?.instantiateViewController(identifier: "Usage") as! Usage
             self.present(Usage,animated: true,completion: nil)
@@ -111,10 +108,48 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
     //プロフィールを表示
     @IBAction func myprofile(_ sender: Any) {
         let profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
-        HUD.show(.progress)
         profile.profileSetData()
-        HUD.hide { _ in
-            self.navigationController?.pushViewController(profile, animated: true)
+        self.navigationController?.pushViewController(profile, animated: true)
+    }
+}
+
+extension MyProfile:UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
+    //セクションの数
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+        
+    //セルの数
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+            return 3
+    }
+        
+    //セルの中身
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let MypageHeader = collectionView.dequeueReusableCell(withReuseIdentifier: "MypageHeader", for: indexPath) as! MypageHeader
+        MypageHeader.setData(indexPath.row)
+        return MypageHeader
+    }
+    
+    // Screenサイズに応じたセルサイズを返す
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+            
+        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+        let availableWidth = view.frame.width  - paddingSpace
+        let widthPerItem = availableWidth / itemsPerRow
+        return CGSize(width: widthPerItem, height: self.collectionView.frame.height)
+    }
+        
+    //セルを選択した時
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 2:
+            let Purchase = self.storyboard?.instantiateViewController(identifier: "Purchase")
+            let nav = UINavigationController.init(rootViewController: Purchase!)
+            present(nav,animated: true,completion: nil)
+        default:
+            return
         }
     }
+    
 }

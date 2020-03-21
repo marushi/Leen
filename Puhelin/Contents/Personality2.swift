@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
 
@@ -22,11 +23,24 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     var selectString = "どちらでも"
     var selectsArray:[Int] = []
     var selectRow = 0
+    var delegate:perToEdit?
         
     //定数
-    let per0 = ["どちらでも","話す方","聞く方"]
-    let per1 = ["どちらでも","ライトな関係","真剣交際"]
-    let per2 = ["どちらでも","インドア派","アウトドア派"]
+    let talkArray = ["どちらでも","話す方","聞く方"]
+    let purposeArray = ["どちらでも","ライトな関係","真剣交際"]
+    let bodyTypeArray = ["普通","がっしり","細め"]
+    let prefectures = ["北海道", "青森県", "岩手県", "宮城県", "秋田県",
+    "山形県", "福島県", "茨城県", "栃木県", "群馬県",
+    "埼玉県", "千葉県", "東京都", "神奈川県","新潟県",
+    "富山県", "石川県", "福井県", "山梨県", "長野県",
+    "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県",
+    "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県",
+    "鳥取県", "島根県", "岡山県", "広島県", "山口県",
+    "徳島県", "香川県", "愛媛県", "高知県", "福岡県",
+    "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県",
+    "鹿児島県", "沖縄県"]
+    let userDefaults = UserDefaults.standard
+    let uid = UserDefaults.standard.string(forKey: "uid")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +53,11 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         let viewWidth = contentView.frame.width
         cancelButton.frame.size.width = viewWidth / 2
         okButton.frame.size.width = viewWidth / 2
+        self.contentView.layer.cornerRadius = 10
+        
+        //delegateの設定
+        let nav = self.presentingViewController as? UINavigationController
+        delegate = nav?.topViewController as? EditProfile
 
     }
         
@@ -52,24 +71,36 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
             
         switch conditionCase {
         case 0:
+            self.titleLabel.text = "居住地"
             tableView.allowsMultipleSelectionDuringEditing = false
-            cell.titleLabel.text = per0[indexPath.row]
+            cell.titleLabel.text = prefectures[indexPath.row]
             if (selectRow == indexPath.row){
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
             }
         case 1:
+            self.titleLabel.text = "体型"
             tableView.allowsMultipleSelectionDuringEditing = false
-            cell.titleLabel.text = per1[indexPath.row]
+            cell.titleLabel.text = bodyTypeArray[indexPath.row]
             if (selectRow == indexPath.row){
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
             }
         case 2:
+            self.titleLabel.text = "会話"
             tableView.allowsMultipleSelectionDuringEditing = false
-            cell.titleLabel.text = per2[indexPath.row]
+            cell.titleLabel.text = talkArray[indexPath.row]
+            if (selectRow == indexPath.row){
+                cell.accessoryType = .checkmark
+            }else{
+                cell.accessoryType = .none
+            }
+        case 3:
+            self.titleLabel.text = "目的"
+            tableView.allowsMultipleSelectionDuringEditing = false
+            cell.titleLabel.text = purposeArray[indexPath.row]
             if (selectRow == indexPath.row){
                 cell.accessoryType = .checkmark
             }else{
@@ -88,13 +119,16 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
                 switch conditionCase {
                 case 0:
                     selectRow = indexPath.row
-                    selectString = self.per0[selectRow]
+                    selectString = self.prefectures[selectRow]
                 case 1:
                     selectRow = indexPath.row
-                    selectString = self.per1[selectRow]
+                    selectString = self.bodyTypeArray[selectRow]
                 case 2:
                     selectRow = indexPath.row
-                    selectString = self.per2[selectRow]
+                    selectString = self.talkArray[selectRow]
+                case 3:
+                    selectRow = indexPath.row
+                    selectString = self.purposeArray[selectRow]
                 default:
                     return
                 }
@@ -109,37 +143,65 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         func setUp(_ row:Int) {
             switch row {
             case 0:
-                cellNum = per0.count
+                cellNum = prefectures.count
                 conditionCase = 0
-            case 1:
-                cellNum = per1.count
-                conditionCase = 1
             case 2:
-                cellNum = per2.count
+                cellNum = bodyTypeArray.count
+                conditionCase = 1
+            case 3:
+                cellNum = talkArray.count
                 conditionCase = 2
+            case 4:
+                cellNum = purposeArray.count
+                conditionCase = 3
             default:
                 return
             }
         }
         
-        //確定ボタンの処理
-        @IBAction func selectButton(_ sender: Any) {
-            let nav = self.navigationController!
-            let pre = nav.viewControllers[nav.viewControllers.count - 2] as! EditProfile
-            switch conditionCase {
-            case 0:
-                pre.personality0 = selectString
-                pre.selectRow0 = selectRow
-            case 1:
-                pre.personality1 = selectString
-                pre.selectRow1 = selectRow
-            case 2:
-                pre.personality2 = selectString
-                pre.selectRow2 = selectRow
-            default:
-                return
-                }
-            pre.tableView.reloadData()
-            self.navigationController?.popViewController(animated: true)
+       
+    //確定ボタンの処理
+    @IBAction func selectButton(_ sender: Any) {
+        var dataTitle:String!
+        switch conditionCase {
+        case 0:
+            delegate?.perToEditText(text: selectString, row: 0)
+            dataTitle = "region"
+        case 1:
+            delegate?.perToEditText(text: selectString, row: 1)
+            dataTitle = "bodyType"
+        case 2:
+            delegate?.perToEditText(text: selectString, row: 2)
+            dataTitle = "talk"
+        case 3:
+            delegate?.perToEditText(text: selectString, row: 3)
+            dataTitle = "purpose"
+        default:
+            return
         }
+        //保存先を指定
+        var DB = ""
+        if userDefaults.integer(forKey: "gender") == 1 {
+            DB = Const.MalePath
+        }else if userDefaults.integer(forKey: "gender") == 2 {
+            DB = Const.FemalePath
+        }
+        let Ref = Firestore.firestore().collection(DB).document(uid!)
+        Ref.setData([dataTitle:selectString as Any], merge: true)
+        
+        self.dismiss(animated: true, completion: nil)
+
+    }
+    
+    @IBAction func cancel(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+}
+
+//
+//EditProfileへの値渡し
+//
+protocol perToEdit {
+    func perToEditText(text:String,row:Int)
 }

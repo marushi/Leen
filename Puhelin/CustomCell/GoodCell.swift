@@ -30,16 +30,14 @@ class GoodCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        self.backgroundColor = .init(red: 1, green: 248/255, blue: 240/255, alpha: 1)
         
         textView.textContainer.lineBreakMode = .byTruncatingTail
         textView.textContainer.maximumNumberOfLines = 5
         textView.isUserInteractionEnabled = false
-        textView.backgroundColor = .init(red: 1, green: 248/255, blue: 240/255, alpha: 1)
         
         photo.layer.cornerRadius = photo.frame.size.width * 0.1
         
-        goodButton.layer.cornerRadius = 10
+        goodButton.layer.cornerRadius = goodButton.frame.size.height / 2
         goodButton.backgroundColor = UIColor.init(red: 1, green: 0.5, blue: 0.5, alpha: 1)
         goodButton.setTitleColor(.white, for: .normal)
         goodButton.setTitle("話してみる！", for: .normal)

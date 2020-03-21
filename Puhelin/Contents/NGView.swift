@@ -12,6 +12,7 @@ class NGView: UIViewController {
 
     @IBOutlet weak var button: UIButton!
     @IBOutlet weak var modoru: UIButton!
+    @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var vview: UIView!
     
     override func viewDidLoad() {
@@ -19,16 +20,16 @@ class NGView: UIViewController {
 
         button.backgroundColor = .init(red: 1, green: 0.5, blue: 0.5, alpha: 1)
         button.layer.cornerRadius = 10
-        
         modoru.backgroundColor = .init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
         modoru.layer.cornerRadius = 10
-        
+        textView.isEditable = false
         vview.layer.cornerRadius = 10
     }
     
     @IBAction func Button(_ sender: Any) {
         let identification = self.storyboard?.instantiateViewController(identifier: "Identification") as! Identification
-        present(identification,animated: true,completion: nil)
+        let nav = UINavigationController(rootViewController: identification)
+        present(nav,animated: true,completion: nil)
     }
     
     @IBAction func `return`(_ sender: Any) {

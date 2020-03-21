@@ -10,22 +10,14 @@ import UIKit
 
 class editProfileCell: UITableViewCell {
 
+    //部品
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var content: UIButton!
     
-    let titleArray:[String] = ["ニックネーム","居住地","身長","体型","会話","デート","目的"]
+    //定数
+    let titleArray:[String] = ["居住地","身長","体型","会話","目的"]
     
-    var nickName:String?
-    var region:String?
-    var tallNum:String?
-    var bodyType:String?
-    var personality0 = "どちらでも"
-    var personality1 = "どちらでも"
-    var personality2 = "どちらでも"
-    var selectRow0 = 0
-    var selectRow1 = 0
-    var selectRow2 = 0
-    var cellRow:Int?
+    //変数
     var profileData:MyProfileData?
     
     override func awakeFromNib() {
@@ -43,51 +35,27 @@ class editProfileCell: UITableViewCell {
     
     //セットアップ
     func setUp(_ row:Int) {
+        if self.profileData != nil{
         switch row {
         case 0:
-            cellRow = 0
-            content.setTitle(profileData?.name, for: .normal)
+            content.setTitle(profileData?.region, for: .normal)
             title.text = titleArray[0]
         case 1:
-            cellRow = 1
-            content.setTitle(profileData?.region, for: .normal)
+            content.setTitle("\(profileData!.tall!)" + "cm", for: .normal)
             title.text = titleArray[1]
         case 2:
-            cellRow = 2
-            content.titleLabel?.text = tallNum
+            content.setTitle(profileData?.bodyType, for: .normal)
             title.text = titleArray[2]
         case 3:
-            cellRow = 3
-            content.titleLabel?.text = bodyType
+            content.setTitle(profileData?.talk, for: .normal)
             title.text = titleArray[3]
         case 4:
-            cellRow = 4
-            if profileData?.personality0?.count != 1{
-                content.setTitle(profileData?.personality0![1], for: .normal)
-            }else{
-                content.setTitle(profileData?.personality0![0], for: .normal)
-            }
+            content.setTitle(profileData?.purpose, for: .normal)
             title.text = titleArray[4]
-        case 5:
-            cellRow = 5
-            if profileData?.personality0?.count != 1{
-                content.setTitle(profileData?.personality1![1], for: .normal)
-            }else{
-                content.setTitle(profileData?.personality1![0], for: .normal)
-            }
-            title.text = titleArray[5]
-        case 6:
-            cellRow = 6
-            if profileData?.personality0?.count != 1{
-                content.setTitle(profileData?.personality2![1], for: .normal)
-            }else{
-                content.setTitle(profileData?.personality2![0], for: .normal)
-            }
-            title.text = titleArray[6]
 
         default:
             return
-        }
+            }}
         
     }
     

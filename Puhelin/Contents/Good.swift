@@ -13,7 +13,6 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var topLabel: UILabel!
     
     var UserArray: [UserData] = []
     var listener: ListenerRegistration!
@@ -25,12 +24,12 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.navigationController?.navigationBar.barTintColor = .white
+        self.navigationController?.navigationBar.shadowImage = UIImage()
         //tableviewの設定
         tableView.delegate = self
         tableView.dataSource  = self
         tableView.tableFooterView = UIView(frame: .zero)
-
         //セルの登録
         let nib = UINib(nibName: "GoodCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "GoodCell")
@@ -44,7 +43,6 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.isHidden = true
         
         if listener == nil{
         // listener未登録なら、登録してスナップショットを受信する
@@ -59,29 +57,37 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
                 print("DEBUG_PRINT: document取得 \(document.documentID)")
                 let userData = UserData(document: document)
                 return userData
+                }
             }
-            // TableViewの表示を更新する
-            self.tableView.reloadData()
-            self.topLabel.text = String(self.UserArray.count) + "人からいいねが来ています！"
-            //いいねがゼロの場合の画面表示
-            if self.UserArray.count == 0 {
-                self.tableView.isHidden = true
-                self.topLabel.isHidden = true
-                self.setUp()
-            } else {
-                self.tableView.isHidden = false
-                self.topLabel.isHidden = false
-                self.titleLabel.isHidden = true
-                self.textLabel.isHidden = true
-                self.profilebutton.isHidden = true
-            }
-            }
+        }
+        // TableViewの表示を更新する
+        self.tableView.reloadData()
+        //いいねがゼロの場合の画面表示
+        if self.UserArray.count == 0 {
+            self.tableView.isHidden = true
+            self.navigationController?.navigationBar.isHidden = true
+            self.setUp()
+        } else {
+            self.navigationController?.navigationBar.isHidden = false
+            self.navigationController?.navigationBar.shadowImage = UIImage()
+            self.tableView.isHidden = false
+            self.titleLabel.isHidden = true
+            self.textLabel.isHidden = true
+            self.profilebutton.isHidden = true
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        
         self.navigationController?.navigationBar.isHidden = false
+    }
+    
+    //スクロールで隠す
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        } else {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        }
     }
     
     func setUp(){
@@ -92,11 +98,11 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         profilebutton.isHidden = false
         
         // UILabelの設定
-        titleLabel.frame = CGRect(x: (self.view.frame.width - 187)/2, y: 60, width: 187, height: 30) // 位置とサイズの指定
+        titleLabel.frame = CGRect(x: (self.view.frame.width - 187)/2, y: 30, width: 180, height: 30) // 位置とサイズの指定
         titleLabel.textAlignment = NSTextAlignment.center // 横揃えの設定
         titleLabel.text = "いいね！がありません" // テキストの設定
         titleLabel.textColor = UIColor.white // テキストカラーの設定
-        titleLabel.font = UIFont(name: "System", size: 15) // フォントの設定
+        titleLabel.font = UIFont.systemFont(ofSize: 15)// フォントの設定
         titleLabel.backgroundColor = .lightGray
         titleLabel.layer.cornerRadius = 10
         titleLabel.clipsToBounds = true
@@ -107,13 +113,13 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         textLabel.textAlignment = NSTextAlignment.center
         textLabel.text = "プロフィールを充実させていいね！をもらおう！"
         textLabel.textColor = UIColor.black
-        textLabel.font = UIFont(name: "System", size: 14)
+        textLabel.font = UIFont.systemFont(ofSize: 15)
         self.view.addSubview(textLabel)
         
         //UIButtonの設定
         profilebutton.addTarget(self, action: #selector(moovToProfile(_:)), for: UIControl.Event.touchUpInside)
-        profilebutton.frame = CGRect(x: 30, y: self.view.frame.height/2 - 44, width: self.view.frame.width - 60, height: 44)
-        profilebutton.layer.cornerRadius = 10
+        profilebutton.frame = CGRect(x: 30, y: self.view.frame.height/2 - 44, width: self.view.frame.width - 60, height: 60)
+        profilebutton.layer.cornerRadius = profilebutton.frame.size.height / 2
         profilebutton.setTitle("マイプロフィールを確認する", for: .normal)
         profilebutton.backgroundColor = ColorData.salmon
         profilebutton.setTitleColor(.white, for: .normal)
@@ -137,12 +143,13 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     //セルの中身の設定
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let GoodCell = tableView.dequeueReusableCell(withIdentifier: "GoodCell", for: indexPath) as! GoodCell
-        let TopCell = tableView.dequeueReusableCell(withIdentifier: "TopCell")
+        let TopCell = tableView.dequeueReusableCell(withIdentifier: "TopCell") as! cell
         if indexPath.row == 0 {
-            tableView.rowHeight = 50
-            TopCell?.selectionStyle = .none
-            TopCell?.isUserInteractionEnabled = false
-            return TopCell!
+            tableView.rowHeight = 30
+            TopCell.selectionStyle = .none
+            TopCell.isUserInteractionEnabled = false
+            TopCell.titleLabel.text = String(self.UserArray.count) + "人からいいねが来ています！"
+            return TopCell
         }else{
             tableView.rowHeight = 240
             GoodCell.setData(UserArray[indexPath.row - 1])
@@ -154,7 +161,7 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     //セルをタップした時
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let Profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
-        Profile.setData(UserArray[indexPath.row - 1])
+        Profile.setData(UserArray[indexPath.row - 1].uid)
         Profile.ButtonMode = 2
         present(Profile,animated: true,completion: nil)
     }

@@ -17,9 +17,12 @@ class MyProfileData: NSObject {
     var region: String?
     var photoId: String?
     var sentenceMessage: String?
-    var personality0: [String]?
-    var personality1: [String]?
-    var personality2: [String]?
+    var identification: Bool?
+    var signupDate: Date?
+    var tall: Int?
+    var bodyType: String?
+    var purpose: String?
+    var talk: String?
     
     init(document: DocumentSnapshot) {
         self.uid = document.documentID
@@ -29,11 +32,12 @@ class MyProfileData: NSObject {
         self.region = document.get("region") as? String
         self.photoId = document.get("photoId") as? String
         self.sentenceMessage = document.get("sentenceMessage") as? String
-        self.personality0 = document.get("Personality.0") as? [String]
-        self.personality1 = document.get("Personality.1") as? [String]
-        self.personality2 = document.get("Personality.2") as? [String]
-        
-        
+        self.identification = document.get("identification") as? Bool
+        self.signupDate = document.get("signupDate") as? Date
+        self.tall = document.get("tall") as? Int
+        self.bodyType = document.get("bodyType") as? String
+        self.purpose = document.get("purpose") as? String
+        self.talk = document.get("talk") as? String
     }
 }
 

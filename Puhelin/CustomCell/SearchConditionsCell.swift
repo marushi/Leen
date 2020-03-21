@@ -13,9 +13,7 @@ class SearchConditionsCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subLabel: UILabel!
     
-    var personality1:Int! = 0
-    var personality2:Int! = 0
-    var personality3:Int! = 0
+    var searchQuery:searchQueryData?
     
     
     override func awakeFromNib() {
@@ -33,43 +31,39 @@ class SearchConditionsCell: UITableViewCell {
         switch row {
         case 0:
             titleLabel.text = "居住地"
+            if searchQuery?.prefecturs == nil || searchQuery?.prefecturs == [] {
+                subLabel.text = "こだわらない"
+            }else{
+                let Num:Int = searchQuery!.prefecturs!.count - 1
+                var str:String = ""
+                for i in 0...Num {
+                    str = str + "\(searchQuery!.prefecturs![i]),"
+                }
+                self.subLabel.text = str
+            }
         case 1:
             titleLabel.text = "年齢"
+            self.subLabel.text = "こだわらない"
         case 2:
-            titleLabel.text = "いつも話すときは"
-            switch personality1 {
-            case 0:
-                subLabel.text = "こだわらない"
-            case 1:
-                subLabel.text = "話す方"
-            case 2:
-                subLabel.text = "聞く方"
-            default:
-                return
+            titleLabel.text = "会話"
+            if searchQuery?.talk == nil {
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.talk
             }
         case 3:
-            titleLabel.text = "出会いの目的は"
-            switch personality2 {
-            case 0:
-                subLabel.text = "こだわらない"
-            case 1:
-                subLabel.text = "ライトな関係"
-            case 2:
-                subLabel.text = "真剣交際"
-            default:
-                return
+            titleLabel.text = "目的"
+            if searchQuery?.purpose == nil {
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.purpose
             }
         case 4:
-            titleLabel.text = "デートするなら"
-            switch personality3 {
-            case 0:
-                subLabel.text = "こだわらない"
-            case 1:
-                subLabel.text = "インドア派"
-            case 2:
-                subLabel.text = "アウトドア派"
-            default:
-                return
+            titleLabel.text = "体型"
+            if searchQuery?.bodyType == nil {
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.bodyType
             }
         default:
             return

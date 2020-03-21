@@ -8,15 +8,17 @@
 
 import UIKit
 
-class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDelegate {
+class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDelegate ,UINavigationControllerDelegate{
     
     @IBOutlet weak var tableView: UITableView!
     
     //データ用変数
     var cellNum:Int!
     var conditionCase:Int!
-    var selectRow:Int!
-    var selectsArray:[Int] = []
+    var selectRow:String?
+    var selectsArray:[String] = []
+    var searchQuery:searchQueryData?
+    var delegate:searchConditionDelegate?
     
     //データ用定数
     let prefectures = ["こだわらない","北海道", "青森県", "岩手県", "宮城県", "秋田県",
@@ -31,21 +33,61 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     "鹿児島県", "沖縄県"]
     let per1 = ["こだわらない","話す方","聞く方"]
     let per2 = ["こだわらない","ライトな関係","真剣交際"]
-    let per3 = ["こだわらない","インドア派","アウトドア派"]
+    let per3 = ["こだわらない","がっしり","細め"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView(frame: .zero)
-
+        let nav = self.navigationController
+        delegate = nav!.viewControllers[nav!.viewControllers.count - 2] as? SearchCoditions
+        self.navigationController?.delegate = self
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        //タブバー 表示
+        self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    //
+    //
+    //戻る時の処理
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if viewController is SearchCoditions {
+            switch conditionCase {
+            case 0:
+                self.searchQuery?.prefecturs = self.selectsArray
+            case 2:
+                self.searchQuery?.talk = self.selectRow
+            case 3:
+                self.searchQuery?.purpose = self.selectRow
+            case 4:
+                self.searchQuery?.bodyType = self.selectRow
+            default:
+                return
+            }
+            let vc = viewController as! SearchCoditions
+            vc.tableView.reloadData()
+            self.delegate?.searchQueryFunction(self.searchQuery!)
+        }
+    }
+    
+    
+    //
+    //---------------------------Tableviewの設定ーーーーーーーーーーーーー
+    //
+    
+    //セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellNum
     }
     
+    //セルの中身
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! cell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
@@ -54,7 +96,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         case 0:
             tableView.allowsMultipleSelectionDuringEditing = true
             cell.titleLabel.text = prefectures[indexPath.row]
-             if (selectsArray.contains(indexPath.row)){
+             if (selectsArray.contains(prefectures[indexPath.row])){
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
@@ -62,7 +104,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         case 2:
             tableView.allowsMultipleSelectionDuringEditing = false
             cell.titleLabel.text = per1[indexPath.row]
-            if (selectRow == indexPath.row){
+            if (selectRow == per1[indexPath.row]){
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
@@ -70,7 +112,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         case 3:
             tableView.allowsMultipleSelectionDuringEditing = false
             cell.titleLabel.text = per2[indexPath.row]
-            if (selectRow == indexPath.row){
+            if (selectRow == per2[indexPath.row]){
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
@@ -78,7 +120,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         case 4:
             tableView.allowsMultipleSelectionDuringEditing = false
             cell.titleLabel.text = per3[indexPath.row]
-            if (selectRow == indexPath.row){
+            if (selectRow == per3[indexPath.row]){
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
@@ -89,32 +131,36 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         return cell
     }
     
+    //セルを選択した時
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)!
+        //セルのチェックがない時
         if(cell.accessoryType == UITableViewCell.AccessoryType.none){
             cell.accessoryType = .checkmark
             switch conditionCase {
             case 0:
                 if indexPath.row == 0{
-                    selectsArray = [0]
+                    selectsArray = []
                 }else{
-                    self.selectsArray.append(indexPath.row)
+                    self.selectsArray.append(prefectures[indexPath.row])
                 }
             case 2:
-                selectRow = indexPath.row
+                selectRow = per1[indexPath.row]
             case 3:
-                selectRow = indexPath.row
+                selectRow = per2[indexPath.row]
             case 4:
-                selectRow = indexPath.row
+                selectRow = per3[indexPath.row]
             default:
                 return
             }
-        }else{
+        }
+        //セルにチェックがある時
+        else{
             cell.accessoryType = .none
             if conditionCase  == 0 {
                 if indexPath.row != 0 {
-                let  listNumber = selectsArray.filter ({ (n:Int) -> Bool in
-                    if n != indexPath.row{
+                let  listNumber = selectsArray.filter ({ (n:String) -> Bool in
+                    if n != prefectures[indexPath.row]{
                         return true
                     }else{
                         return false
@@ -124,7 +170,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
             }
         }
         if selectsArray == [] {
-            selectsArray = [0]
+            selectsArray = []
         }
         selectsArray.sort{ $0 < $1 }
         tableView.reloadData()
@@ -150,25 +196,8 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
             return
         }
     }
-    
-    //確定ボタンの処理
-    @IBAction func selectButton(_ sender: Any) {
-        let nav = self.navigationController!
-        let pre = nav.viewControllers[nav.viewControllers.count - 2] as! SearchCoditions
-        if selectRow != nil{
-        switch conditionCase {
-        case 0:
-            pre.regionArray = prefectures
-        case 2:
-            pre.personality1 = selectRow
-        case 3:
-            pre.personality2 = selectRow
-        case 4:
-            pre.personality3 = selectRow
-        default:
-            return
-            }}
-        pre.tableView.reloadData()
-        self.navigationController?.popViewController(animated: true)
-    }
+}
+
+protocol searchConditionDelegate {
+    func searchQueryFunction(_ query:searchQueryData)
 }

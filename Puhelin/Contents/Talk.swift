@@ -13,7 +13,6 @@ import SCLAlertView
 class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     
 
-    @IBOutlet weak var changeButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var topLabel: UILabel!
     
@@ -25,24 +24,34 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     var DB = ""
     var viewMode = 0
     let userDefaults = UserDefaults.standard
+    let titleLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.barTintColor = .white
+        self.navigationController?.navigationBar.shadowImage = UIImage()
         
-        //tableviewの設定
+        //部品の設定
         tableView.delegate = self
         tableView.dataSource  = self
         tableView.tableFooterView = UIView(frame: .zero)
-        tableView.rowHeight = 60
+        tableView.rowHeight = 70
+         
+        //その他の設定
+        self.navigationController?.navigationBar.barTintColor = ColorData.darkturquoise
         viewMode = 0
-        
-        //チェンジボタンの設定
-        changeButton.setTitleColor(.white, for: .normal)
-        changeButton.backgroundColor = .init(red: 0, green: 206/255, blue: 209/255, alpha: 1)
-        changeButton.layer.cornerRadius = 10
-        changeButton.setTitle("通話前", for: .normal)
-        
 
+        // タイトルを表示するラベルを作成
+        titleLabel.text = "通話前"
+        titleLabel.textColor = .white
+        titleLabel.frame.size.width = self.view.frame.size.width
+        titleLabel.frame.size.height = (self.navigationController?.navigationBar.frame.size.height)!
+        titleLabel.textAlignment = .center
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(change(_:)))
+        titleLabel.addGestureRecognizer(gestureRecognizer)
+        titleLabel.isUserInteractionEnabled = true
+        navigationItem.titleView = titleLabel
+        
         //セルの登録
         let nib = UINib(nibName: "TalkCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "TalkCell")
@@ -57,11 +66,14 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
-        //下のバーを表示する
-        self.navigationController?.navigationBar.isHidden = true
+        //タブバー
         self.tabBarController?.tabBar.isHidden = false
-        
+        //navigationbarの色
+        if viewMode == 0 {
+            self.navigationController?.navigationBar.barTintColor = ColorData.darkturquoise
+        }else{
+            self.navigationController?.navigationBar.barTintColor = ColorData.salmon
+        }
         //トーク前のデータ取得
         if listener == nil{
         // listener未登録なら、登録してスナップショットを受信する
@@ -77,7 +89,6 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
                 let userData = ChatRoomData(document: document)
                 return userData
                 }
-                
                 // TableViewの表示を更新する
                 self.tableviewSetUp()
             }
@@ -98,56 +109,59 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
                 let userData = ChatRoomData(document: document)
                 return userData
                 }
-            
                 // TableViewの表示を更新する
                 self.tableviewSetUp()
             }
         }
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.navigationBar.barTintColor = nil
+    }
+    
+    //スクロールで隠す
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        } else {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        }
+    }
+    
     //チェンジ処理
-    @IBAction func change(_ sender: Any) {
+    @objc func change(_ sender: Any) {
         
         if viewMode == 0 {
             //モード変更
             viewMode = 1
-            
             //ボタンの変更
-            changeButton.setTitle("通話後", for: .normal)
-            changeButton.backgroundColor = .init(red: 1, green: 127/255, blue: 80/255, alpha: 1)
-            changeButton.setTitleColor(.white, for: .normal)
-            
+            titleLabel.text = "通話後"
+            self.navigationController?.navigationBar.barTintColor = ColorData.salmon
             //tabbarのマーク
             let tabBar = self.tabBarController?.tabBar.items![2]
             tabBar?.image = UIImage(systemName: "bubble.left.and.bubble.right")
             tabBar?.selectedImage = UIImage(systemName: "bubble.left.and.bubble.right")
-            
             //ラベルの文字の変更
             topLabel.text = "自由にチャットをして仲を深めよう！"
-            
+            topLabel.textColor = ColorData.salmon
             //tableviewのリロード
             tableviewSetUp()
         }else{
             //モード変更
             viewMode = 0
-            
             //ボタンの変更
-            changeButton.setTitle("通話前", for: .normal)
-            changeButton.backgroundColor = .init(red: 0, green: 206/255, blue: 209/255, alpha: 1)
-            changeButton.setTitleColor(.white, for: .normal)
-            
+            titleLabel.text = "通話前"
+            self.navigationController?.navigationBar.barTintColor = ColorData.darkturquoise
             //tabbarのマーク
             let tabBar = self.tabBarController?.tabBar.items![2]
             tabBar?.image = UIImage(systemName: "phone")
             tabBar?.selectedImage = UIImage(systemName: "phone")
-            
             //ラベルの文字の変更
             topLabel.text = "チャットで通話する時間を決めよう！"
-            
+            topLabel.textColor = ColorData.darkturquoise
             //tableviewのリロード
             tableviewSetUp()
         }
-        
     }
     
     func tableviewSetUp() {
@@ -163,13 +177,18 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     //セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return SetUserDataArray.count
-        
     }
     
     //セルの中身
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let TalkCell = tableView.dequeueReusableCell(withIdentifier: "TalkCell", for: indexPath) as! TalkCell
         TalkCell.setData(SetUserDataArray[indexPath.row])
+        TalkCell.selectionStyle = .none
+        TalkCell.photo.tag = indexPath.row + 1
+        let avatarImage = TalkCell.viewWithTag(indexPath.row + 1) as! UIImageView
+        let avatarImageTap = UITapGestureRecognizer(target: self, action: #selector(tappedAvatar))
+        avatarImage.isUserInteractionEnabled = true
+        avatarImage.addGestureRecognizer(avatarImageTap)
         return TalkCell
     }
     
@@ -177,6 +196,7 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let ChatRoom = self.storyboard?.instantiateViewController(identifier: "ChatRoom") as! ChatRoom
         ChatRoom.setData(SetUserDataArray[indexPath.row])
+        ChatRoom.chatroommode = viewMode
         navigationController?.pushViewController(ChatRoom, animated: true)
     }
     
@@ -210,6 +230,18 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         alertView.showWarning("本当に削除しますか？", subTitle: "この操作は取り消せません。")
     }
     
+    //画像をタップ
+    @objc func tappedAvatar(_ sender:UITapGestureRecognizer){
+        let image = sender.view as? UIImageView
+        let Profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
+        if userDefaults.integer(forKey: "gender") == 1 {
+            Profile.setData(SetUserDataArray[image!.tag - 1].female!)
+        }else{
+            Profile.setData(SetUserDataArray[image!.tag - 1].male!)
+        }
+        Profile.goodButton.isHidden = true
+        present(Profile,animated: true,completion: nil)
+    }
     
 }
 

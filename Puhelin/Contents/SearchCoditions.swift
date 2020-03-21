@@ -16,28 +16,25 @@ class SearchCoditions: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     let userDefaults = UserDefaults.standard
+    
     var UserArray:[UserData] = []
     var DB = ""
-    
-    //検索条件用の変数
     var region:String!
     var regionArray:[String] = []
     var minAge:Int = 20
     var maxAge:Int = 30
-    var personality1:Int! = 0
-    var personality2:Int! = 0
-    var personality3:Int! = 0
-    
+    var searchQuery:searchQueryData?
+    var delegate:searchConResultDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.hidesBackButton = true
         
         //tableviewの設定
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView(frame: .zero)
         tableView.rowHeight = 50
-        
         
         //セルの登録
         let nib = UINib(nibName: "SearchConditionsCell", bundle: nil)
@@ -46,11 +43,11 @@ class SearchCoditions: UIViewController {
         //UIbuttonの設定
         let button = UIButton(type: .system)
         button.addTarget(self, action: #selector(Button(_:)), for: UIControl.Event.touchUpInside)
-        button.layer.cornerRadius = 10
         button.backgroundColor = ColorData.salmon
         button.setTitleColor(.white, for: .normal)
         button.setTitle("条件変更", for: .normal)
-        button.frame = CGRect(x: (self.view.frame.width - 200) / 2, y: self.view.frame.height - 150, width: 200, height: 40)
+        button.frame = CGRect(x: (self.view.frame.width - 250) / 2, y: self.view.frame.height - 120, width: 250, height: 60)
+        button.layer.cornerRadius = button.frame.size.height / 2
         self.view.addSubview(button)
         
         //異性の相手をビューに表示
@@ -62,20 +59,46 @@ class SearchCoditions: UIViewController {
             UserDefaults.standard.set(DB, forKey: "DB")
         }
         
+        let tab = self.presentingViewController as? TabBarConrtroller
+        let nav = tab?.viewControllers?[0] as? UINavigationController
+        delegate = nav?.topViewController as? Search
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController?.tabBar.isHidden = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        //タブバー 表示
+        self.tabBarController?.tabBar.isHidden = false
+    }
+    
     
     @objc func Button(_ sender: Any) {
         //インジゲーター
         HUD.show(.progress)
-        
-        let Ref = Firestore.firestore().collection(DB)
-            .whereField("region", isEqualTo: region as Any)
-            .whereField("personality.1.\(personality1!)", isEqualTo: true)
-            .whereField("personality.2.\(personality2!)", isEqualTo: true)
-            .whereField("personality.3.\(personality3!)", isEqualTo: true)
-            .whereField("age", isGreaterThanOrEqualTo: minAge)
-            .whereField("age", isLessThanOrEqualTo: maxAge)
-        
+        //データ入れ
+        var Ref = Firestore.firestore().collection(DB).limit(to: 10)
+        let num:Int = searchQuery!.prefecturs!.count - 1
+        if num >= 0 {
+            for i in 0...num {
+                Ref = Ref.whereField("region", isEqualTo: searchQuery?.prefecturs![i] as Any)
+            }
+        }
+        if searchQuery?.age != nil {
+        }
+        if searchQuery?.bodyType != "こだわらない" {
+            Ref = Ref.whereField("bodyType", isEqualTo: searchQuery?.bodyType as Any)
+        }
+        if searchQuery?.talk != "こだわらない" {
+            Ref = Ref.whereField("talk", isEqualTo: searchQuery?.talk as Any)
+        }
+        if searchQuery?.tall != nil {
+        }
+        if searchQuery?.purpose  != "こだわらない" {
+            Ref = Ref.whereField("purpose", isEqualTo: searchQuery?.purpose as Any)
+            
+        }
         Ref.getDocuments() { (querySnapshot, error) in
         if let error = error {
             print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
@@ -87,18 +110,10 @@ class SearchCoditions: UIViewController {
                 let userData = UserData(document: document)
                 return userData
             }
-            //PKHUD
+            self.delegate?.searchConResultFunction(self.UserArray)
+            self.dismiss(animated: true, completion: nil)
             HUD.hide()
-            let nav = self.presentingViewController as! TabBarConrtroller
-            let search = nav.viewControllers![0] as! Search
-            search.UserArray = self.UserArray
-            search.searchCondition = true
-            search.collectionView.reloadData()
-            self.dismiss(animated: true,completion: nil)
         }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
     }
     
     @IBAction func CancelButton(_ sender: Any) {
@@ -109,6 +124,7 @@ class SearchCoditions: UIViewController {
             let alertView = SCLAlertView(appearance: appearance)
             alertView.addButton("さがす画面へ") {
                 //探す画面に戻る
+                self.tabBarController?.tabBar.isHidden = false
                 self.dismiss(animated: true, completion: nil)
             }
             alertView.addButton("戻る",backgroundColor: .lightGray,textColor: .black) {
@@ -130,9 +146,7 @@ extension SearchCoditions:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchConditionsCell") as! SearchConditionsCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
-        cell.personality1 = self.personality1
-        cell.personality2 = self.personality2
-        cell.personality3 = self.personality3
+        cell.searchQuery = self.searchQuery
         cell.setUp(indexPath.row)
         return cell
     }
@@ -143,7 +157,18 @@ extension SearchCoditions:UITableViewDelegate,UITableViewDataSource{
             return
         }else{
             SearchConditions2.setUp(indexPath.row)
+            SearchConditions2.searchQuery = self.searchQuery
         }
         self.navigationController?.pushViewController(SearchConditions2, animated: true)
     }
+}
+
+extension SearchCoditions:searchConditionDelegate{
+    func searchQueryFunction(_ query: searchQueryData) {
+        self.searchQuery = query
+    }
+}
+
+protocol searchConResultDelegate {
+    func searchConResultFunction(_ userData:[UserData])
 }
