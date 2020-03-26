@@ -9,17 +9,10 @@
 import UIKit
 
 class searchQueryData: NSObject {
-    var prefecturs:[String]?
+    var prefecturs:[String]? = []
     var talk:String?
     var bodyType:String?
     var purpose:String?
     var age:Int?
     var tall:Int?
-    
-    override init() {
-        self.prefecturs = []
-        self.talk = "こだわらない"
-        self.bodyType = "こだわらない"
-        self.purpose = "こだわらない"
-    }
 }

@@ -13,6 +13,8 @@ class MypageHeader: UICollectionViewCell {
     @IBOutlet weak var imageview: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var contentLabel: UILabel!
+    
+    let userDefaults = UserDefaults.standard
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -25,7 +27,8 @@ class MypageHeader: UICollectionViewCell {
             imageview.image = UIImage(systemName: "hand.thumbsup.fill")
             imageview.tintColor = ColorData.salmon
             titleLabel.text = "残いいね"
-            contentLabel.text = "10"
+            contentLabel.text = "\(userDefaults.integer(forKey: UserDefaultsData.GoodPoint))"
+            contentLabel.textColor = .black
         case 1:
             imageview.image = UIImage()
             titleLabel.text = "会員ステータス"
@@ -35,7 +38,8 @@ class MypageHeader: UICollectionViewCell {
             imageview.image = UIImage(systemName: "p.circle.fill")
             imageview.tintColor = ColorData.blond
             titleLabel.text = "残ポイント"
-            contentLabel.text = "15"
+            contentLabel.text = "\(userDefaults.integer(forKey: UserDefaultsData.PuhelinPoint))"
+            contentLabel.textColor = .black
         default:
             return
         }

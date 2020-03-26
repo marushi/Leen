@@ -12,11 +12,13 @@ import FirebaseUI
 
 class TalkCell: UITableViewCell {
     
+    @IBOutlet weak var noneReadedLabel: UILabel!
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var textMessage: UITextView!
     
     var jsqMessages:[MessageData]?
+    @objc dynamic var noneReadedMes:Int = 0
     
     
     override func awakeFromNib() {
@@ -27,18 +29,21 @@ class TalkCell: UITableViewCell {
         textMessage.textContainer.maximumNumberOfLines = 2
         textMessage.textContainer.lineBreakMode = .byTruncatingTail
         textMessage.isUserInteractionEnabled = false
+        noneReadedLabel.layer.cornerRadius = noneReadedLabel.frame.size.height / 2
+        noneReadedLabel.clipsToBounds = true
+        noneReadedLabel.isHidden = true
+        photo.layer.cornerRadius = photo.frame.size.width * 0.5
+        self.addObserver(self, forKeyPath: "noneReadedMes", options: [.old,.new], context: nil)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-        photo.layer.cornerRadius = photo.frame.size.width * 0.5
     }
     
     func setData(_ userData: ChatRoomData) {
         var listener: ListenerRegistration!
         var listener2: ListenerRegistration!
+        var listener3: ListenerRegistration!
         var opUserId:String?
         var Users:String?
         
@@ -71,7 +76,7 @@ class TalkCell: UITableViewCell {
         }
         if listener2 == nil{
         // listener未登録なら、登録してスナップショットを受信する
-            let Ref = Firestore.firestore().collection(Const.ChatPath).document(userData.roomId!).collection(Const.MessagePath).order(by: "sendTime",descending: true).limit(to: 1)
+            let Ref = Firestore.firestore().collection(Const.ChatPath).document(userData.roomId!).collection(Const.MessagePath).order(by: "sendTime",descending: true)
             listener2 = Ref.addSnapshotListener() { (querySnapshot, error) in
             if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
@@ -88,6 +93,39 @@ class TalkCell: UITableViewCell {
                     self.textMessage.text = ""
                 }
             }
+        }
+        if listener3 == nil{
+        // listener未登録なら、登録してスナップショットを受信する
+            let Ref = Firestore.firestore().collection(Const.ChatPath).document(userData.roomId!).collection(Const.MessagePath).whereField("readed", isEqualTo: false)
+                listener3 = Ref.addSnapshotListener() { (querySnapshot, error) in
+                    if let error = error {
+                print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
+                return
+                }
+                    if querySnapshot?.count != 0 {
+                        self.noneReadedLabel.isHidden = false
+                        self.noneReadedMes = querySnapshot!.count
+                        self.noneReadedLabel.text = "\(String(describing: self.noneReadedMes))"
+                    }else{
+                        self.noneReadedLabel.isHidden = true
+                        self.noneReadedMes = 0
+                    }
+            }
+        }
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        let preNum:Int = change![.oldKey] as! Int
+        let newNum:Int = change![.newKey] as! Int
+        let plusNum:Int = newNum - preNum
+        if preNum == newNum{
+            return
+        }else{
+            if plusNum < 0 {
+                return
+            }
+            Talk.count += plusNum
+            NotificationCenter.default.post(name: .NewMessage, object: nil)
         }
     }
 }

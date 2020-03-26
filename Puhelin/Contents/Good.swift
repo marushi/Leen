@@ -58,10 +58,16 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
                 let userData = UserData(document: document)
                 return userData
                 }
+                let tabItem = self.tabBarController?.tabBar.items![1]
+                tabItem?.badgeValue = "\(self.UserArray.count)"
+                if self.UserArray.count == 0 || self.UserArray == []{
+                    tabItem?.badgeValue = nil
+                }
+                // TableViewの表示を更新する
+                self.tableView.reloadData()
             }
+            
         }
-        // TableViewの表示を更新する
-        self.tableView.reloadData()
         //いいねがゼロの場合の画面表示
         if self.UserArray.count == 0 {
             self.tableView.isHidden = true
@@ -79,6 +85,7 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = false
+        
     }
     
     //スクロールで隠す
@@ -174,6 +181,9 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
             let userDefaults = UserDefaults.standard
             if userDefaults.integer(forKey: "gender") == 1 {
                 let Ref = ref.collection(Const.MalePath).document(userDefaults.string(forKey: "uid")!).collection(Const.GoodPath).document(UserArray[indexPath.row - 1].uid)
+                Ref.delete(completion: nil)
+            }else{
+                let Ref = ref.collection(Const.FemalePath).document(userDefaults.string(forKey: "uid")!).collection(Const.GoodPath).document(UserArray[indexPath.row - 1].uid)
                 Ref.delete(completion: nil)
             }
             UserArray.remove(at: indexPath.row - 1)

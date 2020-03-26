@@ -87,15 +87,15 @@ class SearchCoditions: UIViewController {
         }
         if searchQuery?.age != nil {
         }
-        if searchQuery?.bodyType != "こだわらない" {
+        if searchQuery?.bodyType != nil {
             Ref = Ref.whereField("bodyType", isEqualTo: searchQuery?.bodyType as Any)
         }
-        if searchQuery?.talk != "こだわらない" {
+        if searchQuery?.talk != nil {
             Ref = Ref.whereField("talk", isEqualTo: searchQuery?.talk as Any)
         }
         if searchQuery?.tall != nil {
         }
-        if searchQuery?.purpose  != "こだわらない" {
+        if searchQuery?.purpose  != nil {
             Ref = Ref.whereField("purpose", isEqualTo: searchQuery?.purpose as Any)
             
         }
@@ -140,7 +140,7 @@ class SearchCoditions: UIViewController {
 extension SearchCoditions:UITableViewDelegate,UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 11
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

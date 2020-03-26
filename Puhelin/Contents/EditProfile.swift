@@ -58,7 +58,7 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView(frame: .zero)
-        tableView.rowHeight = tableView.frame.height / 5
+        tableView.rowHeight = tableView.frame.height / 13
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -183,7 +183,7 @@ extension EditProfile: RSKImageCropViewControllerDelegate {
 //
 extension EditProfile: UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 13
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

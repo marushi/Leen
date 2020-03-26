@@ -46,8 +46,7 @@ class IdentificationUpload: UIViewController {
             let ref = Firestore.firestore().collection("Identifications").document(uid!)
             let dic = ["photoId":photoId,"uid":uid as Any,"date":date,"confirm": false,"gender":gender] as [String : Any]
             ref.setData(dic as [String : Any])
-            
-            
+            //アイデンティフィケイションを申請中（１）に
             UserDefaults.standard.set(1, forKey: "identification")
             UIApplication.shared.windows.first{ $0.isKeyWindow }?.rootViewController?.dismiss(animated: true, completion: nil)
         }

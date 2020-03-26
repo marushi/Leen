@@ -57,6 +57,15 @@ class schedule: UIViewController,UITableViewDelegate,UITableViewDataSource {
         self.delegate?.modalDidFinished(modalText: self.dateArray)
         self.dismiss(animated:false, completion: nil)
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch = touches.first! //このタッチイベントの場合確実に1つ以上タッチ点があるので`!`つけてOKです
+        let location = touch.location(in: self.view) //in: には対象となるビューを入れます
+        let ynum = self.view.frame.size.height - 250
+        if location.y < ynum {
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5

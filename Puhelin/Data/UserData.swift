@@ -23,6 +23,12 @@ class UserData: NSObject {
     var talk: String?
     var identification: Bool?
     var signupDate: Timestamp?
+    var tabako: String?
+    var alchoal: String?
+    var job: String?
+    var income: String?
+    var personality: String?
+    var hobby: String?
     
     init(document: QueryDocumentSnapshot) {
         self.uid = document.documentID
@@ -39,5 +45,11 @@ class UserData: NSObject {
         self.tall = Dic["tall"] as? Int
         self.identification = Dic["identification"] as? Bool
         self.signupDate = Dic["signupDate"] as? Timestamp
+        self.tabako = Dic["tabako"] as? String
+        self.alchoal = Dic["alchoal"] as? String
+        self.job = Dic["job"] as? String
+        self.income = Dic["income"] as? String
+        self.personality = Dic["personality"] as? String
+        self.hobby = Dic["hobby"] as? String
     }
 }

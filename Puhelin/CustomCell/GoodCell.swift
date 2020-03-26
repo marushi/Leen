@@ -30,7 +30,6 @@ class GoodCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        
         textView.textContainer.lineBreakMode = .byTruncatingTail
         textView.textContainer.maximumNumberOfLines = 5
         textView.isUserInteractionEnabled = false

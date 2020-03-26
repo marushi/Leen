@@ -15,9 +15,9 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
     //部品
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var tableView: UITableView!
-    //@IBOutlet weak var menuLabel: UILabel!
-    @IBOutlet weak var button1: UIButton!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var checkLabel: UILabel!
     
     //変数
     var DB = ""
@@ -27,6 +27,7 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
     let userDefaults = UserDefaults.standard
     let sectionInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0 , right: 0)
     let itemsPerRow: CGFloat = 3
+    var identListener :ListenerRegistration!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,15 +44,14 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
         tableView.tableFooterView = UIView(frame: .zero)
         tableView.isScrollEnabled = false
         tableView.rowHeight = 50
+        tableView.addBorder(width: 1, color: .lightGray, position: .bottom)
+        tableView.addBorder(width: 1, color: .lightGray, position: .top)
         collectionView.delegate = self
         collectionView.dataSource = self
-        //ラベルの設定
-        //menuLabel.backgroundColor = .init(red: 235/255, green: 235/255, blue: 235/255, alpha: 1)
-        //button設定
-        button1.backgroundColor = .white
-        button1.layer.cornerRadius = 25
-        button1.layer.borderColor = ColorData.darkturquoise.cgColor
-        button1.layer.borderWidth = 1
+        collectionView.addBorder(width: 1, color: .lightGray, position: .bottom)
+        //checkLabel.layer.cornerRadius = checkLabel.frame.height / 2
+        //checkLabel.layer.borderColor = UIColor.white.cgColor
+        //checkLabel.layer.borderWidth = 3
         //セルの登録
         let nib_1 = UINib(nibName: "MyProfileCell", bundle: nil)
         tableView.register(nib_1, forCellReuseIdentifier: "MyProfileCell")
@@ -62,11 +62,32 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
+        self.tabBarController?.tabBar.isHidden = false
         // 画像の表示
         photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
         let imageRef = Storage.storage().reference().child(Const.ImagePath).child(UserDefaults.standard.string(forKey: "photoId")!)
         photo.sd_setImage(with: imageRef)
+        nameLabel.text = self.userDefaults.string(forKey: UserDefaultsData.name)
+        self.collectionView.reloadData()
+        
+        if userDefaults.integer(forKey: "identification") == 1 {
+            if identListener == nil {
+                let Ref = Firestore.firestore().collection(DB).document(userDefaults.string(forKey: "uid")!)
+                identListener = Ref.addSnapshotListener() { (querySnapshot, error) in
+                    if let error = error {
+                        print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
+                        return
+                    }
+                    let identBool:Bool? = querySnapshot?.get("identification") as? Bool
+                    if identBool == true {
+                        self.userDefaults.set(2, forKey: "identification")
+                        self.identListener.remove()
+                    }
+                }
+            }
+        }
     }
+        
     
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = false
@@ -74,7 +95,7 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
 
     //セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 3
     }
     
     //セルの中身
@@ -97,9 +118,6 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
         case 2:
             let Information = self.storyboard?.instantiateViewController(identifier: "Information") as! Information
             self.present(Information,animated: true,completion: nil)
-        case 3:
-            let Billing = self.storyboard?.instantiateViewController(identifier: "Billing") as! Billing
-            self.present(Billing,animated: true,completion: nil)
         default:
             return
         }
@@ -111,6 +129,13 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
         profile.profileSetData()
         self.navigationController?.pushViewController(profile, animated: true)
     }
+    
+    //広告画面へ
+    @IBAction func promotion(_ sender: Any) {
+        let bil = self.storyboard?.instantiateViewController(identifier: "Billing") as! Billing
+        present(bil,animated: true,completion: nil)
+    }
+    
 }
 
 extension MyProfile:UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
@@ -143,6 +168,11 @@ extension MyProfile:UICollectionViewDelegate,UICollectionViewDataSource,UICollec
     //セルを選択した時
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.row {
+        case 0:
+            let goodpurchase = self.storyboard?.instantiateViewController(identifier: "GoodPointPurchase") as! GoodPointPurchase
+            goodpurchase.modalTransitionStyle = .crossDissolve
+            self.tabBarController?.tabBar.isHidden = true
+            present(goodpurchase,animated: true,completion: nil)
         case 2:
             let Purchase = self.storyboard?.instantiateViewController(identifier: "Purchase")
             let nav = UINavigationController.init(rootViewController: Purchase!)

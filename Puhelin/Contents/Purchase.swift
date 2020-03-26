@@ -13,8 +13,15 @@ class Purchase: UIViewController {
     
     //部品
     @IBOutlet weak var tableView: UITableView!
-
+    @IBOutlet weak var puhelinPointLabel: UILabel!
+    
+    //定数
     let productIdentifiers : [String] = ["goodPt"]
+    let userDefaults = UserDefaults.standard
+    
+    //変数
+    var PuhelinPoint:Int?
+    var PurchaseBool:Bool?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,17 +29,25 @@ class Purchase: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = tableView.frame.height / 4
-        
         // プロダクト情報取得
         fetchProductInformationForIds(productIdentifiers)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = true
+        PuhelinPoint = userDefaults.integer(forKey: UserDefaultsData.PuhelinPoint)
+        puhelinPointLabel.text = "\(PuhelinPoint!)"
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
+        if self.PurchaseBool == true {
+            let tab = self.presentingViewController as? TabBarConrtroller
+            let nav = tab?.viewControllers?[3] as? UINavigationController
+            let pre = nav?.topViewController as? MyProfile
+            pre?.collectionView.reloadData()
+            self.PurchaseBool = false
+        }
     }
 
 }
@@ -56,6 +71,8 @@ extension Purchase:UITableViewDelegate,UITableViewDataSource {
         switch tag {
         case 1:
             startPurchase(productIdentifier: productIdentifiers[0])
+        case 2:
+            return
         default:
             return
         }
@@ -98,12 +115,12 @@ extension Purchase:PurchaseManagerDelegate{
     //課金終了時に呼び出される
     func purchaseManager(_ purchaseManager: PurchaseManager!, didFinishPurchaseWithTransaction transaction: SKPaymentTransaction!, decisionHandler: ((_ complete: Bool) -> Void)!) {
         print("課金終了！！")
-        //---------------------------
-        // コンテンツ解放処理
-        //---------------------------
-        // TODO UserDefault更新
-
-        //コンテンツ解放が終了したら、この処理を実行(true: 課金処理全部完了, false 課金処理中断)
+        self.PurchaseBool = true
+        self.PuhelinPoint! += 10
+        userDefaults.set(PuhelinPoint, forKey: UserDefaultsData.PuhelinPoint)
+        loadView()
+        viewDidLoad()
+        viewWillAppear(true)
         decisionHandler(true)
     }
 

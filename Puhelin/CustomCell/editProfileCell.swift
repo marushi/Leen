@@ -15,7 +15,7 @@ class editProfileCell: UITableViewCell {
     @IBOutlet weak var content: UIButton!
     
     //定数
-    let titleArray:[String] = ["居住地","身長","体型","会話","目的"]
+    let titleArray:[String] = ["ニックネーム","年齢","居住地","身長","体型","職種","年収","性格","会話","目的","お酒","タバコ","好きなこと趣味"]
     
     //変数
     var profileData:MyProfileData?
@@ -41,7 +41,11 @@ class editProfileCell: UITableViewCell {
             content.setTitle(profileData?.region, for: .normal)
             title.text = titleArray[0]
         case 1:
-            content.setTitle("\(profileData!.tall!)" + "cm", for: .normal)
+            if profileData?.tall != nil {
+                content.setTitle("\(profileData!.tall!)" + "cm", for: .normal)
+            }else{
+                content.setTitle("未選択", for: .normal)
+            }
             title.text = titleArray[1]
         case 2:
             content.setTitle(profileData?.bodyType, for: .normal)
@@ -52,6 +56,29 @@ class editProfileCell: UITableViewCell {
         case 4:
             content.setTitle(profileData?.purpose, for: .normal)
             title.text = titleArray[4]
+        case 5:
+            title.text = titleArray[5]
+        
+        case 6:
+            title.text = titleArray[6]
+        
+        case 7:
+            title.text = titleArray[7]
+        
+        case 8:
+            title.text = titleArray[8]
+        
+        case 9:
+            title.text = titleArray[9]
+        
+        case 10:
+            title.text = titleArray[10]
+        
+        case 11:
+            title.text = titleArray[11]
+        
+        case 12:
+            title.text = titleArray[12]
 
         default:
             return

@@ -47,6 +47,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = true
+        self.navigationController!.interactivePopGestureRecognizer!.isEnabled = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {

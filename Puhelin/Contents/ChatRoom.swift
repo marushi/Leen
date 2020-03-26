@@ -13,6 +13,8 @@ import JSQMessagesViewController
 
 class ChatRoom: JSQMessagesViewController {
     
+    @objc dynamic var noneReadedMes:Int = 0
+    
     //定数
     let picker = UIPickerView()
     let datePicker: UIDatePicker = UIDatePicker()
@@ -39,6 +41,7 @@ class ChatRoom: JSQMessagesViewController {
     var pickerText = ""
     var listener: ListenerRegistration!
     var listener2: ListenerRegistration!
+    var listener3: ListenerRegistration!
     var jsqMessages: [JSQMessage] = []
     var roomId: String?
     var OpponentId: String?
@@ -58,6 +61,8 @@ class ChatRoom: JSQMessagesViewController {
         picker.delegate = self
         picker.dataSource = self
         datePicker.datePickerMode = UIDatePicker.Mode.date
+        //オブザーバー
+        self.addObserver(self, forKeyPath: "noneReadedMes", options: [.old,.new], context: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,8 +76,66 @@ class ChatRoom: JSQMessagesViewController {
         }else{
             
         }
+        //既読処理
+        readedFunction()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        self.listener3.remove()
+    }
+    
+    
+    //既読処理
+    func readedFunction(){
+        if listener3 == nil{
+        // listener未登録なら、登録してスナップショットを受信する
+            let Ref = Firestore.firestore().collection(Const.ChatPath).document(roomId!).collection(Const.MessagePath).whereField("readed", isEqualTo: false).whereField("senderId", isEqualTo: OpponentId!)
+            listener3 = Ref.addSnapshotListener() { (querySnapshot, error) in
+                if let error = error {
+                    print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
+                    return
+                }
+                let nonReadMesNum:Int? = querySnapshot?.count
+                let nonReadMesData:[MessageData] = querySnapshot!.documents.map { document in
+                print("DEBUG_PRINT: document取得 \(document.documentID)")
+                let mesData = MessageData(document: document)
+                return mesData
+                }
+                //readedをtrueに
+                if nonReadMesNum != 0 && nonReadMesNum != nil{
+                    self.noneReadedMes = nonReadMesNum!
+                    for i in 0...nonReadMesNum! - 1 {
+                        let ref = Firestore.firestore().collection(Const.ChatPath).document(self.roomId!).collection(Const.MessagePath).document(nonReadMesData[i].id!)
+                        let batch = Firestore.firestore().batch()
+                        batch.updateData(["readed":true], forDocument: ref)
+                        batch.commit()
+                    }
+                    self.noneReadedMes = 0
+                }else{
+                    
+                }
+            }
+        }
+    }
+    
+    //rabbarのバッチの数字を下げる
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        //let preNum:Int = change![.oldKey] as! Int
+        let newNum:Int? = change![.newKey] as? Int
+        //let reduceNum:Int = newNum - preNum
+        if newNum != nil{
+            if newNum! < 0 {
+                return
+            }else{
+                Talk.count -= newNum!
+                NotificationCenter.default.post(name: .NewMessage, object: nil)
+            }
+        }else{
+            return
+        }
+    }
+    
+    //データのセット
     func setData(_ data: ChatRoomData){
         //初期化
         jsqMessages = []
@@ -225,7 +288,8 @@ class ChatRoom: JSQMessagesViewController {
         let Dic = ["senderId": senderId as Any
             ,"displayName": senderDisplayName as Any
             ,"text": text as Any
-            ,"sendTime": date as Any] as [String:Any]
+            ,"sendTime": date as Any
+            ,"readed": false] as [String:Any]
         Ref.setData(Dic)
         //textFieldをクリアする
         self.inputToolbar.contentView.textView.text = ""

@@ -10,12 +10,14 @@ import UIKit
 import Firebase
 
 class MessageData: NSObject {
+    var id:String?
     var senderId: String?
     var displayName: String?
     var text: String?
     
     
     init(document: QueryDocumentSnapshot) {
+        self.id = document.documentID
         let Dic = document.data()
         self.senderId = Dic["senderId"] as? String
         self.displayName = Dic["displayName"] as? String

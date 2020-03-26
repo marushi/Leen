@@ -10,11 +10,12 @@ import UIKit
 import Firebase
 import SCLAlertView
 
-class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
+class Talk: UIViewController,UITableViewDelegate,UITableViewDataSource{
     
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var topLabel: UILabel!
+    @objc dynamic static var count:Int = 0
     
     var SetUserDataArray: [ChatRoomData] = []
     var UserArray: [ChatRoomData] = []
@@ -23,6 +24,7 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     var listener2: ListenerRegistration!
     var DB = ""
     var viewMode = 0
+    
     let userDefaults = UserDefaults.standard
     let titleLabel = UILabel()
     
@@ -35,7 +37,7 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         tableView.delegate = self
         tableView.dataSource  = self
         tableView.tableFooterView = UIView(frame: .zero)
-        tableView.rowHeight = 70
+        tableView.rowHeight = 75
          
         //その他の設定
         self.navigationController?.navigationBar.barTintColor = ColorData.darkturquoise
@@ -63,6 +65,8 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
             DB = Const.MalePath
         }
         
+        //タブバー のバッチの設定
+        NotificationCenter.default.addObserver(self, selector: #selector(TabbarButch), name: .NewMessage, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -117,6 +121,7 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.navigationBar.barTintColor = nil
+        print(Talk.count)
     }
     
     //スクロールで隠す
@@ -243,5 +248,13 @@ class Talk: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         present(Profile,animated: true,completion: nil)
     }
     
+    //バッチ処理
+    @objc func TabbarButch(){
+        let tabItem = self.tabBarController?.tabBar.items![2]
+        tabItem?.badgeValue = "\(Talk.count)"
+        if Talk.count <= 0 {
+            tabItem?.badgeValue = nil
+        }
+    }
 }
 

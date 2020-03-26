@@ -16,8 +16,9 @@ class MyProfileCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        photo.tintColor = ColorData.darkturquoise
-        titleLabel.textColor = .lightGray
+        photo.tintColor = .darkGray
+        titleLabel.textColor = .darkGray
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -30,16 +31,13 @@ class MyProfileCell: UITableViewCell {
         
         switch row {
         case 0:
-            photo.image = UIImage(systemName: "folder")
+            photo.image = UIImage(systemName: "folder.circle")
             titleLabel.text = "本人確認"
         case 1:
-            photo.image = UIImage(systemName: "tag")
+            photo.image = UIImage(systemName: "tag.circle")
             titleLabel.text = "使い方"
         case 2:
-            photo.image = UIImage(systemName: "yensign.circle")
-            titleLabel.text = "コイン購入"
-        case 3:
-            photo.image = UIImage(systemName: "info")
+            photo.image = UIImage(systemName: "info.circle")
             titleLabel.text = "お問い合わせ"
         default:
             return

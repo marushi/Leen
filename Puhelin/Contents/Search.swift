@@ -34,12 +34,11 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
         //コレクションビューの設定
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.showsHorizontalScrollIndicator = false
         //ボタンの設定
         conditionButton.backgroundColor = ColorData.whitesmoke
         conditionButton.layer.cornerRadius = 15
         searchCondition = false
-        //self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: ColorData.salmon]
+        
         //コレクションセルを登録
         collectionView.register(UINib(nibName: "SearchCell", bundle: nil), forCellWithReuseIdentifier: "SearchCell")
         //異性の相手をビューに表示
@@ -131,7 +130,7 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
     
     // セルの行間の設定
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 30
+        return 10
     }
     
     //セルを選択した時

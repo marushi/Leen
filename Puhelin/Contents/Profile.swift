@@ -11,22 +11,6 @@ import PKHUD
 import Firebase
 import FirebaseUI
 
-extension Profile:UITableViewDelegate,UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ProfileCell") as! ProfileCell
-        cell.profileData = profileData
-        cell.setUp(indexPath.row)
-        cell.selectionStyle = UITableViewCell.SelectionStyle.none
-        return cell
-    }
-    
-    
-}
-
 class Profile: UIViewController {
     
     @IBOutlet weak var photo: UIImageView!
@@ -38,10 +22,13 @@ class Profile: UIViewController {
     @IBOutlet weak var view3: UIView!
     @IBOutlet weak var view4: UIView!
     @IBOutlet weak var weekLabel: UIButton!
+    @IBOutlet weak var collectionView: UICollectionView!
     
     //定数
     let goodButton = UIButton(type: .system)
     let userDefaults = UserDefaults.standard
+    let sectionInsets = UIEdgeInsets(top: 0, left: 1, bottom: 0 , right: 0)
+    let itemsPerRow: CGFloat = 4
 
     //変数
     var ButtonMode:Int?
@@ -60,11 +47,17 @@ class Profile: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.layer.cornerRadius = 10
-        tableView.rowHeight = 60
+        tableView.rowHeight = 40
         introTextView.isUserInteractionEnabled = false
         weekLabel.layer.cornerRadius = weekLabel.frame.size.height / 2
         weekLabel.isEnabled = false
         weekLabel.adjustsImageWhenDisabled = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.addBorder(width: 1, color: .lightGray, position: .top)
+        collectionView.layer.cornerRadius = 10
+        collectionView.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
+        collectionView.isUserInteractionEnabled = false
         
         self.view.backgroundColor = .init(red: 1, green: 0.9, blue: 0.9, alpha: 1)
         self.view2.backgroundColor = .init(red: 1, green: 0.9, blue: 0.9, alpha: 1)
@@ -82,6 +75,7 @@ class Profile: UIViewController {
             self.tabBarController?.tabBar.isHidden = true
             self.navigationController!.navigationBar.setBackgroundImage(UIImage(), for: .default)
             self.navigationController!.navigationBar.shadowImage = UIImage()
+            self.navigationController!.interactivePopGestureRecognizer!.isEnabled = true
         }
         //ボタンの設定
         goodButton.addTarget(self, action: #selector(Button(_:)), for: UIControl.Event.touchUpInside)
@@ -99,6 +93,7 @@ class Profile: UIViewController {
             self.tabBarController?.tabBar.isHidden = false
             self.navigationController!.navigationBar.setBackgroundImage(nil, for: .default)
             self.navigationController!.navigationBar.shadowImage = nil
+            self.navigationController!.interactivePopGestureRecognizer!.isEnabled = false
         }
     }
     
@@ -186,6 +181,7 @@ class Profile: UIViewController {
             self.introTextView.text = intro!
             self.sentenceMessage.text = sentenceMes!
             self.tableView.reloadData()
+            self.collectionView.reloadData()
         }
         
         ButtonMode = 3
@@ -194,9 +190,15 @@ class Profile: UIViewController {
     //イイネボタンの処理
     @objc func Button(_ sender: Any) {
         if ButtonMode == 1{
+            //ルーム作成
             let Ref = Firestore.firestore().collection(UserDefaults.standard.string(forKey: "DB")!).document(opUserId!).collection(Const.GoodPath).document(userDefaults.string(forKey: "uid")!)
             let Dic = ["uid": userDefaults.string(forKey: "uid")!] as [String: Any]
                 Ref.setData(Dic)
+            //--------ポイント処理-------
+            var goodpoint = self.userDefaults.integer(forKey: UserDefaultsData.GoodPoint)
+            goodpoint -= 1
+            self.userDefaults.set(goodpoint, forKey: UserDefaultsData.GoodPoint)
+            //-------------------------
                 self.dismiss(animated: true, completion: nil)
         }else if ButtonMode == 2 {
             //HUD
@@ -208,6 +210,13 @@ class Profile: UIViewController {
                 let DIc = ["1": userDefaults.string(forKey: "uid")!,"2": opUserId!]
                     as [String : Any]
                 ChatRef.setData(DIc)
+                let MesRef = ChatRef.collection(Const.MessagePath).document()
+                let Dic = ["senderId": userDefaults.string(forKey: UserDefaultsData.uid) as Any
+                    ,"displayName": userDefaults.string(forKey: UserDefaultsData.name) as Any
+                    ,"text": "いいねありがとうございます！"
+                    ,"sendTime": Date() as Any] as [String:Any]
+                MesRef.setData(Dic)
+                
                 let ref = Firestore.firestore().collection(Const.MalePath).document(userDefaults.string(forKey: "uid")!).collection(Const.GoodPath).document(opUserId!)
                 ref.delete()
             
@@ -225,4 +234,48 @@ class Profile: UIViewController {
             self.navigationController?.pushViewController(EditProfile, animated: true)
         }
     }
+}
+
+extension Profile : UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout{
+    //セクションの数
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    //セルの数
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+            return 4
+    }
+    
+    //セルの中身
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! ProfileHeaderCell
+        cell.isUserInteractionEnabled = false
+        cell.data = self.profileData
+        cell.setData(indexPath.row)
+        return cell
+    }
+    // Screenサイズに応じたセルサイズを返す
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+        let availableWidth = collectionView.frame.width  - paddingSpace
+        let widthPerItem = availableWidth / itemsPerRow
+        return CGSize(width: widthPerItem, height: collectionView.frame.size.height)
+    }
+}
+extension Profile:UITableViewDelegate,UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 13
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ProfileCell") as! ProfileCell
+        cell.profileData = profileData
+        cell.setUp(indexPath.row)
+        cell.selectionStyle = UITableViewCell.SelectionStyle.none
+        return cell
+    }
+    
+    
 }

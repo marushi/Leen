@@ -9,17 +9,17 @@
 import UIKit
 import StoreKit
 import Firebase
-import FBSDKCoreKit
+import GoogleMobileAds
+import FBSDKLoginKit
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate,PurchaseManagerDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
 
     var window: UIWindow?
     var globalDateText:[String?] = []
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
         //---------------------------------------
         // アプリ内課金設定
         //---------------------------------------
@@ -27,8 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate,PurchaseManagerDelegate {
         PurchaseManager.sharedManager().delegate = self
         // オブザーバー登録
         SKPaymentQueue.default().add(PurchaseManager.sharedManager())
-        
         FirebaseApp.configure()
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         return true
     }
@@ -78,4 +78,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate,PurchaseManagerDelegate {
         //////////////// ▲▲ 追加 ▲▲ ////////////////
     }
 }
-

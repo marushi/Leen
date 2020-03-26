@@ -85,10 +85,19 @@ class Confirm: UIViewController {
             ,"region": userDefaults.string(forKey: "region")!
             ,"intro": self.introText
             ,"sentenceMessage": self.sentenceMes
-            ,"Personality":
-            ["0":["どちらでも"]
-            ,"1":["どちらでも"]
-            ,"2":["どちらでも"]]] as [String: Any]
+            ,"talk": "未選択"
+            ,"tall": "未選択"
+            ,"bodyType": "未選択"
+            ,"purpose": "未選択"
+            ,"signupDate": Date()
+            ,"tabako": "未選択"
+            ,"alchoal": "未選択"
+            ,"job": "未選択"
+            ,"income": "未選択"
+            ,"personality": "未選択"
+            ,"hobby": "未選択"
+            ,"identification":false
+            ] as [String: Any]
         Ref.setData(Dic)
         
         //ユーザーデフォルト処理

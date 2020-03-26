@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -39,6 +39,8 @@
 	<string>879394149178941</string>
 	<key>FacebookDisplayName</key>
 	<string>Puhelin</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-5632492008797729~3193498497</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -58,6 +60,10 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>カメラの許可をください。</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>マイクの許可をください。</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -101,9 +107,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>マイクの許可をください。</string>
-	<key>NSCameraUsageDescription</key>
-	<string>カメラの許可をください。</string>
 </dict>
 </plist>
