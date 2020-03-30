@@ -17,11 +17,14 @@ class SearchCell: UICollectionViewCell {
     @IBOutlet weak var view: UIView!
     @IBOutlet weak var tagImage: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var identLabel: UILabel!
+    @IBOutlet weak var phoneimage: UIImageView!
+    @IBOutlet weak var phoneLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         //アウトレットの設定
-        photo.layer.cornerRadius = 20
+        photo.layer.cornerRadius = 10
         sentenceMes.textContainerInset = UIEdgeInsets.zero
         sentenceMes.textContainer.lineFragmentPadding = 0
         sentenceMes.isUserInteractionEnabled = false
@@ -29,6 +32,12 @@ class SearchCell: UICollectionViewCell {
         dateLabel.layer.cornerRadius = 10
         dateLabel.clipsToBounds = true
         dateLabel.layer.maskedCorners = [.layerMaxXMinYCorner,.layerMaxXMaxYCorner]
+        identLabel.clipsToBounds = true
+        identLabel.layer.cornerRadius = 10
+        identLabel.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
+        identLabel.isHidden = true
+        phoneLabel.isHidden = true
+        phoneimage.isHidden = true
     }
     
     //データセット
@@ -46,8 +55,14 @@ class SearchCell: UICollectionViewCell {
         //本人確認済みかどうか
         if userData.identification == true {
             tagImage.tintColor = ColorData.darkturquoise
+            identLabel.isHidden = false
+            phoneimage.isHidden = false
+            phoneLabel.isHidden = false
         } else {
             tagImage.tintColor = ColorData.naplesYellow
+            identLabel.isHidden = true
+            phoneimage.isHidden = true
+            phoneLabel.isHidden = true
         }
         
         let weekAgo = Date(timeIntervalSinceNow: -60*60*24*4)

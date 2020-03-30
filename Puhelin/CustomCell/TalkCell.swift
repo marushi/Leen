@@ -96,7 +96,7 @@ class TalkCell: UITableViewCell {
         }
         if listener3 == nil{
         // listener未登録なら、登録してスナップショットを受信する
-            let Ref = Firestore.firestore().collection(Const.ChatPath).document(userData.roomId!).collection(Const.MessagePath).whereField("readed", isEqualTo: false)
+            let Ref = Firestore.firestore().collection(Const.ChatPath).document(userData.roomId!).collection(Const.MessagePath).whereField("readed", isEqualTo: false).whereField("senderId", isEqualTo: opUserId!)
                 listener3 = Ref.addSnapshotListener() { (querySnapshot, error) in
                     if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")

@@ -11,6 +11,7 @@ import StoreKit
 import Firebase
 import GoogleMobileAds
 import FBSDKLoginKit
+import FirebaseMessaging
 import UserNotifications
 
 @UIApplicationMain
@@ -30,6 +31,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
         FirebaseApp.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+        //---------------------------------------
+        //通知設定
+        Messaging.messaging().delegate = self
+        if #available(iOS 10.0, *) {
+            // For iOS 10 display notification (sent via APNS)
+            UNUserNotificationCenter.current().delegate = self
+
+            let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+            UNUserNotificationCenter.current().requestAuthorization(
+                options: authOptions,
+                completionHandler: {_, _ in })
+        } else {
+            let settings: UIUserNotificationSettings =
+                UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
+            application.registerUserNotificationSettings(settings)
+        }
+
+        application.registerForRemoteNotifications()
         return true
     }
     
@@ -41,6 +60,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
     
     //FBログイン
     func applicationDidBecomeActive(_ application: UIApplication) {
+        //通知を０に
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        var DB:String!
+        if UserDefaults.standard.integer(forKey: "gender") == 1 {
+            DB = Const.MalePath
+        }else{
+            DB = Const.FemalePath
+        }
+        let dataDict:[String:Any] = ["newMesNum":0]
+        let FIRref = Firestore.firestore().collection(DB).document(Auth.auth().currentUser!.uid)
+        FIRref.setData(dataDict,merge: true)
+        
         AppEvents.activateApp()
     }
     
@@ -77,4 +108,87 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
         SKPaymentQueue.default().remove(PurchaseManager.sharedManager());
         //////////////// ▲▲ 追加 ▲▲ ////////////////
     }
+    
+    //-------------------------
+    //通知処理
+    // クラス内の他のdelegateメソッドと同じ階層に追記
+    //優先される
+     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
+        // Print message ID.
+        if let messageID = userInfo["gcm.message_id"] {
+            print("Message ID: \(messageID)")
+        }
+
+        // Print full message.
+        print(userInfo)
+    }
+
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // Print message ID.
+        if let messageID = userInfo["gcm.message_id"] {
+            print("Message ID: \(messageID)")
+        }
+
+        // Print full message.
+        print(userInfo)
+
+        completionHandler(UIBackgroundFetchResult.newData)
+    }
+}
+
+//----------------------------
+//通知処理
+@available(iOS 10, *)
+extension AppDelegate : UNUserNotificationCenterDelegate {
+   func userNotificationCenter(_ center: UNUserNotificationCenter,
+                               willPresent notification: UNNotification,
+                               withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+       let userInfo = notification.request.content.userInfo
+
+       if let messageID = userInfo["gcm.message_id"] {
+           print("Message ID: \(messageID)")
+       }
+
+       print(userInfo)
+
+       completionHandler([])
+   }
+
+   func userNotificationCenter(_ center: UNUserNotificationCenter,
+                               didReceive response: UNNotificationResponse,
+                               withCompletionHandler completionHandler: @escaping () -> Void) {
+       let userInfo = response.notification.request.content.userInfo
+       if let messageID = userInfo["gcm.message_id"] {
+           print("Message ID: \(messageID)")
+       }
+
+       print(userInfo)
+
+       completionHandler()
+   }
+}
+
+//通知トークンの処理
+extension AppDelegate:MessagingDelegate {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        print("Firebase registration token: \(fcmToken)")
+        let uid = Auth.auth().currentUser?.uid
+        if uid == nil {
+            return
+        }else{
+            let dataDict:[String: String] = ["token": fcmToken]
+            NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
+            var DB:String!
+            if UserDefaults.standard.integer(forKey: "gender") == 1 {
+                DB = Const.MalePath
+            }else{
+                DB = Const.FemalePath
+            }
+            let FIRref = Firestore.firestore().collection(DB).document(Auth.auth().currentUser!.uid)
+            FIRref.setData(dataDict,merge: true)
+            UserDefaults.standard.set(fcmToken, forKey: "token")
+        }
+    }
+
 }

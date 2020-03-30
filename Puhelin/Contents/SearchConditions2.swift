@@ -31,10 +31,14 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     "徳島県", "香川県", "愛媛県", "高知県", "福岡県",
     "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県",
     "鹿児島県", "沖縄県"]
-    let per1 = ["こだわらない","話す方","聞く方"]
-    let per2 = ["こだわらない","ライトな関係","真剣交際"]
-    let per3 = ["こだわらない","がっしり","細め"]
-    
+    let bodyType = ["こだわらない","ぽっちゃり","普通","細め"]
+    let job = ["こだわらない","営業","会社員","医師","弁護士"]
+    let income = ["こだわらない","200万","300万","1億以上"]
+    let personality = ["こだわらない","マイペース","明るい"]
+    let talk = ["こだわらない","おしゃべり","話す方","聞く方","聞き上手"]
+    let purpose = ["こだわらない","異性の友達","ライトな関係","真剣交際"]
+    let alchoal = ["こだわらない","ほぼ毎日","週２〜３回","ときどき","たまに","あまり飲まない","飲めない"]
+    let tabako = ["こだわらない","吸わない","ごくたまに","飲みの時だけ","1日に数本","1日に一箱"]
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
@@ -61,14 +65,24 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         if viewController is SearchCoditions {
             switch conditionCase {
-            case 0:
+            case 1:
                 self.searchQuery?.prefecturs = self.selectsArray
             case 2:
-                self.searchQuery?.talk = self.selectRow
-            case 3:
-                self.searchQuery?.purpose = self.selectRow
-            case 4:
                 self.searchQuery?.bodyType = self.selectRow
+            case 3:
+                self.searchQuery?.job = self.selectRow
+            case 4:
+                self.searchQuery?.income = self.selectRow
+            case 5:
+                self.searchQuery?.personality = self.selectRow
+            case 6:
+                self.searchQuery?.talk = self.selectRow
+            case 7:
+                self.searchQuery?.purpose = self.selectRow
+            case 8:
+                self.searchQuery?.alchoal = self.selectRow
+            case 9:
+                self.searchQuery?.tabako = self.selectRow
             default:
                 return
             }
@@ -94,7 +108,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         
         switch conditionCase {
-        case 0:
+        case 1:
             tableView.allowsMultipleSelectionDuringEditing = true
             cell.titleLabel.text = prefectures[indexPath.row]
              if (selectsArray.contains(prefectures[indexPath.row])){
@@ -104,24 +118,64 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
             }
         case 2:
             tableView.allowsMultipleSelectionDuringEditing = false
-            cell.titleLabel.text = per1[indexPath.row]
-            if (selectRow == per1[indexPath.row]){
+            cell.titleLabel.text = bodyType[indexPath.row]
+            if (selectRow == bodyType[indexPath.row]){
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
             }
         case 3:
             tableView.allowsMultipleSelectionDuringEditing = false
-            cell.titleLabel.text = per2[indexPath.row]
-            if (selectRow == per2[indexPath.row]){
+            cell.titleLabel.text = job[indexPath.row]
+            if (selectRow == job[indexPath.row]){
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
             }
         case 4:
             tableView.allowsMultipleSelectionDuringEditing = false
-            cell.titleLabel.text = per3[indexPath.row]
-            if (selectRow == per3[indexPath.row]){
+            cell.titleLabel.text = income[indexPath.row]
+            if (selectRow == income[indexPath.row]){
+                cell.accessoryType = .checkmark
+            }else{
+                cell.accessoryType = .none
+            }
+        case 5:
+            tableView.allowsMultipleSelectionDuringEditing = false
+            cell.titleLabel.text = personality[indexPath.row]
+            if (selectRow == personality[indexPath.row]){
+                cell.accessoryType = .checkmark
+            }else{
+                cell.accessoryType = .none
+            }
+        case 6:
+            tableView.allowsMultipleSelectionDuringEditing = false
+            cell.titleLabel.text = talk[indexPath.row]
+            if (selectRow == talk[indexPath.row]){
+                cell.accessoryType = .checkmark
+            }else{
+                cell.accessoryType = .none
+            }
+        case 7:
+            tableView.allowsMultipleSelectionDuringEditing = false
+            cell.titleLabel.text = purpose[indexPath.row]
+            if (selectRow == purpose[indexPath.row]){
+                cell.accessoryType = .checkmark
+            }else{
+                cell.accessoryType = .none
+            }
+        case 8:
+            tableView.allowsMultipleSelectionDuringEditing = false
+            cell.titleLabel.text = alchoal[indexPath.row]
+            if (selectRow == alchoal[indexPath.row]){
+                cell.accessoryType = .checkmark
+            }else{
+                cell.accessoryType = .none
+            }
+        case 9:
+            tableView.allowsMultipleSelectionDuringEditing = false
+            cell.titleLabel.text = tabako[indexPath.row]
+            if (selectRow == tabako[indexPath.row]){
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
@@ -139,18 +193,28 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         if(cell.accessoryType == UITableViewCell.AccessoryType.none){
             cell.accessoryType = .checkmark
             switch conditionCase {
-            case 0:
+            case 1:
                 if indexPath.row == 0{
                     selectsArray = []
                 }else{
                     self.selectsArray.append(prefectures[indexPath.row])
                 }
             case 2:
-                selectRow = per1[indexPath.row]
+                selectRow = bodyType[indexPath.row]
             case 3:
-                selectRow = per2[indexPath.row]
+                selectRow = job[indexPath.row]
             case 4:
-                selectRow = per3[indexPath.row]
+                selectRow = income[indexPath.row]
+            case 5:
+                selectRow = personality[indexPath.row]
+            case 6:
+                selectRow = talk[indexPath.row]
+            case 7:
+                selectRow = purpose[indexPath.row]
+            case 8:
+                selectRow = alchoal[indexPath.row]
+            case 9:
+                selectRow = tabako[indexPath.row]
             default:
                 return
             }
@@ -175,7 +239,6 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         }
         selectsArray.sort{ $0 < $1 }
         tableView.reloadData()
-        print(selectsArray)
         
     }
     
@@ -183,16 +246,32 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         switch row {
         case 0:
             cellNum = prefectures.count
-            conditionCase = 0
-        case 2:
-            cellNum = per1.count
-            conditionCase = 2
+            conditionCase = 1
         case 3:
-            cellNum = per2.count
-            conditionCase = 3
+            cellNum = bodyType.count
+            conditionCase = 2
         case 4:
-            cellNum = per3.count
+            cellNum = job.count
+            conditionCase = 3
+        case 5:
+            cellNum = income.count
             conditionCase = 4
+        case 6:
+            cellNum = personality.count
+            conditionCase = 5
+        case 7:
+            cellNum = talk.count
+            conditionCase = 6
+        case 8:
+            cellNum = purpose.count
+            conditionCase = 7
+        case 9:
+            cellNum = alchoal.count
+            conditionCase = 8
+        case 10:
+            cellNum = tabako.count
+            conditionCase = 9
+            
         default:
             return
         }

@@ -41,7 +41,6 @@ class GoodPointPurchase: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
-        print("viewwilldisappear")
         presentingViewController?.beginAppearanceTransition(true, animated: animated)
         presentingViewController?.endAppearanceTransition()
     }

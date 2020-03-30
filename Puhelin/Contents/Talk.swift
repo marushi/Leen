@@ -14,7 +14,13 @@ class Talk: UIViewController,UITableViewDelegate,UITableViewDataSource{
     
 
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var topLabel: UILabel!
+    @IBOutlet weak var adView: UIView!
+    @IBOutlet weak var textView1: UITextView!
+    @IBOutlet weak var textView2: UITextView!
+    @IBOutlet weak var bubbleImage: UIImageView!
+    @IBOutlet weak var textLabel1: UILabel!
+    @IBOutlet weak var CheckButton: UIButton!
+    
     @objc dynamic static var count:Int = 0
     
     var SetUserDataArray: [ChatRoomData] = []
@@ -38,7 +44,16 @@ class Talk: UIViewController,UITableViewDelegate,UITableViewDataSource{
         tableView.dataSource  = self
         tableView.tableFooterView = UIView(frame: .zero)
         tableView.rowHeight = 75
-         
+        CheckButton.layer.cornerRadius = CheckButton.frame.size.height / 2
+        CheckButton.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        CheckButton.layer.shadowColor = UIColor.black.cgColor
+        CheckButton.layer.shadowOpacity = 0.6
+        CheckButton.layer.shadowRadius = 1
+        bubbleImage.isHidden = true
+        textView1.isHidden = true
+        textView2.isHidden = true
+        textLabel1.isHidden = true
+        CheckButton.isHidden = true
         //その他の設定
         self.navigationController?.navigationBar.barTintColor = ColorData.darkturquoise
         viewMode = 0
@@ -95,6 +110,23 @@ class Talk: UIViewController,UITableViewDelegate,UITableViewDataSource{
                 }
                 // TableViewの表示を更新する
                 self.tableviewSetUp()
+                if self.UserArray.count == 0 {
+                    self.tableView.isHidden = true
+                    self.adView.isHidden = true
+                    self.bubbleImage.isHidden = false
+                    self.textView1.isHidden = false
+                    self.textView2.isHidden = false
+                    self.textLabel1.isHidden = false
+                    self.CheckButton.isHidden = false
+                }else{
+                    self.tableView.isHidden = false
+                    self.adView.isHidden = false
+                    self.bubbleImage.isHidden = true
+                    self.textView1.isHidden = true
+                    self.textView2.isHidden = true
+                    self.textLabel1.isHidden = true
+                    self.CheckButton.isHidden = true
+                }
             }
         }
         
@@ -121,7 +153,11 @@ class Talk: UIViewController,UITableViewDelegate,UITableViewDataSource{
     
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.navigationBar.barTintColor = nil
-        print(Talk.count)
+    }
+    
+    @IBAction func moveToAd(_ sender: Any) {
+        let Billing = self.storyboard?.instantiateViewController(identifier: "Billing") as! Billing
+        present(Billing,animated: true,completion: nil)
     }
     
     //スクロールで隠す
@@ -146,9 +182,8 @@ class Talk: UIViewController,UITableViewDelegate,UITableViewDataSource{
             let tabBar = self.tabBarController?.tabBar.items![2]
             tabBar?.image = UIImage(systemName: "bubble.left.and.bubble.right")
             tabBar?.selectedImage = UIImage(systemName: "bubble.left.and.bubble.right")
-            //ラベルの文字の変更
-            topLabel.text = "自由にチャットをして仲を深めよう！"
-            topLabel.textColor = ColorData.salmon
+            //広告の非表示
+            //adView.isHidden = true
             //tableviewのリロード
             tableviewSetUp()
         }else{
@@ -161,9 +196,8 @@ class Talk: UIViewController,UITableViewDelegate,UITableViewDataSource{
             let tabBar = self.tabBarController?.tabBar.items![2]
             tabBar?.image = UIImage(systemName: "phone")
             tabBar?.selectedImage = UIImage(systemName: "phone")
-            //ラベルの文字の変更
-            topLabel.text = "チャットで通話する時間を決めよう！"
-            topLabel.textColor = ColorData.darkturquoise
+            //広告の表示
+            //adView.isHidden = false
             //tableviewのリロード
             tableviewSetUp()
         }

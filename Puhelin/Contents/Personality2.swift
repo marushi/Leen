@@ -26,9 +26,14 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     var delegate:perToEdit?
         
     //定数
-    let talkArray = ["どちらでも","話す方","聞く方"]
-    let purposeArray = ["どちらでも","ライトな関係","真剣交際"]
-    let bodyTypeArray = ["普通","がっしり","細め"]
+    let bodyType = ["こだわらない","ぽっちゃり","普通","細め"]
+    let job = ["こだわらない","営業","会社員","医師","弁護士"]
+    let income = ["こだわらない","200万","300万","1億以上"]
+    let personality = ["こだわらない","マイペース","明るい"]
+    let talk = ["こだわらない","おしゃべり","話す方","聞く方","聞き上手"]
+    let purpose = ["こだわらない","異性の友達","ライトな関係","真剣交際"]
+    let alchoal = ["こだわらない","ほぼ毎日","週２〜３回","ときどき","たまに","あまり飲まない","飲めない"]
+    let tabako = ["こだわらない","吸わない","ごくたまに","飲みの時だけ","1日に数本","1日に一箱"]
     let prefectures = ["北海道", "青森県", "岩手県", "宮城県", "秋田県",
     "山形県", "福島県", "茨城県", "栃木県", "群馬県",
     "埼玉県", "千葉県", "東京都", "神奈川県","新潟県",
@@ -41,6 +46,7 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     "鹿児島県", "沖縄県"]
     let userDefaults = UserDefaults.standard
     let uid = UserDefaults.standard.string(forKey: "uid")
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,42 +78,40 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         switch conditionCase {
         case 0:
             self.titleLabel.text = "居住地"
-            tableView.allowsMultipleSelectionDuringEditing = false
             cell.titleLabel.text = prefectures[indexPath.row]
-            if (selectRow == indexPath.row){
-                cell.accessoryType = .checkmark
-            }else{
-                cell.accessoryType = .none
-            }
         case 1:
             self.titleLabel.text = "体型"
-            tableView.allowsMultipleSelectionDuringEditing = false
-            cell.titleLabel.text = bodyTypeArray[indexPath.row]
-            if (selectRow == indexPath.row){
-                cell.accessoryType = .checkmark
-            }else{
-                cell.accessoryType = .none
-            }
+            cell.titleLabel.text = bodyType[indexPath.row]
         case 2:
-            self.titleLabel.text = "会話"
-            tableView.allowsMultipleSelectionDuringEditing = false
-            cell.titleLabel.text = talkArray[indexPath.row]
-            if (selectRow == indexPath.row){
-                cell.accessoryType = .checkmark
-            }else{
-                cell.accessoryType = .none
-            }
+            self.titleLabel.text = "職種"
+            cell.titleLabel.text = job[indexPath.row]
         case 3:
+            self.titleLabel.text = "年収"
+            cell.titleLabel.text = income[indexPath.row]
+        case 4:
+            self.titleLabel.text = "性格"
+            cell.titleLabel.text = personality[indexPath.row]
+        case 5:
+            self.titleLabel.text = "会話"
+            cell.titleLabel.text = talk[indexPath.row]
+        case 6:
             self.titleLabel.text = "目的"
-            tableView.allowsMultipleSelectionDuringEditing = false
-            cell.titleLabel.text = purposeArray[indexPath.row]
-            if (selectRow == indexPath.row){
-                cell.accessoryType = .checkmark
-            }else{
-                cell.accessoryType = .none
-            }
+            cell.titleLabel.text = purpose[indexPath.row]
+        case 7:
+            self.titleLabel.text = "お酒"
+            cell.titleLabel.text = alchoal[indexPath.row]
+        case 8:
+            self.titleLabel.text = "タバコ"
+            cell.titleLabel.text = tabako[indexPath.row]
         default:
             return cell
+        }
+        
+        tableView.allowsMultipleSelectionDuringEditing = false
+        if (selectRow == indexPath.row){
+            cell.accessoryType = .checkmark
+        }else{
+            cell.accessoryType = .none
         }
         return cell
     }
@@ -122,13 +126,28 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
                     selectString = self.prefectures[selectRow]
                 case 1:
                     selectRow = indexPath.row
-                    selectString = self.bodyTypeArray[selectRow]
+                    selectString = self.bodyType[selectRow]
                 case 2:
                     selectRow = indexPath.row
-                    selectString = self.talkArray[selectRow]
+                    selectString = self.job[selectRow]
                 case 3:
                     selectRow = indexPath.row
-                    selectString = self.purposeArray[selectRow]
+                    selectString = self.income[selectRow]
+                case 4:
+                    selectRow = indexPath.row
+                    selectString = self.personality[selectRow]
+                case 5:
+                    selectRow = indexPath.row
+                    selectString = self.talk[selectRow]
+                case 6:
+                    selectRow = indexPath.row
+                    selectString = self.purpose[selectRow]
+                case 7:
+                    selectRow = indexPath.row
+                    selectString = self.alchoal[selectRow]
+                case 8:
+                    selectRow = indexPath.row
+                    selectString = self.tabako[selectRow]
                 default:
                     return
                 }
@@ -136,24 +155,38 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
                 cell.accessoryType = .none
             }
             tableView.reloadData()
-            print(selectsArray)
             
         }
         
         func setUp(_ row:Int) {
             switch row {
-            case 0:
+            case 2:
                 cellNum = prefectures.count
                 conditionCase = 0
-            case 2:
-                cellNum = bodyTypeArray.count
-                conditionCase = 1
-            case 3:
-                cellNum = talkArray.count
-                conditionCase = 2
             case 4:
-                cellNum = purposeArray.count
+                cellNum = bodyType.count
+                conditionCase = 1
+            case 5:
+                cellNum = job.count
+                conditionCase = 2
+            case 6:
+                cellNum = income.count
                 conditionCase = 3
+            case 7:
+                cellNum = personality.count
+                conditionCase = 4
+            case 8:
+                cellNum = talk.count
+                conditionCase = 5
+            case 9:
+                cellNum = purpose.count
+                conditionCase = 6
+            case 10:
+                cellNum = alchoal.count
+                conditionCase = 7
+            case 11:
+                cellNum = tabako.count
+                conditionCase = 8
             default:
                 return
             }
@@ -172,10 +205,25 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
             dataTitle = "bodyType"
         case 2:
             delegate?.perToEditText(text: selectString, row: 2)
-            dataTitle = "talk"
+            dataTitle = "job"
         case 3:
             delegate?.perToEditText(text: selectString, row: 3)
+            dataTitle = "income"
+        case 4:
+            delegate?.perToEditText(text: selectString, row: 4)
+            dataTitle = "personality"
+        case 5:
+            delegate?.perToEditText(text: selectString, row: 5)
+            dataTitle = "talk"
+        case 6:
+            delegate?.perToEditText(text: selectString, row: 6)
             dataTitle = "purpose"
+        case 7:
+            delegate?.perToEditText(text: selectString, row: 7)
+            dataTitle = "alchoal"
+        case 8:
+            delegate?.perToEditText(text: selectString, row: 8)
+            dataTitle = "tabako"
         default:
             return
         }

@@ -289,7 +289,8 @@ class ChatRoom: JSQMessagesViewController {
             ,"displayName": senderDisplayName as Any
             ,"text": text as Any
             ,"sendTime": date as Any
-            ,"readed": false] as [String:Any]
+            ,"readed": false
+            ,"token": userDefaults.string(forKey: "token") as Any] as [String:Any]
         Ref.setData(Dic)
         //textFieldをクリアする
         self.inputToolbar.contentView.textView.text = ""
@@ -331,7 +332,6 @@ class ChatRoom: JSQMessagesViewController {
     }
         
     @objc func tappedAvatar() {
-        print("tapped user avatar")
         let Profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
         Profile.setData(OpponentId!)
         Profile.goodButton.isHidden = true

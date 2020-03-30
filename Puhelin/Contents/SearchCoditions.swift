@@ -78,27 +78,40 @@ class SearchCoditions: UIViewController {
         //インジゲーター
         HUD.show(.progress)
         //データ入れ
-        var Ref = Firestore.firestore().collection(DB).limit(to: 10)
+        var Ref = Firestore.firestore().collection(DB).limit(to: 30)
         let num:Int = searchQuery!.prefecturs!.count - 1
         if num >= 0 {
-            for i in 0...num {
-                Ref = Ref.whereField("region", isEqualTo: searchQuery?.prefecturs![i] as Any)
-            }
+            Ref = Ref.whereField("region", in: searchQuery!.prefecturs!)
         }
         if searchQuery?.age != nil {
         }
-        if searchQuery?.bodyType != nil {
+        if searchQuery?.bodyType != nil && searchQuery?.bodyType != "こだわらない" {
             Ref = Ref.whereField("bodyType", isEqualTo: searchQuery?.bodyType as Any)
         }
-        if searchQuery?.talk != nil {
+        if searchQuery?.talk != nil && searchQuery?.talk != "こだわらない"{
             Ref = Ref.whereField("talk", isEqualTo: searchQuery?.talk as Any)
         }
         if searchQuery?.tall != nil {
         }
-        if searchQuery?.purpose  != nil {
+        if searchQuery?.purpose  != nil && searchQuery?.purpose != "こだわらない" {
             Ref = Ref.whereField("purpose", isEqualTo: searchQuery?.purpose as Any)
-            
         }
+        if searchQuery?.job  != nil && searchQuery?.job != "こだわらない"{
+            Ref = Ref.whereField("job", isEqualTo: searchQuery?.job as Any)
+        }
+        if searchQuery?.income  != nil && searchQuery?.income != "こだわらない" {
+            Ref = Ref.whereField("income", isEqualTo: searchQuery?.income as Any)
+        }
+        if searchQuery?.personality  != nil && searchQuery?.personality != "こだわらない" {
+            Ref = Ref.whereField("personality", isEqualTo: searchQuery?.personality as Any)
+        }
+        if searchQuery?.alchoal  != nil && searchQuery?.alchoal != "こだわらない" {
+            Ref = Ref.whereField("alchoal", isEqualTo: searchQuery?.alchoal as Any)
+        }
+        if searchQuery?.tabako != nil && searchQuery?.tabako != "こだわらない" {
+            Ref = Ref.whereField("tabako", isEqualTo: searchQuery?.tabako as Any)
+        }
+        
         Ref.getDocuments() { (querySnapshot, error) in
         if let error = error {
             print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
@@ -153,7 +166,7 @@ extension SearchCoditions:UITableViewDelegate,UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let SearchConditions2 = self.storyboard?.instantiateViewController(identifier: "SearchConditions2") as! SearchConditions2
-        if indexPath.row == 1{
+        if indexPath.row == 1 || indexPath.row == 2{
             return
         }else{
             SearchConditions2.setUp(indexPath.row)

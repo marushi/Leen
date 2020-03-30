@@ -25,6 +25,7 @@ class GoodCell: UITableViewCell {
     var listener: ListenerRegistration!
     var opUserId:String?
     var Users:String?
+    var profileData:MyProfileData?
     let userdefaults = UserDefaults.standard
     
     override func awakeFromNib() {
@@ -68,6 +69,7 @@ class GoodCell: UITableViewCell {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
                 return
             }
+                self.profileData = MyProfileData(document: querySnapshot!)
             //画像設定
             let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot!.get("photoId") as! String)
             self.photo.sd_setImage(with: imageRef)
@@ -88,16 +90,43 @@ class GoodCell: UITableViewCell {
         //チャットルーム作成
         let ChatRef = Firestore.firestore().collection(Const.ChatPath).document()
         if UserDefaults.standard.integer(forKey: "gender") == 1 {
-            let DIc = ["1": userdefaults.string(forKey: "uid")!,"2": UserArray.uid]
+            let DIc = ["1": userdefaults.string(forKey: "uid")!
+                ,"2": UserArray.uid
+                ,"3": false
+                ,"4": false
+                ,"token1": userdefaults.string(forKey: "token")!
+                ,"token2": self.profileData?.token as Any
+                ,"name1": userdefaults.string(forKey: "name")!
+                ,"name2": self.profileData?.name as Any]
                 as [String : Any]
             ChatRef.setData(DIc)
+            let MesRef = ChatRef.collection(Const.MessagePath).document()
+            let Dic = ["senderId": userdefaults.string(forKey: UserDefaultsData.uid) as Any
+                ,"displayName": userdefaults.string(forKey: UserDefaultsData.name) as Any
+                ,"text": "いいねありがとうございます！"
+                ,"sendTime": Date() as Any] as [String:Any]
+            MesRef.setData(Dic)
+            
             let ref = Firestore.firestore().collection(Const.MalePath).document(userdefaults.string(forKey: "uid")!).collection(Const.GoodPath).document(opUserId!)
             ref.delete()
         
         } else if UserDefaults.standard.integer(forKey: "gender") == 2 {
             let DIc = ["2": userdefaults.string(forKey: "uid")!
-                ,"1": UserArray.uid] as [String : Any]
+                ,"1": UserArray.uid
+                ,"3": false
+                ,"4": false
+                ,"token2": userdefaults.string(forKey: "token")!
+                ,"token1": self.profileData?.token as Any
+                ,"name2": userdefaults.string(forKey: "name")!
+                ,"name1": self.profileData?.name as Any] as [String : Any]
             ChatRef.setData(DIc)
+            let MesRef = ChatRef.collection(Const.MessagePath).document()
+            let Dic = ["senderId": userdefaults.string(forKey: UserDefaultsData.uid) as Any
+                ,"displayName": userdefaults.string(forKey: UserDefaultsData.name) as Any
+                ,"text": "いいねありがとうございます！"
+                ,"sendTime": Date() as Any] as [String:Any]
+            MesRef.setData(Dic)
+            
             let ref = Firestore.firestore().collection(Const.FemalePath).document(userdefaults.string(forKey: "uid")!).collection(Const.GoodPath).document(opUserId!)
             ref.delete()
         }

@@ -33,46 +33,58 @@ class ProfileCell: UITableViewCell {
         if profileData != nil {
         switch row {
         case 0:
-            contentLabel.text = profileData?.region
+            contentLabel.text = profileData?.name
             titleLabel.text = titleArray[0]
         case 1:
             if profileData?.tall != nil {
-                contentLabel.text = "\(profileData!.tall!)" + "cm"
+                contentLabel.text = "\(profileData!.age!)" + "歳"
             }else{
                 contentLabel.text = "未選択"
             }
             titleLabel.text = titleArray[1]
         case 2:
-            contentLabel.text = profileData?.bodyType
+            contentLabel.text = profileData?.region
             titleLabel.text = titleArray[2]
         case 3:
-            contentLabel.text = profileData?.talk
+            if profileData?.tall != nil {
+                contentLabel.text = "\(profileData!.tall!)" + "cm"
+            }else{
+                contentLabel.text = "未選択"
+            }
             titleLabel.text = titleArray[3]
         case 4:
-            contentLabel.text = profileData?.purpose
+            contentLabel.text = profileData?.bodyType
             titleLabel.text = titleArray[4]
         case 5:
+            contentLabel.text = profileData?.job
             titleLabel.text = titleArray[5]
         
         case 6:
+            contentLabel.text = profileData?.income
             titleLabel.text = titleArray[6]
         
         case 7:
+            contentLabel.text = profileData?.personality
             titleLabel.text = titleArray[7]
         
         case 8:
+            contentLabel.text = profileData?.talk
             titleLabel.text = titleArray[8]
         
         case 9:
+            contentLabel.text = profileData?.purpose
             titleLabel.text = titleArray[9]
         
         case 10:
+            contentLabel.text = profileData?.alchoal
             titleLabel.text = titleArray[10]
         
         case 11:
+            contentLabel.text = profileData?.tabako
             titleLabel.text = titleArray[11]
         
         case 12:
+            contentLabel.text = profileData?.hobby
             titleLabel.text = titleArray[12]
 
         default:

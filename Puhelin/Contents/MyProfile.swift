@@ -117,7 +117,7 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
             self.present(Usage,animated: true,completion: nil)
         case 2:
             let Information = self.storyboard?.instantiateViewController(identifier: "Information") as! Information
-            self.present(Information,animated: true,completion: nil)
+            self.navigationController?.pushViewController(Information, animated: true)
         default:
             return
         }

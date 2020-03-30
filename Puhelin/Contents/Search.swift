@@ -19,6 +19,7 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
     //変数設定
     var UserArray: [UserData] = []
     var DB = ""
+    var notisDB = ""
     var searchCondition:Bool!
     var searchQuery:searchQueryData?
     
@@ -35,7 +36,6 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
         collectionView.delegate = self
         collectionView.dataSource = self
         //ボタンの設定
-        conditionButton.backgroundColor = ColorData.whitesmoke
         conditionButton.layer.cornerRadius = 15
         searchCondition = false
         
@@ -44,15 +44,20 @@ class Search: UIViewController,UICollectionViewDelegate,UICollectionViewDataSour
         //異性の相手をビューに表示
         if UserDefaults.standard.integer(forKey: "gender") == 1 {
             DB = Const.FemalePath
+            notisDB = Const.MalePath
             UserDefaults.standard.set(DB, forKey: "DB")
         } else if UserDefaults.standard.integer(forKey: "gender") == 2 {
             DB = Const.MalePath
+            notisDB = Const.FemalePath
             UserDefaults.standard.set(DB, forKey: "DB")
         }
         searchQuery = searchQueryData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        let ref = Firestore.firestore().collection(notisDB).document(userDefaults.string(forKey: "uid")!)
+        ref.setData(["newMesNum":0], merge: true)
         self.navigationController?.navigationBar.isHidden = false
         self.tabBarController?.tabBar.isHidden = false
         if searchCondition == false {

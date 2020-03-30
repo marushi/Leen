@@ -15,4 +15,9 @@ class searchQueryData: NSObject {
     var purpose:String?
     var age:Int?
     var tall:Int?
+    var job:String?
+    var income:String?
+    var personality:String?
+    var alchoal:String?
+    var tabako:String?
 }

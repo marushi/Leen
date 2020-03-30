@@ -13,13 +13,22 @@ class ProfileHeaderCell: UICollectionViewCell {
     
     var data:MyProfileData?
     
+    override func awakeFromNib() {
+        label.frame.size.width = self.frame.size.width
+        label.clipsToBounds = true
+    }
+    
     func setData(_ row:Int) {
         if data == nil {
             return
         }
         switch row {
         case 0:
-            label.text = "\(data!.tall!)cm"
+            if data?.tall != nil{
+                label.text = "\(data!.tall!)cm"
+            }else{
+                label.text = "未入力"
+            }
             self.addBorder(width: 1, color: .lightGray, position: .right)
         case 1:
             label.text = data?.bodyType
@@ -40,5 +49,6 @@ class ProfileHeaderCell: UICollectionViewCell {
         default:
             return
         }
+        label.addBorder(width: 2, color: ColorData.salmon, position: .bottom)
     }
 }

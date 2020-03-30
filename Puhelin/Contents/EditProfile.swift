@@ -117,7 +117,6 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let textNum = textField.text?.count else {
-            print("nilです")
             return true
         }
         if textNum > 2 && textNum < 20 {
@@ -198,7 +197,7 @@ extension EditProfile: UITableViewDelegate,UITableViewDataSource{
     
     @objc func pushButton(_ sender: UIButton, forEvent event:UIEvent){
         let row = sender.tag
-        if row == 1 {
+        if row == 0 || row == 1 || row == 3 || row == 12  {
             return
         }else{
         let Personality2 = self.storyboard?.instantiateViewController(identifier: "Personality2") as! Personality2
@@ -220,9 +219,19 @@ extension EditProfile:perToEdit {
         case 1:
             self.profileData?.bodyType = text
         case 2:
-            self.profileData?.talk = text
+            self.profileData?.job = text
         case 3:
+            self.profileData?.income = text
+        case 4:
+            self.profileData?.personality = text
+        case 5:
+            self.profileData?.talk = text
+        case 6:
             self.profileData?.purpose = text
+        case 7:
+            self.profileData?.alchoal = text
+        case 8:
+            self.profileData?.tabako = text
         default:
             return
         }

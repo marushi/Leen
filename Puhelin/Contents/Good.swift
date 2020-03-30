@@ -14,13 +14,18 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     
     @IBOutlet weak var tableView: UITableView!
     
+    //いいねがない時の部品
+    @IBOutlet weak var ButtonTopLabel: UILabel!
+    @IBOutlet weak var heartImage: UIImageView!
+    @IBOutlet weak var nonHeartText: UITextView!
+    @IBOutlet weak var myProfileButton: UIButton!
+    @IBOutlet weak var headLabel: UILabel!
+    @IBOutlet weak var heartBackimage: UIImageView!
+    
+    
     var UserArray: [UserData] = []
     var listener: ListenerRegistration!
     var DB = ""
-    
-    let titleLabel = UILabel() // ラベルの生成
-    let textLabel = UILabel()
-    let profilebutton = UIButton(type: .system)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +35,13 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         tableView.delegate = self
         tableView.dataSource  = self
         tableView.tableFooterView = UIView(frame: .zero)
+        myProfileButton.layer.cornerRadius = myProfileButton.frame.size.height / 2
+        myProfileButton.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        myProfileButton.layer.shadowColor = UIColor.black.cgColor
+        myProfileButton.layer.shadowOpacity = 0.6
+        myProfileButton.layer.shadowRadius = 1
+        headLabel.clipsToBounds = true
+        headLabel.layer.cornerRadius = headLabel.frame.size.height / 2
         //セルの登録
         let nib = UINib(nibName: "GoodCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "GoodCell")
@@ -77,9 +89,12 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
             self.navigationController?.navigationBar.isHidden = false
             self.navigationController?.navigationBar.shadowImage = UIImage()
             self.tableView.isHidden = false
-            self.titleLabel.isHidden = true
-            self.textLabel.isHidden = true
-            self.profilebutton.isHidden = true
+            self.heartImage.isHidden = true
+            self.nonHeartText.isHidden = true
+            self.myProfileButton.isHidden = true
+            self.headLabel.isHidden = true
+            self.ButtonTopLabel.isHidden = true
+            self.heartBackimage.isHidden = true
         }
     }
     
@@ -100,41 +115,15 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     func setUp(){
 
         //三つを表示
-        titleLabel.isHidden = false
-        textLabel.isHidden = false
-        profilebutton.isHidden = false
-        
-        // UILabelの設定
-        titleLabel.frame = CGRect(x: (self.view.frame.width - 187)/2, y: 30, width: 180, height: 30) // 位置とサイズの指定
-        titleLabel.textAlignment = NSTextAlignment.center // 横揃えの設定
-        titleLabel.text = "いいね！がありません" // テキストの設定
-        titleLabel.textColor = UIColor.white // テキストカラーの設定
-        titleLabel.font = UIFont.systemFont(ofSize: 15)// フォントの設定
-        titleLabel.backgroundColor = .lightGray
-        titleLabel.layer.cornerRadius = 10
-        titleLabel.clipsToBounds = true
-        self.view.addSubview(titleLabel) // ラベルの追加
-        
-        //UIlabelテキストの設定
-        textLabel.frame = CGRect(x: 0, y: self.view.frame.height/2 - 90, width: self.view.frame.width, height: 44)
-        textLabel.textAlignment = NSTextAlignment.center
-        textLabel.text = "プロフィールを充実させていいね！をもらおう！"
-        textLabel.textColor = UIColor.black
-        textLabel.font = UIFont.systemFont(ofSize: 15)
-        self.view.addSubview(textLabel)
-        
-        //UIButtonの設定
-        profilebutton.addTarget(self, action: #selector(moovToProfile(_:)), for: UIControl.Event.touchUpInside)
-        profilebutton.frame = CGRect(x: 30, y: self.view.frame.height/2 - 44, width: self.view.frame.width - 60, height: 60)
-        profilebutton.layer.cornerRadius = profilebutton.frame.size.height / 2
-        profilebutton.setTitle("マイプロフィールを確認する", for: .normal)
-        profilebutton.backgroundColor = ColorData.salmon
-        profilebutton.setTitleColor(.white, for: .normal)
-        self.view.addSubview(profilebutton)
+        heartImage.isHidden = false
+        nonHeartText.isHidden = false
+        myProfileButton.isHidden = false
+        self.headLabel.isHidden = false
+        self.ButtonTopLabel.isHidden = false
+        self.heartBackimage.isHidden = false
     }
     
-    //プロフィールへ移動
-    @objc func moovToProfile(_ sender: UIButton){
+    @IBAction func moveToProfile(_ sender: Any) {
         let profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
         profile.profileSetData()
         self.navigationController!.pushViewController(profile,animated: true)

@@ -38,7 +38,7 @@ class MyProfileCell: UITableViewCell {
             titleLabel.text = "使い方"
         case 2:
             photo.image = UIImage(systemName: "info.circle")
-            titleLabel.text = "お問い合わせ"
+            titleLabel.text = "お知らせ"
         default:
             return
         }

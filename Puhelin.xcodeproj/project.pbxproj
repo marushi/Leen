@@ -27,6 +27,8 @@
 		BF253F5A2424AF9D00F93739 /* Purchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF253F592424AF9D00F93739 /* Purchase.swift */; };
 		BF253F5C2424B19200F93739 /* PurchaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF253F5B2424B19200F93739 /* PurchaseCell.swift */; };
 		BF253F5E2425A68E00F93739 /* searchQueryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF253F5D2425A68D00F93739 /* searchQueryData.swift */; };
+		BF3AD5172431E638002896DC /* informationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3AD5152431E635002896DC /* informationCell.swift */; };
+		BF3AD5182431E638002896DC /* informationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF3AD5162431E635002896DC /* informationCell.xib */; };
 		BF56B38C242740EB002D83F9 /* UserDefaultsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56B38B242740EB002D83F9 /* UserDefaultsData.swift */; };
 		BF56B38E242749B6002D83F9 /* GoodPointPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56B38D242749B6002D83F9 /* GoodPointPurchase.swift */; };
 		BF56B391242758D7002D83F9 /* goodPointPurchaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF56B38F242758D6002D83F9 /* goodPointPurchaseCell.swift */; };
@@ -84,13 +86,13 @@
 		BFD849F62418CC4B0089DF97 /* ClassFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD849F52418CC4B0089DF97 /* ClassFile.swift */; };
 		BFD849F82418E7450089DF97 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD849F72418E7450089DF97 /* EditProfile.swift */; };
 		BFD849FA24193A150089DF97 /* editProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD849F924193A150089DF97 /* editProfileCell.swift */; };
-		F1C9D25D371E5C43EEBC990D /* Pods_Puhelin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57636524F23C47AEC629C14C /* Pods_Puhelin.framework */; };
+		E79BDAD897C9BB3D06046C28 /* Pods_Puhelin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F1B4BFCC6024374AFADDA69 /* Pods_Puhelin.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		561BF03CACEC95817546ABBB /* Pods-Puhelin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Puhelin.release.xcconfig"; path = "Target Support Files/Pods-Puhelin/Pods-Puhelin.release.xcconfig"; sourceTree = "<group>"; };
-		57636524F23C47AEC629C14C /* Pods_Puhelin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Puhelin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7D7C96E605EBD2B3123E60A8 /* Pods-Puhelin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Puhelin.debug.xcconfig"; path = "Target Support Files/Pods-Puhelin/Pods-Puhelin.debug.xcconfig"; sourceTree = "<group>"; };
+		1F1B4BFCC6024374AFADDA69 /* Pods_Puhelin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Puhelin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BAB2BAAAB7C7FE3BE4D6E30 /* Pods-Puhelin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Puhelin.debug.xcconfig"; path = "Target Support Files/Pods-Puhelin/Pods-Puhelin.debug.xcconfig"; sourceTree = "<group>"; };
+		B8375CB7B817160F18983491 /* Pods-Puhelin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Puhelin.release.xcconfig"; path = "Target Support Files/Pods-Puhelin/Pods-Puhelin.release.xcconfig"; sourceTree = "<group>"; };
 		BF02AF8723F50C150021551B /* TabBarConrtroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarConrtroller.swift; sourceTree = "<group>"; };
 		BF02AF8923F6A1DB0021551B /* Region.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Region.swift; sourceTree = "<group>"; };
 		BF02AF8B23F6A83E0021551B /* Puhelin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Puhelin.entitlements; sourceTree = "<group>"; };
@@ -114,6 +116,8 @@
 		BF253F592424AF9D00F93739 /* Purchase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Purchase.swift; sourceTree = "<group>"; };
 		BF253F5B2424B19200F93739 /* PurchaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseCell.swift; sourceTree = "<group>"; };
 		BF253F5D2425A68D00F93739 /* searchQueryData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = searchQueryData.swift; sourceTree = "<group>"; };
+		BF3AD5152431E635002896DC /* informationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = informationCell.swift; sourceTree = "<group>"; };
+		BF3AD5162431E635002896DC /* informationCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = informationCell.xib; sourceTree = "<group>"; };
 		BF56B38B242740EB002D83F9 /* UserDefaultsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsData.swift; sourceTree = "<group>"; };
 		BF56B38D242749B6002D83F9 /* GoodPointPurchase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoodPointPurchase.swift; sourceTree = "<group>"; };
 		BF56B38F242758D6002D83F9 /* goodPointPurchaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = goodPointPurchaseCell.swift; sourceTree = "<group>"; };
@@ -180,7 +184,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF253F502423731600F93739 /* StoreKit.framework in Frameworks */,
-				F1C9D25D371E5C43EEBC990D /* Pods_Puhelin.framework in Frameworks */,
+				E79BDAD897C9BB3D06046C28 /* Pods_Puhelin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,7 +196,7 @@
 			children = (
 				BF56B393242910CE002D83F9 /* FirebaseDatabase.framework */,
 				BF253F4F2423731600F93739 /* StoreKit.framework */,
-				57636524F23C47AEC629C14C /* Pods_Puhelin.framework */,
+				1F1B4BFCC6024374AFADDA69 /* Pods_Puhelin.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -200,8 +204,8 @@
 		91FBDCCF9C82534EF9A117A6 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				7D7C96E605EBD2B3123E60A8 /* Pods-Puhelin.debug.xcconfig */,
-				561BF03CACEC95817546ABBB /* Pods-Puhelin.release.xcconfig */,
+				3BAB2BAAAB7C7FE3BE4D6E30 /* Pods-Puhelin.debug.xcconfig */,
+				B8375CB7B817160F18983491 /* Pods-Puhelin.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -329,6 +333,8 @@
 				BFCD98D32412521000E27BD3 /* SearchConditionsCell.xib */,
 				BF56B38F242758D6002D83F9 /* goodPointPurchaseCell.swift */,
 				BF56B390242758D6002D83F9 /* goodPointPurchaseCell.xib */,
+				BF3AD5152431E635002896DC /* informationCell.swift */,
+				BF3AD5162431E635002896DC /* informationCell.xib */,
 				BFCD98DC24130E4B00E27BD3 /* cell.swift */,
 				BFCD98E02413C68900E27BD3 /* scheduleCell.swift */,
 				BFCD98E22414EFB900E27BD3 /* ProfileCell.swift */,
@@ -348,11 +354,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BF0FDE2823F2D34600C02B76 /* Build configuration list for PBXNativeTarget "Puhelin" */;
 			buildPhases = (
-				4E1E64EA1B99AAAFE0601F33 /* [CP] Check Pods Manifest.lock */,
+				1FB7EE9561FBE15E19FA3F82 /* [CP] Check Pods Manifest.lock */,
 				BF0FDE1023F2D34500C02B76 /* Sources */,
 				BF0FDE1123F2D34500C02B76 /* Frameworks */,
 				BF0FDE1223F2D34500C02B76 /* Resources */,
-				81465DC06419A81EA9953026 /* [CP] Embed Pods Frameworks */,
+				7174867A17CA8B587A33EEC2 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -403,6 +409,7 @@
 			files = (
 				BFD82C6623F3CDFB0058EBC4 /* SearchCell.xib in Resources */,
 				BF253F582423DC0300F93739 /* MypageHeader.xib in Resources */,
+				BF3AD5182431E638002896DC /* informationCell.xib in Resources */,
 				BF0FDE2423F2D34600C02B76 /* LaunchScreen.storyboard in Resources */,
 				BFCD98D52412521000E27BD3 /* SearchConditionsCell.xib in Resources */,
 				BFD82C7223F3CE7B0058EBC4 /* GoodCell.xib in Resources */,
@@ -418,7 +425,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4E1E64EA1B99AAAFE0601F33 /* [CP] Check Pods Manifest.lock */ = {
+		1FB7EE9561FBE15E19FA3F82 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -440,7 +447,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		81465DC06419A81EA9953026 /* [CP] Embed Pods Frameworks */ = {
+		7174867A17CA8B587A33EEC2 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -478,6 +485,7 @@
 				BF56B38C242740EB002D83F9 /* UserDefaultsData.swift in Sources */,
 				BFD82C6123F3CC880058EBC4 /* SearchCoditions.swift in Sources */,
 				BF0FDE1823F2D34500C02B76 /* AppDelegate.swift in Sources */,
+				BF3AD5172431E638002896DC /* informationCell.swift in Sources */,
 				BFD0D06723F2E218009B1ADF /* SMS.swift in Sources */,
 				BF253F54242377A800F93739 /* PurchaseManager.swift in Sources */,
 				BFB738C0240D1E94000AA02A /* Usage.swift in Sources */,
@@ -604,7 +612,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -658,7 +666,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -670,7 +678,7 @@
 		};
 		BF0FDE2923F2D34600C02B76 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7D7C96E605EBD2B3123E60A8 /* Pods-Puhelin.debug.xcconfig */;
+			baseConfigurationReference = 3BAB2BAAAB7C7FE3BE4D6E30 /* Pods-Puhelin.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Puhelin/Puhelin.entitlements;
@@ -686,7 +694,7 @@
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = shion.maruko.Puhelin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = PuhelinTest;
+				PROVISIONING_PROFILE_SPECIFIER = Ligar;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -695,7 +703,7 @@
 		};
 		BF0FDE2A23F2D34600C02B76 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 561BF03CACEC95817546ABBB /* Pods-Puhelin.release.xcconfig */;
+			baseConfigurationReference = B8375CB7B817160F18983491 /* Pods-Puhelin.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Puhelin/Puhelin.entitlements;
@@ -711,7 +719,7 @@
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = shion.maruko.Puhelin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = PuhelinTest;
+				PROVISIONING_PROFILE_SPECIFIER = Ligar;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

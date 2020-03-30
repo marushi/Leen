@@ -97,6 +97,7 @@ class Confirm: UIViewController {
             ,"personality": "未選択"
             ,"hobby": "未選択"
             ,"identification":false
+            ,"newMesNum": 0
             ] as [String: Any]
         Ref.setData(Dic)
         

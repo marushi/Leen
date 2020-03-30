@@ -29,6 +29,7 @@ class UserData: NSObject {
     var income: String?
     var personality: String?
     var hobby: String?
+    var token: String?
     
     init(document: QueryDocumentSnapshot) {
         self.uid = document.documentID
@@ -51,5 +52,6 @@ class UserData: NSObject {
         self.income = Dic["income"] as? String
         self.personality = Dic["personality"] as? String
         self.hobby = Dic["hobby"] as? String
+        self.token = Dic["token"] as? String
     }
 }

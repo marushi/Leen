@@ -55,35 +55,63 @@ class SearchConditionsCell: UITableViewCell {
             }
         case 3:
             titleLabel.text = titleArray[3]
-            if searchQuery?.purpose == nil {
-                self.subLabel.text = "こだわらない"
-            }else{
-                self.subLabel.text = searchQuery?.purpose
-            }
-        case 4:
-            titleLabel.text = titleArray[4]
             if searchQuery?.bodyType == nil {
                 self.subLabel.text = "こだわらない"
             }else{
                 self.subLabel.text = searchQuery?.bodyType
             }
+        case 4:
+            titleLabel.text = titleArray[4]
+            if searchQuery?.job == nil {
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.job
+            }
         case 5:
             titleLabel.text = titleArray[5]
-        
+            if searchQuery?.income == nil {
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.income
+            }
         case 6:
             titleLabel.text = titleArray[6]
-        
+            if searchQuery?.personality == nil {
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.personality
+            }
         case 7:
             titleLabel.text = titleArray[7]
+            if searchQuery?.talk == nil {
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.talk
+            }
         
         case 8:
             titleLabel.text = titleArray[8]
+            if searchQuery?.purpose == nil {
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.purpose
+            }
         
         case 9:
             titleLabel.text = titleArray[9]
+            if searchQuery?.alchoal == nil {
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.alchoal
+            }
         
         case 10:
             titleLabel.text = titleArray[10]
+            if searchQuery?.tabako == nil {
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.tabako
+            }
         default:
             return
         }

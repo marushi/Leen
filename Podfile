@@ -6,12 +6,13 @@ target 'Puhelin' do
   use_frameworks!
 
   # Pods for Puhelin
-  pod 'Firebase','6.11.0'
+  pod 'Firebase','> 6.11.0'
   pod 'Firebase/Analytics'
   pod 'Firebase/Auth'
   pod 'Firebase/Firestore'
   pod 'Firebase/Storage'
   pod 'FirebaseUI/Storage'
+  pod 'Firebase/Messaging'
   pod 'FBSDKLoginKit'
   pod 'JSQMessagesViewController'
   pod 'RSKImageCropper'

@@ -10,6 +10,7 @@ import UIKit
 import PKHUD
 import Firebase
 import FirebaseUI
+import AudioToolbox
 
 class Profile: UIViewController {
     
@@ -17,12 +18,17 @@ class Profile: UIViewController {
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var introTextView: UITextView!
     @IBOutlet weak var view2: UIView!
-    @IBOutlet weak var sentenceMessage: UILabel!
+    @IBOutlet weak var sentenceMessage: UITextView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var view3: UIView!
     @IBOutlet weak var view4: UIView!
     @IBOutlet weak var weekLabel: UIButton!
+    @IBOutlet weak var phoneLabel: UIButton!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var headerView: UIView!
+    @IBOutlet weak var downTriangle: UIImageView!
+    @IBOutlet weak var photoBackView: UIView!
+    
     
     //定数
     let goodButton = UIButton(type: .system)
@@ -39,43 +45,59 @@ class Profile: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        let viewCornerRadius:CGFloat = 20
         //アウトレットの設定
-        photo.layer.cornerRadius = (self.view.frame.size.width - 100) / 2
-        view3.layer.cornerRadius = 10
-        view4.layer.cornerRadius = 10
+        photo.layer.cornerRadius = (self.view.frame.size.width - 80) / 2
+        photo.layer.borderColor = ColorData.turquoise.cgColor
+        photo.layer.borderWidth = 5
+        photoBackView.backgroundColor = ColorData.profileback
+        view3.layer.cornerRadius = viewCornerRadius
+        view3.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
+        view4.layer.cornerRadius = viewCornerRadius
+        headerView.isHidden = true
+        headerView.addBorder(width: 1, color: .lightGray, position: .bottom)
+        let angle = 180 * CGFloat.pi / 180
+        let transRotate = CGAffineTransform(rotationAngle: CGFloat(angle));
+        downTriangle.transform = transRotate
+        sentenceMessage.textContainerInset = UIEdgeInsets.zero
+        sentenceMessage.textContainer.lineFragmentPadding = 0
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.layer.cornerRadius = 10
+        tableView.layer.cornerRadius = viewCornerRadius
         tableView.rowHeight = 40
         introTextView.isUserInteractionEnabled = false
         weekLabel.layer.cornerRadius = weekLabel.frame.size.height / 2
         weekLabel.isEnabled = false
         weekLabel.adjustsImageWhenDisabled = false
+        phoneLabel.layer.cornerRadius = phoneLabel.frame.size.height / 2
+        phoneLabel.isEnabled = false
+        phoneLabel.adjustsImageWhenDisabled = false
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.addBorder(width: 1, color: .lightGray, position: .top)
-        collectionView.layer.cornerRadius = 10
+        collectionView.layer.cornerRadius = viewCornerRadius
         collectionView.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
         collectionView.isUserInteractionEnabled = false
-        
-        self.view.backgroundColor = .init(red: 1, green: 0.9, blue: 0.9, alpha: 1)
-        self.view2.backgroundColor = .init(red: 1, green: 0.9, blue: 0.9, alpha: 1)
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
         if ButtonMode == 1{
             goodButton.setTitle("いいね！", for: .normal)
             goodButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
+            headerView.isHidden = false
         }else if ButtonMode == 2 {
             goodButton.setTitle("話してみる！", for: .normal)
+            headerView.isHidden = false
         }else if ButtonMode == 3{
             goodButton.setTitle("編集する", for: .normal)
             self.tabBarController?.tabBar.isHidden = true
-            self.navigationController!.navigationBar.setBackgroundImage(UIImage(), for: .default)
-            self.navigationController!.navigationBar.shadowImage = UIImage()
+            self.navigationController?.navigationBar.shadowImage = UIImage()
             self.navigationController!.interactivePopGestureRecognizer!.isEnabled = true
+            //self.navigationController?.navigationBar.barTintColor = photoBackView.backgroundColor
+            
         }
         //ボタンの設定
         goodButton.addTarget(self, action: #selector(Button(_:)), for: UIControl.Event.touchUpInside)
@@ -96,6 +118,20 @@ class Profile: UIViewController {
             self.navigationController!.interactivePopGestureRecognizer!.isEnabled = false
         }
     }
+    
+    //スクロールで隠す
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
+            self.navigationController?.setNavigationBarHidden(true, animated: true)
+        } else {
+            self.navigationController?.setNavigationBarHidden(false, animated: true)
+        }
+    }
+    
+    @IBAction func headerViewAction(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     
     //戻るボタン
     @IBAction func modoru(_ sender: Any) {
@@ -136,7 +172,6 @@ class Profile: UIViewController {
             self.name.text = "\(name!) " + "\(age!)才 " + "\(region!)"
             self.introTextView.text = intro! as? String
             self.sentenceMessage.text = sentenceMes! as? String
-            self.tableView.reloadData()
             //今週入会かどうか
             let weekAgo = Date(timeIntervalSinceNow: -60*60*24*4)
             let date:Timestamp = querySnapshot?.get("signupDate") as! Timestamp
@@ -146,6 +181,14 @@ class Profile: UIViewController {
             }else{
                 self.weekLabel.isHidden = false
             }
+            //通話OKかどうか
+                let identBool:Bool? = querySnapshot?.get("identification") as? Bool
+                if identBool == true {
+                    self.phoneLabel.isHidden = false
+                }else{
+                    self.phoneLabel.isHidden = true
+                }
+            self.tableView.reloadData()
             }
         }
     }
@@ -190,15 +233,19 @@ class Profile: UIViewController {
     //イイネボタンの処理
     @objc func Button(_ sender: Any) {
         if ButtonMode == 1{
-            //ルーム作成
+            //Hud
+            HUD.show(.progress)
+            //相手のいいねリストに自分を追加
             let Ref = Firestore.firestore().collection(UserDefaults.standard.string(forKey: "DB")!).document(opUserId!).collection(Const.GoodPath).document(userDefaults.string(forKey: "uid")!)
-            let Dic = ["uid": userDefaults.string(forKey: "uid")!] as [String: Any]
+            let Dic = ["uid": userDefaults.string(forKey: "uid")!,"name": userDefaults.string(forKey: "name")!] as [String: Any]
                 Ref.setData(Dic)
             //--------ポイント処理-------
             var goodpoint = self.userDefaults.integer(forKey: UserDefaultsData.GoodPoint)
             goodpoint -= 1
             self.userDefaults.set(goodpoint, forKey: UserDefaultsData.GoodPoint)
             //-------------------------
+            HUD.hide()
+            AudioServicesPlaySystemSound(1519)
                 self.dismiss(animated: true, completion: nil)
         }else if ButtonMode == 2 {
             //HUD
@@ -207,8 +254,14 @@ class Profile: UIViewController {
             //チャットルーム作成
             let ChatRef = Firestore.firestore().collection(Const.ChatPath).document()
             if UserDefaults.standard.integer(forKey: "gender") == 1 {
-                let DIc = ["1": userDefaults.string(forKey: "uid")!,"2": opUserId!]
-                    as [String : Any]
+                let DIc = ["1": userDefaults.string(forKey: "uid")!
+                    ,"2": opUserId!
+                    ,"3": false
+                    ,"4": false
+                    ,"token1": userDefaults.string(forKey: "token")!
+                    ,"token2": self.profileData?.token as Any
+                    ,"name1": userDefaults.string(forKey: "name")!
+                    ,"name2": self.profileData?.name as Any] as [String : Any]
                 ChatRef.setData(DIc)
                 let MesRef = ChatRef.collection(Const.MessagePath).document()
                 let Dic = ["senderId": userDefaults.string(forKey: UserDefaultsData.uid) as Any
@@ -222,8 +275,21 @@ class Profile: UIViewController {
             
             } else if UserDefaults.standard.integer(forKey: "gender") == 2 {
                 let DIc = ["2": userDefaults.string(forKey: "uid")!
-                    ,"1": opUserId!] as [String : Any]
+                    ,"1": opUserId!
+                    ,"3": false
+                    ,"4": false
+                    ,"token2": userDefaults.string(forKey: "token")!
+                    ,"token1": self.profileData?.token as Any
+                    ,"name2": userDefaults.string(forKey: "name")!
+                    ,"name1": self.profileData?.name as Any] as [String : Any]
                 ChatRef.setData(DIc)
+                let MesRef = ChatRef.collection(Const.MessagePath).document()
+                let Dic = ["senderId": userDefaults.string(forKey: UserDefaultsData.uid) as Any
+                    ,"displayName": userDefaults.string(forKey: UserDefaultsData.name) as Any
+                    ,"text": "いいねありがとうございます！"
+                    ,"sendTime": Date() as Any] as [String:Any]
+                MesRef.setData(Dic)
+                
                 let ref = Firestore.firestore().collection(Const.FemalePath).document(userDefaults.string(forKey: "uid")!).collection(Const.GoodPath).document(opUserId!)
                 ref.delete()
             }
