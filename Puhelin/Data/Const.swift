@@ -17,4 +17,5 @@ struct Const {
     static let ChatPath = "ChatRooms"
     static let MessagePath = "Messages"
     static let MatchingPath = "MatchingRooms"
+    static let InformationPath = "Informations"
 }

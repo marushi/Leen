@@ -95,7 +95,7 @@ class Confirm: UIViewController {
             ,"job": "未選択"
             ,"income": "未選択"
             ,"personality": "未選択"
-            ,"hobby": "未選択"
+            ,"hobby": "未入力"
             ,"identification":false
             ,"newMesNum": 0
             ] as [String: Any]

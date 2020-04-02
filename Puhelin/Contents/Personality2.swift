@@ -26,6 +26,7 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     var delegate:perToEdit?
         
     //定数
+    let Tall:[Int] = Array(140..<200)
     let bodyType = ["こだわらない","ぽっちゃり","普通","細め"]
     let job = ["こだわらない","営業","会社員","医師","弁護士"]
     let income = ["こだわらない","200万","300万","1億以上"]
@@ -103,6 +104,9 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         case 8:
             self.titleLabel.text = "タバコ"
             cell.titleLabel.text = tabako[indexPath.row]
+        case 9:
+            self.titleLabel.text = "身長"
+            cell.titleLabel.text = String(Tall[indexPath.row]) + "cm"
         default:
             return cell
         }
@@ -148,6 +152,9 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
                 case 8:
                     selectRow = indexPath.row
                     selectString = self.tabako[selectRow]
+                case 9:
+                    selectRow = indexPath.row
+                    selectString = String(Tall[selectRow]) + "cm"
                 default:
                     return
                 }
@@ -163,6 +170,9 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
             case 2:
                 cellNum = prefectures.count
                 conditionCase = 0
+            case 3:
+                cellNum = Tall.count
+                conditionCase = 9 //後から追加
             case 4:
                 cellNum = bodyType.count
                 conditionCase = 1
@@ -196,6 +206,15 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     //確定ボタンの処理
     @IBAction func selectButton(_ sender: Any) {
         var dataTitle:String!
+        //保存先を指定
+        var DB = ""
+        if userDefaults.integer(forKey: "gender") == 1 {
+            DB = Const.MalePath
+        }else if userDefaults.integer(forKey: "gender") == 2 {
+            DB = Const.FemalePath
+        }
+        let Ref = Firestore.firestore().collection(DB).document(uid!)
+        
         switch conditionCase {
         case 0:
             delegate?.perToEditText(text: selectString, row: 0)
@@ -224,19 +243,37 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         case 8:
             delegate?.perToEditText(text: selectString, row: 8)
             dataTitle = "tabako"
+        case 9:
+            delegate?.perToEditNum(number: Tall[selectRow], row: 9)
+            dataTitle = "tall"
+            var tallClass:String?
+            let num = Tall[selectRow]
+            if userDefaults.integer(forKey: "gender") == 1{
+                if num < 160 {
+                    tallClass = "〜160cm"
+                }else if num >= 160 && num < 175 {
+                    tallClass = "160〜175cm"
+                }else {
+                    tallClass = "175cm〜"
+                }
+            }else{
+                if num < 150 {
+                    tallClass = "〜150cm"
+                }else if num >= 150 && num < 165 {
+                    tallClass = "150〜165cm"
+                }else {
+                    tallClass = "165cm〜"
+                }
+            }
+            Ref.setData(["tallClass":tallClass!],merge: true)
         default:
             return
         }
-        //保存先を指定
-        var DB = ""
-        if userDefaults.integer(forKey: "gender") == 1 {
-            DB = Const.MalePath
-        }else if userDefaults.integer(forKey: "gender") == 2 {
-            DB = Const.FemalePath
+        if conditionCase == 9{
+            Ref.setData(["tall":Tall[selectRow]],merge: true)
+        }else{
+            Ref.setData([dataTitle:selectString as Any], merge: true)
         }
-        let Ref = Firestore.firestore().collection(DB).document(uid!)
-        Ref.setData([dataTitle:selectString as Any], merge: true)
-        
         self.dismiss(animated: true, completion: nil)
 
     }
@@ -252,4 +289,5 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
 //
 protocol perToEdit {
     func perToEditText(text:String,row:Int)
+    func perToEditNum(number:Int,row:Int)
 }

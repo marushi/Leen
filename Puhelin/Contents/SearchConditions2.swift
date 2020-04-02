@@ -39,6 +39,8 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     let purpose = ["こだわらない","異性の友達","ライトな関係","真剣交際"]
     let alchoal = ["こだわらない","ほぼ毎日","週２〜３回","ときどき","たまに","あまり飲まない","飲めない"]
     let tabako = ["こだわらない","吸わない","ごくたまに","飲みの時だけ","1日に数本","1日に一箱"]
+    let maleTall = ["こだわらない","〜160cm","160〜175cm","175cm〜"]
+    let femaleTall = ["こだわらない","〜150cm","150〜165cm","165cm〜"]
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
@@ -83,6 +85,8 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
                 self.searchQuery?.alchoal = self.selectRow
             case 9:
                 self.searchQuery?.tabako = self.selectRow
+            case 10:
+                self.searchQuery?.tallClass = self.selectRow
             default:
                 return
             }
@@ -180,6 +184,24 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
             }else{
                 cell.accessoryType = .none
             }
+        case 10:
+            tableView.allowsMultipleSelectionDuringEditing = true
+            if UserDefaults.standard.integer(forKey: "gender") == 1{
+                cell.titleLabel.text = femaleTall[indexPath.row]
+                if (selectRow == femaleTall[indexPath.row]){
+                    cell.accessoryType = .checkmark
+                }else{
+                    cell.accessoryType = .none
+                }
+            }else{
+                cell.titleLabel.text = maleTall[indexPath.row]
+                if (selectRow == maleTall[indexPath.row]){
+                    cell.accessoryType = .checkmark
+                }else{
+                    cell.accessoryType = .none
+                }
+            }
+             
         default:
             return cell
         }
@@ -215,6 +237,12 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
                 selectRow = alchoal[indexPath.row]
             case 9:
                 selectRow = tabako[indexPath.row]
+            case 10:
+                if UserDefaults.standard.integer(forKey: "gender") == 1{
+                    selectRow = femaleTall[indexPath.row]
+                }else{
+                    selectRow = maleTall[indexPath.row]
+                }
             default:
                 return
             }
@@ -247,6 +275,13 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         case 0:
             cellNum = prefectures.count
             conditionCase = 1
+        case 2:
+            conditionCase = 10 // 身長後から追加
+            if UserDefaults.standard.integer(forKey: "gender") == 1{
+                cellNum = femaleTall.count
+            }else{
+                cellNum = maleTall.count
+            }
         case 3:
             cellNum = bodyType.count
             conditionCase = 2

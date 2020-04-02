@@ -11,27 +11,32 @@ import PKHUD
 import Firebase
 import FirebaseUI
 
-class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
+class MyProfile: UIViewController {
     //部品
     @IBOutlet weak var photo: UIImageView!
-    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var checkLabel: UILabel!
+    @IBOutlet weak var addView: UIView!
+    @IBOutlet weak var headerView: UIView!
+    @IBOutlet weak var collectionView1: UICollectionView!
     
     //変数
     var DB = ""
     var ProfileData:MyProfileData?
+    var infoData:[InformationData]?
+    var identListener :ListenerRegistration!
+    var infoListener: ListenerRegistration!
     
     //定数
     let userDefaults = UserDefaults.standard
     let sectionInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0 , right: 0)
+    let sectionInsets1 = UIEdgeInsets(top: 0, left: 10, bottom: 0 , right: 0)
     let itemsPerRow: CGFloat = 3
-    var identListener :ListenerRegistration!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //異性の相手をビューに表示
+        //自分の性別のデータベースを設定
         if UserDefaults.standard.integer(forKey: "gender") == 1 {
             DB = Const.MalePath
         } else if UserDefaults.standard.integer(forKey: "gender") == 2 {
@@ -39,22 +44,18 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
         }
 
         //テーブルビューの設定
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.tableFooterView = UIView(frame: .zero)
-        tableView.isScrollEnabled = false
-        tableView.rowHeight = 50
-        tableView.addBorder(width: 1, color: .lightGray, position: .bottom)
-        tableView.addBorder(width: 1, color: .lightGray, position: .top)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.addBorder(width: 1, color: .lightGray, position: .bottom)
-        //checkLabel.layer.cornerRadius = checkLabel.frame.height / 2
-        //checkLabel.layer.borderColor = UIColor.white.cgColor
-        //checkLabel.layer.borderWidth = 3
+        collectionView1.delegate = self
+        collectionView1.dataSource = self
+        addView.layer.cornerRadius = 10
+        addView.layer.borderWidth = 1
+        addView.layer.borderColor = UIColor.lightGray.cgColor
+        headerView.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        headerView.layer.shadowColor = UIColor.black.cgColor
+        headerView.layer.shadowOpacity = 0.6
+        headerView.layer.shadowRadius = 1
         //セルの登録
-        let nib_1 = UINib(nibName: "MyProfileCell", bundle: nil)
-        tableView.register(nib_1, forCellReuseIdentifier: "MyProfileCell")
         collectionView.register(UINib(nibName: "MypageHeader", bundle: nil), forCellWithReuseIdentifier: "MypageHeader")
         //画像を丸くする
         photo.layer.cornerRadius = photo.frame.size.width * 0.5
@@ -70,6 +71,7 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
         nameLabel.text = self.userDefaults.string(forKey: UserDefaultsData.name)
         self.collectionView.reloadData()
         
+        //本人確認の完了待機
         if userDefaults.integer(forKey: "identification") == 1 {
             if identListener == nil {
                 let Ref = Firestore.firestore().collection(DB).document(userDefaults.string(forKey: "uid")!)
@@ -86,41 +88,28 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
                 }
             }
         }
+        
+        //お知らせの新着情報待機
+        if infoListener == nil {
+            let infoRef = Firestore.firestore().collection(DB).document(userDefaults.string(forKey: "uid")!).collection(Const.InformationPath)
+            infoListener = infoRef.addSnapshotListener() { (querySnapshot, error) in
+                if let error = error {
+                    print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
+                    return
+                }
+                self.infoData = querySnapshot!.documents.map { document in
+                    print("DEBUG_PRINT: document取得 \(document.documentID)")
+                    let infodata = InformationData(document: document)
+                    return infodata
+                }
+            }
+        }
+        
     }
         
     
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = false
-    }
-
-    //セルの数
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    //セルの中身
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MyProfileCell", for: indexPath) as! MyProfileCell
-        cell.selectionStyle = .none
-        cell.setData(indexPath.row)
-        return cell
-    }
-    
-    //セルをタップした時の処理
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch indexPath.row {
-        case 0:
-            let Identification = self.storyboard?.instantiateViewController(identifier: "Identification") as! Identification
-            self.navigationController?.pushViewController(Identification, animated: true)
-        case 1:
-            let Usage = self.storyboard?.instantiateViewController(identifier: "Usage") as! Usage
-            self.present(Usage,animated: true,completion: nil)
-        case 2:
-            let Information = self.storyboard?.instantiateViewController(identifier: "Information") as! Information
-            self.navigationController?.pushViewController(Information, animated: true)
-        default:
-            return
-        }
     }
     
     //プロフィールを表示
@@ -141,44 +130,85 @@ class MyProfile: UIViewController,UITableViewDataSource,UITableViewDelegate {
 extension MyProfile:UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
     //セクションの数
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        if collectionView.tag == 0 {
+            return 1
+        }else{
+            return 1
+        }
     }
         
     //セルの数
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if collectionView.tag == 0 {
             return 3
+        }else{
+            return 3
+        }
     }
         
     //セルの中身
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let MypageHeader = collectionView.dequeueReusableCell(withReuseIdentifier: "MypageHeader", for: indexPath) as! MypageHeader
-        MypageHeader.setData(indexPath.row)
-        return MypageHeader
+        if collectionView.tag == 0 {
+            let MypageHeader = collectionView.dequeueReusableCell(withReuseIdentifier: "MypageHeader", for: indexPath) as! MypageHeader
+            MypageHeader.setData(indexPath.row)
+            return MypageHeader
+        }else{
+            let MyProfileCell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyProfileCell", for: indexPath) as! MyProfileCell
+            MyProfileCell.setData(indexPath.row)
+            MyProfileCell.layer.borderWidth = 1
+            MyProfileCell.layer.borderColor = UIColor.lightGray.cgColor
+            MyProfileCell.layer.cornerRadius = 20
+            MyProfileCell.backgroundColor = .white
+            return MyProfileCell
+        }
     }
     
     // Screenサイズに応じたセルサイズを返す
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-            
-        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
-        let availableWidth = view.frame.width  - paddingSpace
-        let widthPerItem = availableWidth / itemsPerRow
-        return CGSize(width: widthPerItem, height: self.collectionView.frame.height)
+        if collectionView.tag == 0 {
+            let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+            let availableWidth = view.frame.width  - paddingSpace
+            let widthPerItem = availableWidth / itemsPerRow
+            return CGSize(width: widthPerItem, height: self.collectionView.frame.height)
+        }else{
+            let paddingSpace = sectionInsets1.left * (itemsPerRow + 1)
+            let availableWidth = view.frame.width  - paddingSpace - 20
+            let widthPerItem = availableWidth / itemsPerRow
+            return CGSize(width: widthPerItem, height: 100 )
+        }
     }
         
     //セルを選択した時
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView.tag == 0 {
         switch indexPath.row {
         case 0:
             let goodpurchase = self.storyboard?.instantiateViewController(identifier: "GoodPointPurchase") as! GoodPointPurchase
             goodpurchase.modalTransitionStyle = .crossDissolve
             self.tabBarController?.tabBar.isHidden = true
             present(goodpurchase,animated: true,completion: nil)
+        case 1:
+            let UserStatus = self.storyboard?.instantiateViewController(identifier: "UserStatus") as! UserStatus
+            self.navigationController?.pushViewController(UserStatus, animated: true)
         case 2:
             let Purchase = self.storyboard?.instantiateViewController(identifier: "Purchase")
             let nav = UINavigationController.init(rootViewController: Purchase!)
             present(nav,animated: true,completion: nil)
         default:
             return
+        }
+        }else{
+            switch indexPath.row {
+            case 0:
+                let ident = self.storyboard?.instantiateViewController(identifier: "Identification") as! Identification
+                self.navigationController?.pushViewController(ident,animated: true)
+            case 2:
+                let Information = self.storyboard?.instantiateViewController(identifier: "Information") as! Information
+                Information.infoData = infoData
+                self.navigationController?.pushViewController(Information,animated: true)
+            default:
+                return
+            }
         }
     }
     

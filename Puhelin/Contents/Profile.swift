@@ -83,6 +83,7 @@ class Profile: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        HUD.show(.progress)
         
         if ButtonMode == 1{
             goodButton.setTitle("いいね！", for: .normal)
@@ -96,8 +97,9 @@ class Profile: UIViewController {
             self.tabBarController?.tabBar.isHidden = true
             self.navigationController?.navigationBar.shadowImage = UIImage()
             self.navigationController!.interactivePopGestureRecognizer!.isEnabled = true
-            //self.navigationController?.navigationBar.barTintColor = photoBackView.backgroundColor
-            
+            headerView.isHidden = true
+        }else{
+            headerView.isHidden = false
         }
         //ボタンの設定
         goodButton.addTarget(self, action: #selector(Button(_:)), for: UIControl.Event.touchUpInside)
@@ -107,6 +109,8 @@ class Profile: UIViewController {
         goodButton.tintColor = .white
         goodButton.frame = CGRect(x: (self.view.frame.width - 300) / 2, y: self.view.frame.height - 100, width: 300, height: 60)
         self.view.addSubview(goodButton)
+        
+        HUD.hide()
         
     }
     
@@ -129,6 +133,7 @@ class Profile: UIViewController {
     }
     
     @IBAction func headerViewAction(_ sender: Any) {
+        self.modalTransitionStyle = .coverVertical
         self.dismiss(animated: true, completion: nil)
     }
     

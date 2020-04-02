@@ -13,6 +13,7 @@ import GoogleMobileAds
 import FBSDKLoginKit
 import FirebaseMessaging
 import UserNotifications
+import IQKeyboardManagerSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
@@ -49,6 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
         }
 
         application.registerForRemoteNotifications()
+        IQKeyboardManager.shared.enable = true
         return true
     }
     

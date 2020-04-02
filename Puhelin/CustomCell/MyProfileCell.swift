@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MyProfileCell: UITableViewCell {
+class MyProfileCell: UICollectionViewCell {
 
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -16,15 +16,9 @@ class MyProfileCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        photo.tintColor = .darkGray
+        photo.tintColor = ColorData.darkturquoise
         titleLabel.textColor = .darkGray
         
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
     
     func setData(_ row: Int){

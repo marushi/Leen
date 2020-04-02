@@ -64,6 +64,7 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = true
         setUp()
+        self.tableView.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -72,6 +73,8 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
     
     override func viewWillDisappear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
+        presentingViewController?.beginAppearanceTransition(true, animated: animated)
+        presentingViewController?.endAppearanceTransition()
     }
     
     //戻るボタン
@@ -91,6 +94,7 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
     @IBAction func sentenceMes(_ sender: Any) {
         if textField.isHidden == true {
             textField.isHidden = false
+            textField.text = profileData?.sentenceMessage
             savesentenceButton.isHidden = false
         }else{
             textField.isHidden = true
@@ -197,9 +201,20 @@ extension EditProfile: UITableViewDelegate,UITableViewDataSource{
     
     @objc func pushButton(_ sender: UIButton, forEvent event:UIEvent){
         let row = sender.tag
-        if row == 0 || row == 1 || row == 3 || row == 12  {
+        if row == 1{
             return
-        }else{
+        }else if row == 0 {
+            let HobbyInputView = self.storyboard?.instantiateViewController(identifier: "HobbyInputView") as! HobbyInputView
+            HobbyInputView.inputMode = 0
+            HobbyInputView.nameText = profileData?.name
+            present(HobbyInputView,animated: false,completion: nil)
+        }else if row == 12{
+            let HobbyInputView = self.storyboard?.instantiateViewController(identifier: "HobbyInputView") as! HobbyInputView
+            HobbyInputView.inputMode = 1
+            HobbyInputView.nameText = profileData?.hobby
+            present(HobbyInputView,animated: false,completion: nil)
+        }
+        else{
         let Personality2 = self.storyboard?.instantiateViewController(identifier: "Personality2") as! Personality2
         Personality2.setUp(row)
         Personality2.modalTransitionStyle = .crossDissolve
@@ -235,6 +250,10 @@ extension EditProfile:perToEdit {
         default:
             return
         }
+        self.tableView.reloadData()
+    }
+    func perToEditNum(number: Int, row: Int) {
+        self.profileData?.tall = number
         self.tableView.reloadData()
     }
 

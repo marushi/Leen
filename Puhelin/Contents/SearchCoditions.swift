@@ -16,6 +16,7 @@ class SearchCoditions: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     let userDefaults = UserDefaults.standard
+    let sectionTitle = ["基本情報","詳細情報"]
     
     var UserArray:[UserData] = []
     var DB = ""
@@ -46,7 +47,7 @@ class SearchCoditions: UIViewController {
         button.backgroundColor = ColorData.salmon
         button.setTitleColor(.white, for: .normal)
         button.setTitle("条件変更", for: .normal)
-        button.frame = CGRect(x: (self.view.frame.width - 250) / 2, y: self.view.frame.height - 120, width: 250, height: 60)
+        button.frame = CGRect(x: (self.view.frame.width - 250) / 2, y: self.view.frame.height - 150, width: 250, height: 60)
         button.layer.cornerRadius = button.frame.size.height / 2
         self.view.addSubview(button)
         
@@ -83,15 +84,11 @@ class SearchCoditions: UIViewController {
         if num >= 0 {
             Ref = Ref.whereField("region", in: searchQuery!.prefecturs!)
         }
-        if searchQuery?.age != nil {
-        }
         if searchQuery?.bodyType != nil && searchQuery?.bodyType != "こだわらない" {
             Ref = Ref.whereField("bodyType", isEqualTo: searchQuery?.bodyType as Any)
         }
         if searchQuery?.talk != nil && searchQuery?.talk != "こだわらない"{
             Ref = Ref.whereField("talk", isEqualTo: searchQuery?.talk as Any)
-        }
-        if searchQuery?.tall != nil {
         }
         if searchQuery?.purpose  != nil && searchQuery?.purpose != "こだわらない" {
             Ref = Ref.whereField("purpose", isEqualTo: searchQuery?.purpose as Any)
@@ -111,6 +108,15 @@ class SearchCoditions: UIViewController {
         if searchQuery?.tabako != nil && searchQuery?.tabako != "こだわらない" {
             Ref = Ref.whereField("tabako", isEqualTo: searchQuery?.tabako as Any)
         }
+        if searchQuery?.minAge != nil{
+            Ref = Ref.whereField("age", isGreaterThanOrEqualTo: searchQuery?.minAge as Any )
+        }
+        if searchQuery?.maxAge != nil{
+            Ref = Ref.whereField("age", isLessThanOrEqualTo: searchQuery?.maxAge as Any )
+        }
+        if searchQuery?.tallClass != nil && searchQuery?.tallClass != "こだわらない" {
+            Ref = Ref.whereField("tallClass", isEqualTo: searchQuery?.tallClass as Any)
+        }
         
         Ref.getDocuments() { (querySnapshot, error) in
         if let error = error {
@@ -119,7 +125,8 @@ class SearchCoditions: UIViewController {
             return
             }
             // 取得したdocumentをもとにPostDataを作成し、postArrayの配列にする。
-            self.UserArray = querySnapshot!.documents.map { document in               print("DEBUG_PRINT: document取得 \(document.documentID)")
+            self.UserArray = querySnapshot!.documents.map { document in
+                print("DEBUG_PRINT: document取得 \(document.documentID)")
                 let userData = UserData(document: document)
                 return userData
             }
@@ -151,27 +158,56 @@ class SearchCoditions: UIViewController {
 
 //tableviewの設定
 extension SearchCoditions:UITableViewDelegate,UITableViewDataSource{
+
+    //セクションの数を返す.
+    func numberOfSections(in tableView: UITableView) -> Int {
+        print(sectionTitle.count)
+        return 2
+    }
+    
+    //セクションのタイトル
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionTitle[section]
+
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 11
+        if section == 0 {
+            return 4
+        }else if section == 1{
+            return 7
+        }else{
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchConditionsCell") as! SearchConditionsCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         cell.searchQuery = self.searchQuery
-        cell.setUp(indexPath.row)
+        if indexPath.section == 0 {
+            cell.setUp(indexPath.row)
+        }else if indexPath.section == 1{
+            cell.setUp(indexPath.row + 4)
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let SearchConditions2 = self.storyboard?.instantiateViewController(identifier: "SearchConditions2") as! SearchConditions2
-        if indexPath.row == 1 || indexPath.row == 2{
-            return
-        }else{
+        if indexPath.section == 0 && indexPath.row == 1{
+            let SearchConditionNumber = self.storyboard?.instantiateViewController(identifier: "SearchConditionNumber") as! SearchConditionNumber
+            SearchConditionNumber.modalTransitionStyle = .crossDissolve
+            SearchConditionNumber.pickerMode = indexPath.row
+            SearchConditionNumber.searchQuery = searchQuery
+            present(SearchConditionNumber,animated: true,completion: nil)
+        }else if indexPath.section == 0{
             SearchConditions2.setUp(indexPath.row)
-            SearchConditions2.searchQuery = self.searchQuery
+        }else if indexPath.section == 1{
+            SearchConditions2.setUp(indexPath.row + 4)
         }
+        SearchConditions2.searchQuery = self.searchQuery
         self.navigationController?.pushViewController(SearchConditions2, animated: true)
     }
 }
@@ -179,6 +215,7 @@ extension SearchCoditions:UITableViewDelegate,UITableViewDataSource{
 extension SearchCoditions:searchConditionDelegate{
     func searchQueryFunction(_ query: searchQueryData) {
         self.searchQuery = query
+        self.tableView.reloadData()
     }
 }
 

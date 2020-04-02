@@ -45,6 +45,7 @@ class editProfileCell: UITableViewCell {
                 content.setTitle("\(profileData!.age!)" + "歳", for: .normal)
             }
             title.text = titleArray[1]
+            content.setImage(UIImage(), for: .normal)
         case 2:
             content.setTitle(profileData?.region, for: .normal)
             title.text = titleArray[2]

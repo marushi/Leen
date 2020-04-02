@@ -45,14 +45,31 @@ class SearchConditionsCell: UITableViewCell {
             }
         case 1:
             titleLabel.text = titleArray[1]
-            self.subLabel.text = "こだわらない"
-        case 2:
-            titleLabel.text = titleArray[2]
-            if searchQuery?.talk == nil {
+            var minAge:String?
+            var maxAge:String?
+            if searchQuery?.minAge != nil{
+                minAge = "\(searchQuery!.minAge!)" + "歳"
+            }else{
+                minAge = ""
+            }
+            if searchQuery?.maxAge != nil{
+                maxAge = "\(searchQuery!.maxAge!)" + "歳"
+            }else{
+                maxAge = ""
+            }
+            if minAge == "" && maxAge == "" {
                 self.subLabel.text = "こだわらない"
             }else{
-                self.subLabel.text = searchQuery?.talk
+                self.subLabel.text = minAge! + " 〜 " + maxAge!
             }
+        case 2:
+            titleLabel.text = titleArray[2]
+            if searchQuery?.tallClass == nil{
+                self.subLabel.text = "こだわらない"
+            }else{
+                self.subLabel.text = searchQuery?.tallClass
+            }
+            
         case 3:
             titleLabel.text = titleArray[3]
             if searchQuery?.bodyType == nil {

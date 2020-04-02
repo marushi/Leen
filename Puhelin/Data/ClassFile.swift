@@ -152,3 +152,5 @@ extension UIView {
 extension Notification.Name {
     static let NewMessage = Notification.Name("NewMessage")
 }
+
+

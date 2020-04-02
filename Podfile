@@ -20,4 +20,5 @@ target 'Puhelin' do
   pod 'SkyWay'
   pod 'SCLAlertView'
   pod 'Google-Mobile-Ads-SDK'
+  pod 'IQKeyboardManagerSwift'
 end

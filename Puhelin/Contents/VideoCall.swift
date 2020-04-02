@@ -30,23 +30,30 @@ class VideoCall: UIViewController{
     var delegate:VideoModal?
     var timerNum: Int!
     var timer: Timer?
+    var possibleTime:Float!
 
     //部品
     @IBOutlet var remoteView: SKWVideo!
     @IBOutlet weak var localView: SKWVideo!
     @IBOutlet weak var lemoveButton: UIButton!
     @IBOutlet weak var timerLabel: UILabel!
+    @IBOutlet weak var progressTime: UIProgressView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        lemoveButton.layer.cornerRadius = lemoveButton.frame.size.height / 2
+        lemoveButton.layer.cornerRadius = 10
+        progressTime.transform = CGAffineTransform(scaleX: 1.0, y: 10.0)
+        
         let nav = self.navigationController
         delegate = nav!.viewControllers[nav!.viewControllers.count - 2] as? PrepareRoom
+        
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        timerNum = 180
+        self.possibleTime = 180
+        timerNum = Int(possibleTime)
         timerLabel.text = "\(timerNum!)"
         self.navigationController?.navigationBar.isHidden = true
         UIApplication.shared.isIdleTimerDisabled = true
@@ -189,6 +196,8 @@ class VideoCall: UIViewController{
             self.leaveRoom(lemoveButton as Any)
         }else{
             self.timerLabel.text = "\(timerNum!)"
+            let progressNum = 1 / possibleTime!
+            self.progressTime.setProgress(progressTime.progress + progressNum, animated: true)
         }
     }
 }

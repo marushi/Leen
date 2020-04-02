@@ -29,6 +29,7 @@ class ChatRoom: JSQMessagesViewController {
     let okayMes_2 = Array(0...24)
     let okayMes_3 = Array(0...3).map {($0 * 15)}
     let userDefaults = UserDefaults.standard
+    let button = UIButton(type: .system)
      
     //変数
     var chatroommode = 0
@@ -63,11 +64,31 @@ class ChatRoom: JSQMessagesViewController {
         datePicker.datePickerMode = UIDatePicker.Mode.date
         //オブザーバー
         self.addObserver(self, forKeyPath: "noneReadedMes", options: [.old,.new], context: nil)
+        //待合室へのボタン
+        // UIButtonのインスタンスを作成する
+        button.addTarget(self, action: #selector(callButton(_:)), for: .touchUpInside)
+        button.frame = CGRect(x: (self.navigationController?.navigationBar.frame.size.width)! - 80, y: 40, width: 70, height: 70)
+        let image = UIImage(systemName: "phone.fill")
+        button.setImage(image, for: .normal)
+        button.tintColor = ColorData.salmon
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.backgroundColor = .white
+        button.layer.borderColor = ColorData.salmon.cgColor
+        button.layer.borderWidth = 3
+        button.layer.cornerRadius = 10
+        button.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        button.layer.shadowColor = UIColor.darkGray.cgColor
+        button.layer.shadowOpacity = 0.5
+        button.layer.shadowRadius = 1
+        button.tag = 1
     }
     
     override func viewWillAppear(_ animated: Bool) {
         //下のバーを消す
         self.tabBarController?.tabBar.isHidden = true
+        self.navigationController?.view.addSubview(button)
         //送信を反映
         self.finishReceivingMessage(animated: true)
         if chatroommode == 0{
@@ -78,10 +99,13 @@ class ChatRoom: JSQMessagesViewController {
         }
         //既読処理
         readedFunction()
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         self.listener3.remove()
+        let buttonView = self.navigationController?.view.viewWithTag(1)
+        buttonView?.removeFromSuperview()
     }
     
     
@@ -145,9 +169,11 @@ class ChatRoom: JSQMessagesViewController {
         if userDefaults.integer(forKey: "gender") == 1 {
             self.OpponentId = data.female
             Users = Const.FemalePath
+            self.navigationItem.title = data.name2
         } else if userDefaults.integer(forKey: "gender") == 2 {
             self.OpponentId = data.male
             Users = Const.MalePath
+            self.navigationItem.title = data.name1
         }
         
         //メッセージ取得
@@ -339,7 +365,7 @@ class ChatRoom: JSQMessagesViewController {
     }
     
     
-    @IBAction func callButton(_ sender: Any) {
+    @objc func callButton(_ sender: Any) {
         let PrepareRoom = self.storyboard?.instantiateViewController(identifier: "PrepareRoom") as! PrepareRoom
         PrepareRoom.roomName = self.roomId
         PrepareRoom.opid = OpponentId

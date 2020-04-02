@@ -14,8 +14,6 @@ class ProfileHeaderCell: UICollectionViewCell {
     var data:MyProfileData?
     
     override func awakeFromNib() {
-        label.frame.size.width = self.frame.size.width
-        label.clipsToBounds = true
     }
     
     func setData(_ row:Int) {
@@ -49,6 +47,5 @@ class ProfileHeaderCell: UICollectionViewCell {
         default:
             return
         }
-        label.addBorder(width: 2, color: ColorData.salmon, position: .bottom)
     }
 }

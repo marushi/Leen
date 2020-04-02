@@ -17,21 +17,21 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vxk-3d-FoO">
-                        <rect key="frame" x="10" y="17.5" width="60" height="60"/>
+                        <rect key="frame" x="10" y="15" width="65" height="65"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="Vxk-3d-FoO" secondAttribute="height" multiplier="1:1" id="07a-VK-G0D"/>
-                            <constraint firstAttribute="height" constant="60" id="1EI-8X-4Vy"/>
+                            <constraint firstAttribute="height" constant="65" id="1EI-8X-4Vy"/>
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y8M-CZ-JnL">
-                        <rect key="frame" x="80" y="17.5" width="38.5" height="18"/>
+                        <rect key="frame" x="85" y="15" width="38.5" height="18"/>
                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                         <color key="textColor" red="1" green="0.50196078430000002" blue="0.44705882349999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="B7h-QX-lZJ">
-                        <rect key="frame" x="80" y="37.5" width="262" height="40"/>
+                        <rect key="frame" x="85" y="40" width="257" height="40"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="40" id="NC7-LC-jVS"/>

@@ -13,11 +13,12 @@ class searchQueryData: NSObject {
     var talk:String?
     var bodyType:String?
     var purpose:String?
-    var age:Int?
-    var tall:Int?
+    var minAge:Int?
+    var maxAge:Int?
     var job:String?
     var income:String?
     var personality:String?
     var alchoal:String?
     var tabako:String?
+    var tallClass:String?
 }

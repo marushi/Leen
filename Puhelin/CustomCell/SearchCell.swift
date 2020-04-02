@@ -15,11 +15,11 @@ class SearchCell: UICollectionViewCell {
     @IBOutlet weak var age: UILabel!
     @IBOutlet weak var sentenceMes: UITextView!
     @IBOutlet weak var view: UIView!
-    @IBOutlet weak var tagImage: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var identLabel: UILabel!
     @IBOutlet weak var phoneimage: UIImageView!
     @IBOutlet weak var phoneLabel: UILabel!
+    @IBOutlet weak var regionLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -28,13 +28,13 @@ class SearchCell: UICollectionViewCell {
         sentenceMes.textContainerInset = UIEdgeInsets.zero
         sentenceMes.textContainer.lineFragmentPadding = 0
         sentenceMes.isUserInteractionEnabled = false
-        dateLabel.backgroundColor = ColorData.salmon
+        dateLabel.backgroundColor = .red
         dateLabel.layer.cornerRadius = 10
         dateLabel.clipsToBounds = true
         dateLabel.layer.maskedCorners = [.layerMaxXMinYCorner,.layerMaxXMaxYCorner]
         identLabel.clipsToBounds = true
         identLabel.layer.cornerRadius = 10
-        identLabel.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
+        identLabel.layer.maskedCorners = [.layerMaxXMaxYCorner,.layerMaxXMinYCorner]
         identLabel.isHidden = true
         phoneLabel.isHidden = true
         phoneimage.isHidden = true
@@ -49,17 +49,16 @@ class SearchCell: UICollectionViewCell {
         photo.sd_setImage(with: imageRef)
         
         //その他データ
-        age.text = "\(userData.age!)" + "才　" + "\(userData.region!)"
+        age.text = "\(userData.age!)" + "才"
+        regionLabel.text = "\(userData.region!)"
         sentenceMes.text = userData.sentenceMessage
         
         //本人確認済みかどうか
         if userData.identification == true {
-            tagImage.tintColor = ColorData.darkturquoise
             identLabel.isHidden = false
             phoneimage.isHidden = false
             phoneLabel.isHidden = false
         } else {
-            tagImage.tintColor = ColorData.naplesYellow
             identLabel.isHidden = true
             phoneimage.isHidden = true
             phoneLabel.isHidden = true

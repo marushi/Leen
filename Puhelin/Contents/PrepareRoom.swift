@@ -33,7 +33,7 @@ class PrepareRoom: UIViewController {
         localStreamView.layer.borderWidth = 1
         localStreamView.layer.borderColor = ColorData.darkturquoise.cgColor
         localStreamView.layer.cornerRadius = 10
-        joinButton.layer.cornerRadius = joinButton.frame.size.width * 0.5
+        joinButton.layer.cornerRadius = joinButton.frame.size.height * 0.5
         joinButton.backgroundColor = ColorData.salmon
     }
     

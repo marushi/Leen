@@ -14,6 +14,8 @@ class ChatRoomData: NSObject {
     var roomId: String?
     var female: String?
     var male: String?
+    var name1:String?
+    var name2:String?
     
     
     init(document: QueryDocumentSnapshot) {
@@ -21,5 +23,7 @@ class ChatRoomData: NSObject {
         let Dic = document.data()
         self.female = Dic["2"] as? String
         self.male = Dic["1"] as? String
+        self.name1 = Dic["name1"] as? String
+        self.name2 = Dic["name2"] as? String
     }
 }

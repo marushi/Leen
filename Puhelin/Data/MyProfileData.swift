@@ -30,6 +30,7 @@ class MyProfileData: NSObject {
     var personality: String?
     var hobby: String?
     var token:String?
+    var tallClass: String?
     
     init(document: DocumentSnapshot) {
         self.uid = document.documentID
@@ -52,6 +53,7 @@ class MyProfileData: NSObject {
         self.personality = document.get("personality") as? String
         self.hobby = document.get("hobby") as? String
         self.token = document.get("token") as? String
+        self.tallClass = document.get("tallClass") as? String
     }
 }
 
