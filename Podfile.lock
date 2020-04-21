@@ -328,6 +328,7 @@ PODS:
     - SDWebImage/Core (= 5.6.1)
   - SDWebImage/Core (5.6.1)
   - SkyWay (1.2.3)
+  - XLPagerTabStrip (9.0.0)
 
 DEPENDENCIES:
   - FBSDKLoginKit
@@ -345,6 +346,7 @@ DEPENDENCIES:
   - RSKImageCropper
   - SCLAlertView
   - SkyWay
+  - XLPagerTabStrip
 
 SPEC REPOS:
   trunk:
@@ -386,6 +388,7 @@ SPEC REPOS:
     - SCLAlertView
     - SDWebImage
     - SkyWay
+    - XLPagerTabStrip
 
 SPEC CHECKSUMS:
   abseil: 18063d773f5366ff8736a050fe035a28f635fd27
@@ -426,7 +429,8 @@ SPEC CHECKSUMS:
   SCLAlertView: 6a77bb2edfc65e04dbe57725546cb4107a506b85
   SDWebImage: 7edb9c3ea661e77a66661f7f044de8c1b55d1120
   SkyWay: 801f398e04fdf33d3e4359fda1c748eb13e574a5
+  XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
 
-PODFILE CHECKSUM: a4fb905896fdc6b7d318f82bbb7cbe188c288888
+PODFILE CHECKSUM: f6f14025286ace4706b0065c83de4c59f70acfef
 
 COCOAPODS: 1.9.1

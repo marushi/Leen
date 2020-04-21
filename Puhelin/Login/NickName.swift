@@ -12,11 +12,18 @@ import SCLAlertView
 class NickName: UIViewController ,UITextFieldDelegate{
     
     @IBOutlet weak var text: UITextField!
+    @IBOutlet weak var titleLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.barTintColor = .white
+        self.navigationController?.navigationBar.shadowImage = UIImage()
 
         text.delegate = self
+        titleLabel.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        titleLabel.layer.shadowColor = UIColor.black.cgColor
+        titleLabel.layer.shadowOpacity = 0.6
+        titleLabel.layer.shadowRadius = 1
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
@@ -25,20 +32,20 @@ class NickName: UIViewController ,UITextFieldDelegate{
         let nameText = text?.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         
         //文字数が２文字以下の時
-        if (nameText!.count) < 3 {
-            SCLAlertView().showInfo("文字数が足りません。", subTitle: "名前は３文字以上で入力してください。")
+        if (nameText!.count) < 2 {
+            SCLAlertView().showInfo("文字数が足りません。", subTitle: "名前は2文字以上で入力してください。")
             return false
         }
             
         //文字数が15文字以上の場合
         if nameText!.count > 15 {
-            SCLAlertView().showInfo("名前が長すぎます。", subTitle: "名前は１５文字以下で入力してください。")
+            SCLAlertView().showInfo("名前が長すぎます。", subTitle: "名前は15文字以下で入力してください。")
             return false
         }
             
         //記号を除いた文字数が２文字以下の時
-        if nameText!.trimmingCharacters(in: .punctuationCharacters).count < 3 {
-            SCLAlertView().showInfo("入力エラー", subTitle: "記号以外に３文字以上の入力が必要です。")
+        if nameText!.trimmingCharacters(in: .punctuationCharacters).count < 2 {
+            SCLAlertView().showInfo("入力エラー", subTitle: "記号以外に2文字以上の入力が必要です。")
             return false
         }
         

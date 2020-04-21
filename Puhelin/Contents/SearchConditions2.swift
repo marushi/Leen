@@ -21,22 +21,13 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     var delegate:searchConditionDelegate?
     
     //データ用定数
-    let prefectures = ["こだわらない","北海道", "青森県", "岩手県", "宮城県", "秋田県",
-    "山形県", "福島県", "茨城県", "栃木県", "群馬県",
-    "埼玉県", "千葉県", "東京都", "神奈川県","新潟県",
-    "富山県", "石川県", "福井県", "山梨県", "長野県",
-    "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県",
-    "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県",
-    "鳥取県", "島根県", "岡山県", "広島県", "山口県",
-    "徳島県", "香川県", "愛媛県", "高知県", "福岡県",
-    "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県",
-    "鹿児島県", "沖縄県"]
+    let region = ["こだわらない","北海道","東北", "関東","中部","近畿","中国","四国","九州","沖縄"]
     let bodyType = ["こだわらない","ぽっちゃり","普通","細め"]
     let job = ["こだわらない","営業","会社員","医師","弁護士"]
     let income = ["こだわらない","200万","300万","1億以上"]
     let personality = ["こだわらない","マイペース","明るい"]
     let talk = ["こだわらない","おしゃべり","話す方","聞く方","聞き上手"]
-    let purpose = ["こだわらない","異性の友達","ライトな関係","真剣交際"]
+    let purpose = ["こだわらない","ライトな関係","真剣交際"]
     let alchoal = ["こだわらない","ほぼ毎日","週２〜３回","ときどき","たまに","あまり飲まない","飲めない"]
     let tabako = ["こだわらない","吸わない","ごくたまに","飲みの時だけ","1日に数本","1日に一箱"]
     let maleTall = ["こだわらない","〜160cm","160〜175cm","175cm〜"]
@@ -68,7 +59,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         if viewController is SearchCoditions {
             switch conditionCase {
             case 1:
-                self.searchQuery?.prefecturs = self.selectsArray
+                self.searchQuery?.region = self.selectsArray
             case 2:
                 self.searchQuery?.bodyType = self.selectRow
             case 3:
@@ -101,6 +92,25 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     //---------------------------Tableviewの設定ーーーーーーーーーーーーー
     //
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+
+        let label : UILabel = UILabel()
+        label.backgroundColor = ColorData.whitesmoke
+        label.textColor = .darkGray
+        label.textAlignment = .right
+        label.font = UIFont.systemFont(ofSize: 14)
+        if self.conditionCase == 1 {
+            label.text = "　※ 複数選択可（5つまで）"
+        }else{
+            label.text = "　※ 複数選択不可　　"
+        }
+        return label
+    }
+    
     //セルの数
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellNum
@@ -114,11 +124,31 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         switch conditionCase {
         case 1:
             tableView.allowsMultipleSelectionDuringEditing = true
-            cell.titleLabel.text = prefectures[indexPath.row]
-             if (selectsArray.contains(prefectures[indexPath.row])){
+            cell.titleLabel.text = region[indexPath.row]
+            //すでに検索条件が設定されている時
+            //文字列を都道府県配列から検索して一致する要素のインデックスパスをセレクト配列に入れる。
+            //チェックマークは下の処理でつけてもらう
+            if self.searchQuery?.prefecturs?.count != 0{
+                let searchdata = searchQuery?.prefecturs
+                for hikaku1 in searchdata! {
+                    for hikaku2 in self.region {
+                        if hikaku1 == hikaku2 {
+                        
+                            if selectsArray.contains(hikaku1) == false {
+                                self.selectsArray.append(hikaku1)
+                            }
+                        }
+                    }
+                }
+                self.searchQuery?.prefecturs = []
+            }
+             if (selectsArray.contains(region[indexPath.row])){
                 cell.accessoryType = .checkmark
             }else{
                 cell.accessoryType = .none
+            }
+            if selectsArray == [] && indexPath.row == 0{
+                cell.accessoryType = .checkmark
             }
         case 2:
             tableView.allowsMultipleSelectionDuringEditing = false
@@ -163,6 +193,10 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         case 7:
             tableView.allowsMultipleSelectionDuringEditing = false
             cell.titleLabel.text = purpose[indexPath.row]
+            if let  str = self.searchQuery?.purpose {
+                self.selectRow = str
+                searchQuery?.purpose = nil
+            }
             if (selectRow == purpose[indexPath.row]){
                 cell.accessoryType = .checkmark
             }else{
@@ -186,6 +220,10 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
             }
         case 10:
             tableView.allowsMultipleSelectionDuringEditing = true
+            if let  str = self.searchQuery?.tallClass {
+                self.selectRow = str
+                searchQuery?.tallClass = nil
+            }
             if UserDefaults.standard.integer(forKey: "gender") == 1{
                 cell.titleLabel.text = femaleTall[indexPath.row]
                 if (selectRow == femaleTall[indexPath.row]){
@@ -213,13 +251,16 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         let cell = tableView.cellForRow(at: indexPath)!
         //セルのチェックがない時
         if(cell.accessoryType == UITableViewCell.AccessoryType.none){
-            cell.accessoryType = .checkmark
             switch conditionCase {
             case 1:
                 if indexPath.row == 0{
                     selectsArray = []
+                    cell.accessoryType = .checkmark
+                }else if selectsArray.count == 5 && indexPath.row != 0 {
+                    return
                 }else{
-                    self.selectsArray.append(prefectures[indexPath.row])
+                    self.selectsArray.append(region[indexPath.row])
+                    cell.accessoryType = .checkmark
                 }
             case 2:
                 selectRow = bodyType[indexPath.row]
@@ -250,10 +291,10 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         //セルにチェックがある時
         else{
             cell.accessoryType = .none
-            if conditionCase  == 0 {
+            if conditionCase  == 1 {
                 if indexPath.row != 0 {
                 let  listNumber = selectsArray.filter ({ (n:String) -> Bool in
-                    if n != prefectures[indexPath.row]{
+                    if n != region[indexPath.row]{
                         return true
                     }else{
                         return false
@@ -273,7 +314,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     func setUp(_ row:Int) {
         switch row {
         case 0:
-            cellNum = prefectures.count
+            cellNum = region.count
             conditionCase = 1
         case 2:
             conditionCase = 10 // 身長後から追加
@@ -283,8 +324,8 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
                 cellNum = maleTall.count
             }
         case 3:
-            cellNum = bodyType.count
-            conditionCase = 2
+            cellNum = purpose.count
+            conditionCase = 7
         case 4:
             cellNum = job.count
             conditionCase = 3

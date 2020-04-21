@@ -10,6 +10,7 @@ import UIKit
 
 class searchQueryData: NSObject {
     var prefecturs:[String]? = []
+    var region:[String]? = []
     var talk:String?
     var bodyType:String?
     var purpose:String?

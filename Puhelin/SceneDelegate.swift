@@ -7,11 +7,13 @@
 //
 
 import UIKit
+import Firebase
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    let userDefaults = UserDefaults.standard
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -30,6 +32,45 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        //通知をゼロにする
+        for (key, value) in UserDefaults.standard.dictionaryRepresentation().sorted(by: { $0.0 < $1.0 }) {
+            print("- \(key) => \(value)")
+        }
+        if UserDefaults.standard.integer(forKey: "gender") == 1 || UserDefaults.standard.integer(forKey: "gender") == 2 {
+            UIApplication.shared.applicationIconBadgeNumber = 0
+            let ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(UserDefaults.standard.string(forKey: "uid")!)
+            ref.getDocument(){(data,error) in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                //もしも同じ端末で２つのアカウントを使い分ける場合に必要
+                if data?.get("LoginDate") == nil {
+                    self.userDefaults.set(15, forKey: UserDefaultsData.remainGoodNum)
+                }else{
+                let lastlogin:Timestamp = data?.get("LoginDate") as! Timestamp
+                let loginDate: Date = lastlogin.dateValue()
+                let date:Date = Date()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "YYYY年MM月dd日"
+                let lastLoginDate = "\(formatter.string(from: loginDate))"
+                let Today = "\(formatter.string(from: date))"
+                //違うなら回復
+                if lastLoginDate != Today {
+                    let num = self.userDefaults.integer(forKey: "goodMode")
+                    if num == 0{
+                        self.userDefaults.set(15, forKey: UserDefaultsData.remainGoodNum)
+                    }else if num == 1 {
+                        self.userDefaults.set(30, forKey: UserDefaultsData.remainGoodNum)
+                    }
+                }
+                }
+                ref.setData(["newMesNum":0
+                ,"LoginDate":Date()], merge: true)
+            }
+            
+        }
+        
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

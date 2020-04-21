@@ -10,12 +10,13 @@ import UIKit
 
 class SearchConditionsCell: UITableViewCell {
 
-    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subLabel: UILabel!
+    @IBOutlet weak var mageView: UIImageView!
+    @IBOutlet weak var titleLabel: UILabel!
     
     var searchQuery:searchQueryData?
     
-    let titleArray:[String] = ["居住地","年齢","身長","体型","職種","年収","性格","会話","目的","お酒","タバコ"]
+    let titleArray:[String] = ["居住地","年齢","身長","出会いの目的","職種","年収","性格","会話","目的","お酒","タバコ"]
     
     
     override func awakeFromNib() {
@@ -33,13 +34,13 @@ class SearchConditionsCell: UITableViewCell {
         switch row {
         case 0:
             titleLabel.text = titleArray[0]
-            if searchQuery?.prefecturs == nil || searchQuery?.prefecturs == [] {
+            if searchQuery?.region == nil || searchQuery?.region == [] {
                 subLabel.text = "こだわらない"
             }else{
-                let Num:Int = searchQuery!.prefecturs!.count - 1
+                let Num:Int = searchQuery!.region!.count - 1
                 var str:String = ""
                 for i in 0...Num {
-                    str = str + "\(searchQuery!.prefecturs![i]),"
+                    str = str + "\(searchQuery!.region![i]),"
                 }
                 self.subLabel.text = str
             }
@@ -72,34 +73,34 @@ class SearchConditionsCell: UITableViewCell {
             
         case 3:
             titleLabel.text = titleArray[3]
-            if searchQuery?.bodyType == nil {
+            if searchQuery?.purpose == nil {
                 self.subLabel.text = "こだわらない"
             }else{
-                self.subLabel.text = searchQuery?.bodyType
+                self.subLabel.text = searchQuery?.purpose
             }
         case 4:
-            titleLabel.text = titleArray[4]
+           // titleLabel.text = titleArray[4]
             if searchQuery?.job == nil {
                 self.subLabel.text = "こだわらない"
             }else{
                 self.subLabel.text = searchQuery?.job
             }
         case 5:
-            titleLabel.text = titleArray[5]
+           // titleLabel.text = titleArray[5]
             if searchQuery?.income == nil {
                 self.subLabel.text = "こだわらない"
             }else{
                 self.subLabel.text = searchQuery?.income
             }
         case 6:
-            titleLabel.text = titleArray[6]
+            //titleLabel.text = titleArray[6]
             if searchQuery?.personality == nil {
                 self.subLabel.text = "こだわらない"
             }else{
                 self.subLabel.text = searchQuery?.personality
             }
         case 7:
-            titleLabel.text = titleArray[7]
+            //titleLabel.text = titleArray[7]
             if searchQuery?.talk == nil {
                 self.subLabel.text = "こだわらない"
             }else{
@@ -107,7 +108,7 @@ class SearchConditionsCell: UITableViewCell {
             }
         
         case 8:
-            titleLabel.text = titleArray[8]
+            //titleLabel.text = titleArray[8]
             if searchQuery?.purpose == nil {
                 self.subLabel.text = "こだわらない"
             }else{
@@ -115,7 +116,7 @@ class SearchConditionsCell: UITableViewCell {
             }
         
         case 9:
-            titleLabel.text = titleArray[9]
+           // titleLabel.text = titleArray[9]
             if searchQuery?.alchoal == nil {
                 self.subLabel.text = "こだわらない"
             }else{
@@ -123,7 +124,7 @@ class SearchConditionsCell: UITableViewCell {
             }
         
         case 10:
-            titleLabel.text = titleArray[10]
+            //titleLabel.text = titleArray[10]
             if searchQuery?.tabako == nil {
                 self.subLabel.text = "こだわらない"
             }else{

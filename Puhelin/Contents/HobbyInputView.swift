@@ -16,11 +16,15 @@ class HobbyInputView: UIViewController,UITextFieldDelegate {
     
     var inputMode:Int?
     var nameText:String?
+    var delegate:perToEdit?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         contentView.layer.cornerRadius = 10
         textField.delegate = self
+        //delegateの設定
+        let nav = self.presentingViewController as? UINavigationController
+        delegate = nav?.topViewController as? EditProfile
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -29,8 +33,6 @@ class HobbyInputView: UIViewController,UITextFieldDelegate {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        presentingViewController?.beginAppearanceTransition(true, animated: animated)
-        presentingViewController?.endAppearanceTransition()
         self.tabBarController?.tabBar.isHidden = false
     }
     
@@ -43,23 +45,30 @@ class HobbyInputView: UIViewController,UITextFieldDelegate {
     //保存
     @IBAction func registButton(_ sender: Any) {
         self.modalTransitionStyle = .crossDissolve
+        var num:Int?
         
         if UserDefaults.standard.integer(forKey: "gender") == 1{
             let Ref = Firestore.firestore().collection(Const.MalePath).document(UserDefaults.standard.string(forKey: "uid")!)
             if inputMode == 0{
+                num = 9
                 Ref.setData(["name":textField.text!],merge: true)
+                UserDefaults.standard.set(textField.text!, forKey: "name")
             }else{
+                num = 10
                 Ref.setData(["hobby":textField.text!],merge: true)
             }
         }else{
             let Ref = Firestore.firestore().collection(Const.FemalePath).document(UserDefaults.standard.string(forKey: "uid")!)
             if inputMode == 0{
+                num = 9
                 Ref.setData(["name":textField.text!],merge: true)
+                UserDefaults.standard.set(textField.text!, forKey: "name")
             }else{
+                num = 10
                 Ref.setData(["hobby":textField.text!],merge: true)
             }
         }
-        
+        delegate?.perToEditText(text: textField.text!, row: num!)
         self.dismiss(animated: true, completion: nil)
     }
     

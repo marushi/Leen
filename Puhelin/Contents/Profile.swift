@@ -19,18 +19,23 @@ class Profile: UIViewController {
     @IBOutlet weak var introTextView: UITextView!
     @IBOutlet weak var view2: UIView!
     @IBOutlet weak var sentenceMessage: UITextView!
-    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var view3: UIView!
     @IBOutlet weak var view4: UIView!
     @IBOutlet weak var weekLabel: UIButton!
     @IBOutlet weak var phoneLabel: UIButton!
     @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var headerView: UIView!
-    @IBOutlet weak var downTriangle: UIImageView!
     @IBOutlet weak var photoBackView: UIView!
+    @IBOutlet weak var goodView: UIView!
+    @IBOutlet weak var goodimage: UIImageView!
+    @IBOutlet weak var goodlabel: UILabel!
+    @IBOutlet weak var goodlabel2: UILabel!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var limitGoodNum: UILabel!
+    @IBOutlet weak var tableView: UITableView!
     
     
     //定数
+    let fromAppDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
     let goodButton = UIButton(type: .system)
     let userDefaults = UserDefaults.standard
     let sectionInsets = UIEdgeInsets(top: 0, left: 1, bottom: 0 , right: 0)
@@ -40,32 +45,24 @@ class Profile: UIViewController {
     var ButtonMode:Int?
     var listener: ListenerRegistration!
     var opUserId:String?
-    var Users:String?
     var profileData:MyProfileData?
+    var searchUid:String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let viewCornerRadius:CGFloat = 20
         //アウトレットの設定
-        photo.layer.cornerRadius = (self.view.frame.size.width - 80) / 2
-        photo.layer.borderColor = ColorData.turquoise.cgColor
-        photo.layer.borderWidth = 5
-        photoBackView.backgroundColor = ColorData.profileback
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.rowHeight = 60
+        tableView.tableFooterView = UIView(frame: .zero)
+        tableView.layer.cornerRadius = viewCornerRadius
         view3.layer.cornerRadius = viewCornerRadius
         view3.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
         view4.layer.cornerRadius = viewCornerRadius
-        headerView.isHidden = true
-        headerView.addBorder(width: 1, color: .lightGray, position: .bottom)
-        let angle = 180 * CGFloat.pi / 180
-        let transRotate = CGAffineTransform(rotationAngle: CGFloat(angle));
-        downTriangle.transform = transRotate
         sentenceMessage.textContainerInset = UIEdgeInsets.zero
         sentenceMessage.textContainer.lineFragmentPadding = 0
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.layer.cornerRadius = viewCornerRadius
-        tableView.rowHeight = 40
         introTextView.isUserInteractionEnabled = false
         weekLabel.layer.cornerRadius = weekLabel.frame.size.height / 2
         weekLabel.isEnabled = false
@@ -75,61 +72,84 @@ class Profile: UIViewController {
         phoneLabel.adjustsImageWhenDisabled = false
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.addBorder(width: 1, color: .lightGray, position: .top)
         collectionView.layer.cornerRadius = viewCornerRadius
         collectionView.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
         collectionView.isUserInteractionEnabled = false
         
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        HUD.show(.progress)
-        
-        if ButtonMode == 1{
-            goodButton.setTitle("いいね！", for: .normal)
-            goodButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
-            headerView.isHidden = false
-        }else if ButtonMode == 2 {
-            goodButton.setTitle("話してみる！", for: .normal)
-            headerView.isHidden = false
-        }else if ButtonMode == 3{
-            goodButton.setTitle("編集する", for: .normal)
-            self.tabBarController?.tabBar.isHidden = true
-            self.navigationController?.navigationBar.shadowImage = UIImage()
-            self.navigationController!.interactivePopGestureRecognizer!.isEnabled = true
-            headerView.isHidden = true
-        }else{
-            headerView.isHidden = false
-        }
         //ボタンの設定
         goodButton.addTarget(self, action: #selector(Button(_:)), for: UIControl.Event.touchUpInside)
         goodButton.layer.cornerRadius = 30
         goodButton.backgroundColor = UIColor.init(red: 1, green: 0.5, blue: 0.5, alpha: 1)
         goodButton.setTitleColor(.white, for: .normal)
         goodButton.tintColor = .white
-        goodButton.frame = CGRect(x: (self.view.frame.width - 300) / 2, y: self.view.frame.height - 100, width: 300, height: 60)
+        goodButton.layer.shadowOffset = CGSize(width: 0.0, height: 6.0)
+        goodButton.layer.shadowColor = UIColor.lightGray.cgColor
+        goodButton.layer.shadowOpacity = 0.7
+        goodButton.layer.shadowRadius = 6
         self.view.addSubview(goodButton)
         
-        HUD.hide()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        HUD.show(.progress)
+        
+        goodView.isHidden = true
+        self.tabBarController?.tabBar.isHidden = true
+        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            // 文字の色
+            .foregroundColor: ColorData.salmon
+        ]
+        self.navigationController?.navigationBar.tintColor = ColorData.salmon
+        
+        if ButtonMode == 1{
+            self.setData(searchUid!)
+            goodButton.setTitle("いいね！", for: .normal)
+            goodButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
+            //いいね！ボタンを灰色に
+            if userDefaults.integer(forKey: UserDefaultsData.remainGoodNum) == 0 {
+                goodButton.backgroundColor = .lightGray
+            }
+            //いいね済みの場合
+            let selectId = fromAppDelegate.selectIdArray
+            if selectId.firstIndex(of: opUserId!) != nil {
+                self.goodButton.setTitle("いいね！済み", for: .normal)
+                self.goodButton.backgroundColor = .lightGray
+                self.goodButton.isEnabled = false
+            }
+            //相手のあしあとリストに自分を追加
+            let footRef = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(opUserId!).collection(Const.FoorPrints).document(userDefaults.string(forKey: "uid")!)
+            let footDic = ["uid":userDefaults.string(forKey: "uid")!,"date":Date()] as [String : Any]
+            footRef.setData(footDic)
+        }else if ButtonMode == 2 {
+            goodButton.setTitle("話してみる！", for: .normal)
+        }else if ButtonMode == 3{
+            goodButton.setTitle("編集する", for: .normal)
+            profileSetData()
+        }else{
+        }
+        
+        goodButton.frame = CGRect(x: (self.view.frame.width - 300) / 2, y: self.view.frame.height - 100, width: 300, height: 60)
+        
         
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            // 文字の色
+            .foregroundColor: UIColor.black
+        ]
+        self.navigationController?.navigationBar.tintColor = .lightGray
         if ButtonMode == 3 {
             self.tabBarController?.tabBar.isHidden = false
-            self.navigationController!.navigationBar.setBackgroundImage(nil, for: .default)
-            self.navigationController!.navigationBar.shadowImage = nil
             self.navigationController!.interactivePopGestureRecognizer!.isEnabled = false
         }
     }
     
-    //スクロールで隠す
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
-            self.navigationController?.setNavigationBarHidden(true, animated: true)
-        } else {
-            self.navigationController?.setNavigationBarHidden(false, animated: true)
-        }
+    override func viewDidAppear(_ animated: Bool) {
+        collectionView.addBorder(width: 1, color: .lightGray, position: .top)
+        HUD.hide()
     }
     
     @IBAction func headerViewAction(_ sender: Any) {
@@ -145,19 +165,13 @@ class Profile: UIViewController {
     
     //いいねユーザーを取得する時
     func setData(_ userData: String) {
+        //データ入れ
+        opUserId = userData
         
-        //性別毎に相手のuidを取得
-        if UserDefaults.standard.integer(forKey: "gender") == 1 {
-            opUserId = userData
-            Users = "Female_Users"
-        }else if UserDefaults.standard.integer(forKey: "gender") == 2 {
-            opUserId = userData
-            Users = "Male_Users"
-        }
         
         if listener == nil{
         // listener未登録なら、登録してスナップショットを受信する
-            let Ref = Firestore.firestore().collection(Users!).document(opUserId!)
+            let Ref = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(opUserId!)
             listener = Ref.addSnapshotListener() { (querySnapshot, error) in
             if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
@@ -165,9 +179,11 @@ class Profile: UIViewController {
             }
                 self.profileData = MyProfileData(document: querySnapshot!)
             //画像設定
-            self.photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot?.get("photoId") as! String)
-            self.photo.sd_setImage(with: imageRef)
+            if let photoId:String = querySnapshot?.get("photoId") as? String {
+                self.photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
+                let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+                self.photo.sd_setImage(with: imageRef)
+            }
             //その他情報設定
             let name = querySnapshot?.get("name")
             let age =  querySnapshot?.get("age")
@@ -194,6 +210,7 @@ class Profile: UIViewController {
                     self.phoneLabel.isHidden = true
                 }
             self.tableView.reloadData()
+            self.collectionView.reloadData()
             }
         }
     }
@@ -217,8 +234,10 @@ class Profile: UIViewController {
             }
             self.profileData = MyProfileData(document: document!)
             //自分の情報を設定
-            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(self.profileData!.photoId!)
-            self.photo.sd_setImage(with: imageRef)
+            if let photoId = self.profileData?.photoId {
+                let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+                self.photo.sd_setImage(with: imageRef)
+            }
             
             let name = self.profileData!.name
             let age = self.profileData!.age
@@ -231,27 +250,85 @@ class Profile: UIViewController {
             self.tableView.reloadData()
             self.collectionView.reloadData()
         }
-        
-        ButtonMode = 3
     }
     
     //イイネボタンの処理
     @objc func Button(_ sender: Any) {
         if ButtonMode == 1{
+            self.view.isUserInteractionEnabled = false
+            self.scrollView.isScrollEnabled = false
+            if userDefaults.integer(forKey: UserDefaultsData.remainGoodNum) == 0{                self.goodView.backgroundColor = ColorData.turquoise
+                self.goodView.isHidden = false
+                self.goodView.alpha = 1
+                self.limitGoodNum.alpha = 1
+                self.goodimage.isHidden = true
+                self.goodlabel.isHidden = true
+                self.goodlabel2.isHidden = true
+                
+                UIView.animateKeyframes(withDuration: 1.8, delay: 0, animations: {
+                    UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.1, animations: {
+                        self.scrollView.contentOffset = CGPoint(x: 0, y: self.scrollView.contentInset.top)
+                    })
+                    
+                    UIView.addKeyframe(withRelativeStartTime: 0.7, relativeDuration: 0.3, animations: {
+                        AudioServicesPlaySystemSound(1519)
+                        self.goodView.alpha = 0
+                        self.limitGoodNum.alpha = 0
+                    })
+                }, completion: { _ in
+                    self.goodView.isHidden = true
+                    self.view.isUserInteractionEnabled = true
+                    self.scrollView.isScrollEnabled = true
+                })
+                return
+            }
             //Hud
             HUD.show(.progress)
             //相手のいいねリストに自分を追加
             let Ref = Firestore.firestore().collection(UserDefaults.standard.string(forKey: "DB")!).document(opUserId!).collection(Const.GoodPath).document(userDefaults.string(forKey: "uid")!)
-            let Dic = ["uid": userDefaults.string(forKey: "uid")!,"name": userDefaults.string(forKey: "name")!] as [String: Any]
+            let Dic = ["uid": userDefaults.string(forKey: "uid")!
+                ,"name":userDefaults.string(forKey: "name")!
+                ,"date":Date()] as [String: Any]
                 Ref.setData(Dic)
+            //自分のセレクトリストに相手を保存
+            let selectRef = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!).collection(Const.SelectUsers).document(opUserId!)
+            let selectDic = ["uid": opUserId!,"date":Date()] as [String : Any]
+            selectRef.setData(selectDic)
             //--------ポイント処理-------
+            //goodpoint
             var goodpoint = self.userDefaults.integer(forKey: UserDefaultsData.GoodPoint)
             goodpoint -= 1
             self.userDefaults.set(goodpoint, forKey: UserDefaultsData.GoodPoint)
+            //remaingoodnum
+            var remainNum = self.userDefaults.integer(forKey: UserDefaultsData.remainGoodNum)
+            remainNum -= 1
+            self.userDefaults.set(remainNum, forKey: UserDefaultsData.remainGoodNum)
             //-------------------------
             HUD.hide()
-            AudioServicesPlaySystemSound(1519)
-                self.dismiss(animated: true, completion: nil)
+            //いいねアニメーションの追加
+            UIView.animateKeyframes(withDuration: 1, delay: 0, animations: {
+                self.goodView.isHidden = false
+                self.limitGoodNum.isHidden = true
+                self.view.isUserInteractionEnabled = false
+                UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2, animations: {
+                    self.scrollView.contentOffset = CGPoint(x: 0, y: self.scrollView.contentInset.top -  2 * ( self.navigationController?.navigationBar.frame.size.height)!)
+                })
+                UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.2, animations: {
+                    AudioServicesPlaySystemSound(1519)
+                    let angle2 = CGFloat((-30 * .pi) / 180.0)
+                    self.goodimage.transform = CGAffineTransform(rotationAngle: angle2)
+                })
+                
+                UIView.addKeyframe(withRelativeStartTime: 0.7, relativeDuration: 0.2, animations: {
+                    let angle = CGFloat((5 * .pi) / 180.0)
+                    self.goodimage.transform = CGAffineTransform(rotationAngle: angle)
+                })
+            }, completion: { _ in
+                self.view.isUserInteractionEnabled = true
+                self.scrollView.isScrollEnabled = true
+                self.navigationController?.popViewController(animated: true)
+            })
+            
         }else if ButtonMode == 2 {
             //HUD
             HUD.flash(.success,delay: 0.5)
@@ -274,9 +351,6 @@ class Profile: UIViewController {
                     ,"text": "いいねありがとうございます！"
                     ,"sendTime": Date() as Any] as [String:Any]
                 MesRef.setData(Dic)
-                
-                let ref = Firestore.firestore().collection(Const.MalePath).document(userDefaults.string(forKey: "uid")!).collection(Const.GoodPath).document(opUserId!)
-                ref.delete()
             
             } else if UserDefaults.standard.integer(forKey: "gender") == 2 {
                 let DIc = ["2": userDefaults.string(forKey: "uid")!
@@ -295,9 +369,19 @@ class Profile: UIViewController {
                     ,"sendTime": Date() as Any] as [String:Any]
                 MesRef.setData(Dic)
                 
-                let ref = Firestore.firestore().collection(Const.FemalePath).document(userDefaults.string(forKey: "uid")!).collection(Const.GoodPath).document(opUserId!)
-                ref.delete()
             }
+            //自分のマッチングリストに入れる
+            let matchRef = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!).collection(Const.MatchingPath).document(opUserId!)
+            let matchDic = ["uid":opUserId!,"date":Date()] as [String : Any]
+            matchRef.setData(matchDic)
+            //相手のマッチングリストに入れる
+            let opMatchRef = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(
+                opUserId!).collection(Const.MatchingPath).document(userDefaults.string(forKey: "uid")!)
+            let opMatchDic = ["uid":userDefaults.string(forKey: "uid")!,"date":Date()] as [String : Any]
+            opMatchRef.setData(opMatchDic)
+            //GoodUsersからデータを削除
+            let ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!).collection(Const.GoodPath).document(opUserId!)
+            ref.delete()
             self.dismiss(animated: true, completion: nil)
         }else {
             let EditProfile = self.storyboard?.instantiateViewController(identifier: "EditProfile") as! EditProfile
@@ -335,6 +419,7 @@ extension Profile : UICollectionViewDataSource,UICollectionViewDelegate,UICollec
         return CGSize(width: widthPerItem, height: collectionView.frame.size.height)
     }
 }
+
 extension Profile:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 13

@@ -21,4 +21,5 @@ target 'Puhelin' do
   pod 'SCLAlertView'
   pod 'Google-Mobile-Ads-SDK'
   pod 'IQKeyboardManagerSwift'
+  pod 'XLPagerTabStrip'
 end

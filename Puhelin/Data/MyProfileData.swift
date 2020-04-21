@@ -18,7 +18,7 @@ class MyProfileData: NSObject {
     var photoId: String?
     var sentenceMessage: String?
     var identification: Bool?
-    var signupDate: Date?
+    var signupDate: Timestamp?
     var tall: Int?
     var bodyType: String?
     var purpose: String?
@@ -31,6 +31,9 @@ class MyProfileData: NSObject {
     var hobby: String?
     var token:String?
     var tallClass: String?
+    var birthYear: Int?
+    var birthMonth: Int?
+    var birthDay: Int?
     
     init(document: DocumentSnapshot) {
         self.uid = document.documentID
@@ -41,7 +44,7 @@ class MyProfileData: NSObject {
         self.photoId = document.get("photoId") as? String
         self.sentenceMessage = document.get("sentenceMessage") as? String
         self.identification = document.get("identification") as? Bool
-        self.signupDate = document.get("signupDate") as? Date
+        self.signupDate = document.get("signupDate") as? Timestamp
         self.tall = document.get("tall") as? Int
         self.bodyType = document.get("bodyType") as? String
         self.purpose = document.get("purpose") as? String
@@ -54,6 +57,10 @@ class MyProfileData: NSObject {
         self.hobby = document.get("hobby") as? String
         self.token = document.get("token") as? String
         self.tallClass = document.get("tallClass") as? String
+        self.birthYear = document.get("birthYear") as? Int
+        self.birthMonth = document.get("birthMonth") as? Int
+        self.birthDay = document.get("birthDay") as? Int
+        
     }
 }
 

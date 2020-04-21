@@ -16,6 +16,7 @@ class TalkCell: UITableViewCell {
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var textMessage: UITextView!
+    @IBOutlet weak var dateLabel: UILabel!
     
     var jsqMessages:[MessageData]?
     @objc dynamic var noneReadedMes:Int = 0
@@ -41,7 +42,6 @@ class TalkCell: UITableViewCell {
     }
     
     func setData(_ userData: ChatRoomData) {
-        var listener: ListenerRegistration!
         var listener2: ListenerRegistration!
         var listener3: ListenerRegistration!
         var opUserId:String?
@@ -57,26 +57,24 @@ class TalkCell: UITableViewCell {
             Users = "Male_Users"
         }
         
-        if listener == nil{
-        // listener未登録なら、登録してスナップショットを受信する
-            let Ref = Firestore.firestore().collection(Users!).document(opUserId!)
-            listener = Ref.addSnapshotListener() { (querySnapshot, error) in
-            if let error = error {
-                print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
-                return
-            }
-            self.photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot?.get("photoId") as! String)
-            self.photo.sd_setImage(with: imageRef)
-            let name = querySnapshot?.get("name") as! String
-            let age = querySnapshot?.get("age") as! Int
-            let region = querySnapshot?.get("region") as! String
-            self.nameLabel.text = "\(name) " + "\(age)歳 " + "\(region)"
-            }
+        let Ref = Firestore.firestore().collection(Users!).document(opUserId!)
+        Ref.getDocument() { (querySnapshot, error) in
+        if let error = error {
+            print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
+            return
         }
+        self.photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
+        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot?.get("photoId") as! String)
+        self.photo.sd_setImage(with: imageRef)
+        let name = querySnapshot?.get("name") as! String
+        let age = querySnapshot?.get("age") as! Int
+        let region = querySnapshot?.get("region") as! String
+        self.nameLabel.text = "\(name) " + "\(age)歳 " + "\(region)"
+        }
+        
         if listener2 == nil{
         // listener未登録なら、登録してスナップショットを受信する
-            let Ref = Firestore.firestore().collection(Const.ChatPath).document(userData.roomId!).collection(Const.MessagePath).order(by: "sendTime",descending: true)
+            let Ref = Firestore.firestore().collection(Const.ChatPath).document(userData.roomId!).collection(Const.MessagePath).order(by: "sendTime",descending: true).limit(to: 1)
             listener2 = Ref.addSnapshotListener() { (querySnapshot, error) in
             if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
@@ -89,6 +87,15 @@ class TalkCell: UITableViewCell {
                 }
                 if self.jsqMessages!.count != 0 {
                     self.textMessage.text = self.jsqMessages![0].text
+                    let date:Timestamp = self.jsqMessages![0].sendTime!
+                    let recieveDate: Date = date.dateValue()
+                    // 日付のフォーマット
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "MM月dd日"
+                    //(from: datePicker.date))を指定してあげることで
+                    //datePickerで指定した日付が表示される
+                    let showDate = "\(formatter.string(from: recieveDate))"
+                    self.dateLabel.text = "\(showDate)"
                 }else{
                     self.textMessage.text = ""
                 }
@@ -124,7 +131,7 @@ class TalkCell: UITableViewCell {
             if plusNum < 0 {
                 return
             }
-            Talk.count += plusNum
+            talk_before.count += plusNum
             NotificationCenter.default.post(name: .NewMessage, object: nil)
         }
     }

@@ -11,13 +11,13 @@ import Firebase
 
 class SMS: UIViewController {
 
+    @IBOutlet weak var button: UIButton!
     @IBOutlet weak var confirmCodeTextField: UITextField!
     let userDefaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        button.layer.cornerRadius = button.frame.size.height / 2
     }
     
     @IBAction func Button(_ sender: Any) {
@@ -37,8 +37,7 @@ class SMS: UIViewController {
                     }
                     if let authResult = authResult {
                         print(authResult)
-                        let NickName = self.storyboard?.instantiateViewController(identifier: "NickName")
-                        self.navigationController?.pushViewController(NickName!, animated: true)
+                        self.dismiss(animated: true, completion: nil)
                     }
                 }
             }

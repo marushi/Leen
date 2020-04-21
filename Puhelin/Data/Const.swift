@@ -18,4 +18,7 @@ struct Const {
     static let MessagePath = "Messages"
     static let MatchingPath = "MatchingRooms"
     static let InformationPath = "Informations"
+    static let SelectUsers = "SelectUsers"
+    static let DownUsers = "DownUsers"
+    static let FoorPrints = "FootPrints"
 }

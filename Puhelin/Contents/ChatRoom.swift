@@ -58,6 +58,8 @@ class ChatRoom: JSQMessagesViewController {
         automaticallyScrollsToMostRecentMessage = true
         // クリーンアップツールバーの設定
         inputToolbar!.contentView!.leftBarButtonItem = nil
+        inputToolbar.contentView.rightBarButtonItem.setTitle("送信", for: .normal)
+        inputToolbar.contentView.textView.placeHolder = "メッセージを選択"
         //pickerの設定
         picker.delegate = self
         picker.dataSource = self
@@ -88,6 +90,7 @@ class ChatRoom: JSQMessagesViewController {
     override func viewWillAppear(_ animated: Bool) {
         //下のバーを消す
         self.tabBarController?.tabBar.isHidden = true
+        self.navigationController?.navigationBar.isHidden = false
         self.navigationController?.view.addSubview(button)
         //送信を反映
         self.finishReceivingMessage(animated: true)
@@ -151,7 +154,7 @@ class ChatRoom: JSQMessagesViewController {
             if newNum! < 0 {
                 return
             }else{
-                Talk.count -= newNum!
+                talk_before.count -= newNum!
                 NotificationCenter.default.post(name: .NewMessage, object: nil)
             }
         }else{
@@ -309,7 +312,8 @@ class ChatRoom: JSQMessagesViewController {
         self.view.endEditing(true)
         //送信を反映
         self.finishReceivingMessage(animated: true)
-        //firebaseに保存
+        //------------firebaseに保存------------
+        //メッセージ
         let Ref = Firestore.firestore().collection(Const.ChatPath).document(roomId!).collection(Const.MessagePath).document()
         let Dic = ["senderId": senderId as Any
             ,"displayName": senderDisplayName as Any
@@ -589,3 +593,5 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
         }
     }
 }
+
+

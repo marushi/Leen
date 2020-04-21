@@ -20,7 +20,7 @@ class PhoneNumber: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        Button.backgroundColor = ColorData.coral
+        Button.backgroundColor = ColorData.salmon
         Button.layer.cornerRadius = Button.frame.height * 0.5
     }
     
@@ -40,11 +40,10 @@ class PhoneNumber: UIViewController {
                     if let verificationID = verificationID {
                         self.userDefaults.set(verificationID, forKey: "verificationID")
                         print("verificationID \(verificationID)")
-                        // 確認コードの認証画面へ
-                        let SMS = self.storyboard?.instantiateViewController(identifier: "SMS")
-                        self.navigationController?.pushViewController(SMS!, animated: true)
-                        
                     }
+                    // 確認コードの認証画面へ
+                    let SMS = self.storyboard?.instantiateViewController(identifier: "SMS") as! SMS
+                    self.navigationController?.pushViewController(SMS, animated: true)
                 }
             }
         }else{
@@ -53,4 +52,7 @@ class PhoneNumber: UIViewController {
         
         }
     
+    @IBAction func modoru(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
 }

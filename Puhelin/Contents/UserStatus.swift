@@ -21,6 +21,9 @@ class UserStatus: UIViewController {
 
         collectionview.delegate = self
         collectionview.dataSource = self
+        collectionview.layer.cornerRadius = 10
+        collectionview.layer.borderWidth = 1
+        collectionview.layer.borderColor = UIColor.lightGray.cgColor
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -33,6 +36,19 @@ class UserStatus: UIViewController {
     @IBAction func modoru(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
+    
+    //通話有料プラン
+    @IBAction func callPlan(_ sender: Any) {
+        let CallBilling = self.storyboard?.instantiateViewController(identifier: "CallBilling") as! CallBilling
+        self.navigationController?.pushViewController(CallBilling, animated: true)
+    }
+    
+    //いいねプラン
+    @IBAction func goodPlan(_ sender: Any) {
+        let GoodBilling = self.storyboard?.instantiateViewController(identifier: "GoodBilling") as! GoodBilling
+        self.navigationController?.pushViewController(GoodBilling, animated: true)
+    }
+    
     
 }
 
@@ -48,18 +64,23 @@ extension UserStatus:UICollectionViewDelegate,UICollectionViewDataSource,UIColle
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "statusCell", for: indexPath) as! StatusCell
-        cell.layer.borderColor = UIColor.lightGray.cgColor
-        cell.layer.borderWidth = 1
         cell.setUp(row: indexPath.row, section: indexPath.section)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if indexPath.row == 0 {
+            let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+            let availableWidth = collectionView.frame.width  - paddingSpace
+            let widthPerItem = availableWidth / 3
+            return CGSize(width: widthPerItem , height: collectionView.frame.height / 3)
+        }else{
+            let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+            let availableWidth = collectionView.frame.width  - paddingSpace
+            let widthPerItem = availableWidth * 2 / 3
+            return CGSize(width: widthPerItem, height: collectionView.frame.height / 3)
+        }
         
-        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
-        let availableWidth = collectionView.frame.width  - paddingSpace
-        let widthPerItem = availableWidth / itemsPerRow
-        return CGSize(width: widthPerItem, height: collectionView.frame.height / 3)
     }
     
     

@@ -45,7 +45,7 @@ class Purchase: UIViewController {
             let tab = self.presentingViewController as? TabBarConrtroller
             let nav = tab?.viewControllers?[3] as? UINavigationController
             let pre = nav?.topViewController as? MyProfile
-            pre?.collectionView.reloadData()
+            //pre?.collectionView.reloadData()
             self.PurchaseBool = false
         }
     }

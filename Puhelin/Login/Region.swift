@@ -13,6 +13,8 @@ class Region: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource {
     
     @IBOutlet weak var region: UILabel!
     @IBOutlet weak var pickerView: UIPickerView!
+    @IBOutlet weak var titleLabel: UILabel!
+    
     let prefectures = ["北海道", "青森県", "岩手県", "宮城県", "秋田県",
     "山形県", "福島県", "茨城県", "栃木県", "群馬県",
     "埼玉県", "千葉県", "東京都", "神奈川県","新潟県",
@@ -29,7 +31,10 @@ class Region: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource {
         
         pickerView.delegate = self
         pickerView.dataSource = self
-
+        titleLabel.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        titleLabel.layer.shadowColor = UIColor.black.cgColor
+        titleLabel.layer.shadowOpacity = 0.6
+        titleLabel.layer.shadowRadius = 1
     }
     
     //ドラムロールの列数
@@ -62,6 +67,9 @@ class Region: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource {
         return true
     }
 
+    @IBAction func modoru(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
     
 
 }

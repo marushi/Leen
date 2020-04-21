@@ -14,6 +14,7 @@ class MessageData: NSObject {
     var senderId: String?
     var displayName: String?
     var text: String?
+    var sendTime: Timestamp?
     
     
     init(document: QueryDocumentSnapshot) {
@@ -22,5 +23,6 @@ class MessageData: NSObject {
         self.senderId = Dic["senderId"] as? String
         self.displayName = Dic["displayName"] as? String
         self.text = Dic["text"] as? String
+        self.sendTime = Dic["sendTime"] as? Timestamp
     }
 }

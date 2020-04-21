@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-
+//ボタンの画像を左に寄せる
 class LeftFixedImageButton: UIButton {
     override func titleRect(forContentRect contentRect: CGRect) -> CGRect {
         let rect = super.titleRect(forContentRect: contentRect)
@@ -153,4 +153,75 @@ extension Notification.Name {
     static let NewMessage = Notification.Name("NewMessage")
 }
 
+extension UILabel{
 
+    /// makeOutLine
+    ///
+    /// - Parameters:
+    ///   - strokeWidth: 線の太さ。負数
+    ///   - oulineColor: 線の色
+    ///   - foregroundColor: 縁取りの中の色
+    func makeOutLine(strokeWidth: CGFloat, oulineColor: UIColor, foregroundColor: UIColor) {
+        let strokeTextAttributes = [
+            .strokeColor : oulineColor,
+            .foregroundColor : foregroundColor,
+            .strokeWidth : strokeWidth,
+            .font : self.font as Any
+        ] as [NSAttributedString.Key : Any]
+        self.attributedText = NSMutableAttributedString(string: self.text ?? "", attributes: strokeTextAttributes)
+    }
+}
+
+//------------------------------
+//グラデーションビュー
+//------------------------------
+class GradationView: UIView {
+
+    @IBInspectable var topColor: UIColor = .clear
+    @IBInspectable var bottomColor: UIColor = .white
+
+    override class var layerClass: AnyClass {
+        return CAGradientLayer.self
+    }
+
+    func setGradation() {
+        guard let gradientLayer = self.layer as? CAGradientLayer else {
+            return
+        }
+        gradientLayer.colors = [self.topColor.cgColor, self.bottomColor.cgColor]
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+    }
+}
+
+//--------画像をスクリーンサイズにする------------
+extension UIView {
+    func addBackground(name: String) {
+        // スクリーンサイズの取得
+        let width = UIScreen.main.bounds.size.width
+        let height = UIScreen.main.bounds.size.height
+
+        // スクリーンサイズにあわせてimageViewの配置
+        let imageViewBackground = UIImageView(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        //imageViewに背景画像を表示
+        imageViewBackground.image = UIImage(named: name)
+
+        // 画像の表示モードを変更。
+        imageViewBackground.contentMode = UIView.ContentMode.redraw
+
+        // subviewをメインビューに追加
+        self.addSubview(imageViewBackground)
+        // 加えたsubviewを、最背面に設置する
+        self.sendSubviewToBack(imageViewBackground)
+    }
+}
+
+//----textfieldの枠線を下線のみにする----//
+extension UITextField {
+    func addBorderBottom(height: CGFloat, color: UIColor) {
+        let border = CALayer()
+        border.frame = CGRect(x: 0, y: self.frame.height - height, width: self.frame.width, height: height)
+        border.backgroundColor = color.cgColor
+        self.layer.addSublayer(border)
+    }
+}

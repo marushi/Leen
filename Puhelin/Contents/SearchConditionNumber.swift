@@ -11,6 +11,7 @@ import UIKit
 class SearchConditionNumber: UIViewController{
 
     @IBOutlet weak var pickerView: UIPickerView!
+    @IBOutlet weak var contentView: UIView!
     
     var ageArray:[Any] = Array(20..<61)
     
@@ -22,9 +23,11 @@ class SearchConditionNumber: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //pickerView
+        //View
         pickerView.delegate = self
         pickerView.dataSource = self
+        contentView.layer.cornerRadius = 20
+        contentView.layer.maskedCorners = [.layerMinXMinYCorner,.layerMaxXMinYCorner]
         //配列
         ageArray.insert("未選択", at: 0)
         //データの受け渡し
@@ -36,11 +39,11 @@ class SearchConditionNumber: UIViewController{
     @IBAction func reset(_ sender: Any) {
         self.pickerView.selectRow(0, inComponent: 0, animated: true)
         self.pickerView.selectRow(0, inComponent: 1, animated: true)
+        self.searchQuery?.minAge = nil
+        self.searchQuery?.maxAge = nil
+        self.delegate?.searchQueryFunction(self.searchQuery!)
+        self.dismiss(animated: true, completion: nil)
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-    }
-    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first! //このタッチイベントの場合確実に1つ以上タッチ点があるので`!`つけてOKです

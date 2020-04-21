@@ -2,7 +2,6 @@
 
 
 import UIKit
-import PKHUD
 import Firebase
 import FirebaseUI
 import SCLAlertView
@@ -158,9 +157,11 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
     //セットアップ
     func setUp(){
         //データセット
-        photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(profileData!.photoId!)
-        photo.sd_setImage(with: imageRef)
+        if let photoId = self.profileData?.photoId {
+            photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
+            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+            photo.sd_setImage(with: imageRef)
+        }
         MessageButton.setTitle(profileData?.sentenceMessage, for: .normal)
         introTextView.text = profileData?.intro
     }
@@ -177,8 +178,31 @@ extension EditProfile: RSKImageCropViewControllerDelegate {
   func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
     dismiss(animated: true)
     photo.image = croppedImage
-  }
-    
+    //---firebaseに保存---
+    let date:Date = Date()
+    //firebaseに写真をアップロード
+    let registImage = croppedImage.jpegData(compressionQuality: 0.75)
+    let uid = Auth.auth().currentUser?.uid
+    let photoId:String = uid! + "\(date)" + ".jpg"
+    let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+    let metadata = StorageMetadata()
+    metadata.contentType = "image/jpeg"
+    imageRef.putData(registImage!, metadata: metadata) { (metadata, error) in
+        if error != nil {
+            // 画像のアップロード失敗
+            print(error!)
+            return
+        }
+        let Ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(uid!)
+        let dic = ["photoId": photoId]
+        Ref.setData(dic,merge: true)
+    }
+    //前の画像を削除
+    if let photoId = self.profileData?.photoId {
+        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+        imageRef.delete(completion: nil)
+    }
+    }
 }
 
 //
@@ -207,12 +231,14 @@ extension EditProfile: UITableViewDelegate,UITableViewDataSource{
             let HobbyInputView = self.storyboard?.instantiateViewController(identifier: "HobbyInputView") as! HobbyInputView
             HobbyInputView.inputMode = 0
             HobbyInputView.nameText = profileData?.name
-            present(HobbyInputView,animated: false,completion: nil)
+            HobbyInputView.modalTransitionStyle = .crossDissolve
+            present(HobbyInputView,animated: true,completion: nil)
         }else if row == 12{
             let HobbyInputView = self.storyboard?.instantiateViewController(identifier: "HobbyInputView") as! HobbyInputView
             HobbyInputView.inputMode = 1
             HobbyInputView.nameText = profileData?.hobby
-            present(HobbyInputView,animated: false,completion: nil)
+            HobbyInputView.modalTransitionStyle = .crossDissolve
+            present(HobbyInputView,animated: true,completion: nil)
         }
         else{
         let Personality2 = self.storyboard?.instantiateViewController(identifier: "Personality2") as! Personality2
@@ -247,6 +273,10 @@ extension EditProfile:perToEdit {
             self.profileData?.alchoal = text
         case 8:
             self.profileData?.tabako = text
+        case 9:
+            self.profileData?.name = text
+        case 10:
+            self.profileData?.hobby = text
         default:
             return
         }
@@ -256,7 +286,6 @@ extension EditProfile:perToEdit {
         self.profileData?.tall = number
         self.tableView.reloadData()
     }
-
 }
     
 

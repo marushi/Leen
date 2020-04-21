@@ -41,6 +41,7 @@ class VideoCall: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        localView.layer.cornerRadius = 10
         lemoveButton.layer.cornerRadius = 10
         progressTime.transform = CGAffineTransform(scaleX: 1.0, y: 10.0)
         

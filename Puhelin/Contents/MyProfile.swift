@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import PKHUD
 import Firebase
 import FirebaseUI
 
@@ -16,10 +15,13 @@ class MyProfile: UIViewController {
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var checkLabel: UILabel!
-    @IBOutlet weak var addView: UIView!
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var collectionView1: UICollectionView!
+    @IBOutlet weak var menuView: UIView!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var ageLabel: UILabel!
+    @IBOutlet weak var regionLabel: UILabel!
+    @IBOutlet weak var menuTitle: UILabel!
     
     //変数
     var DB = ""
@@ -27,15 +29,18 @@ class MyProfile: UIViewController {
     var infoData:[InformationData]?
     var identListener :ListenerRegistration!
     var infoListener: ListenerRegistration!
+    var dataListener: ListenerRegistration!
     
     //定数
     let userDefaults = UserDefaults.standard
     let sectionInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0 , right: 0)
-    let sectionInsets1 = UIEdgeInsets(top: 0, left: 10, bottom: 0 , right: 0)
+    let sectionInsets1 = UIEdgeInsets(top: 0, left: 15, bottom: 0 , right: 0)
     let itemsPerRow: CGFloat = 3
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.barTintColor = .white
+        self.navigationController?.navigationBar.shadowImage = UIImage()
         //自分の性別のデータベースを設定
         if UserDefaults.standard.integer(forKey: "gender") == 1 {
             DB = Const.MalePath
@@ -48,28 +53,48 @@ class MyProfile: UIViewController {
         collectionView.dataSource = self
         collectionView1.delegate = self
         collectionView1.dataSource = self
-        addView.layer.cornerRadius = 10
-        addView.layer.borderWidth = 1
-        addView.layer.borderColor = UIColor.lightGray.cgColor
-        headerView.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        headerView.layer.shadowColor = UIColor.black.cgColor
-        headerView.layer.shadowOpacity = 0.6
-        headerView.layer.shadowRadius = 1
+        scrollView.delegate = self
+        //addView.layer.cornerRadius = 10
+        //addView.layer.borderWidth = 1
+        //addView.layer.borderColor = UIColor.lightGray.cgColor
+        menuTitle.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        menuTitle.layer.shadowColor = UIColor.black.cgColor
+        menuTitle.layer.shadowOpacity = 0.6
+        menuTitle.layer.shadowRadius = 2
+        menuView.backgroundColor = ColorData.whitesmoke
         //セルの登録
-        collectionView.register(UINib(nibName: "MypageHeader", bundle: nil), forCellWithReuseIdentifier: "MypageHeader")
+        collectionView.register(UINib(nibName: "goodpointCell", bundle: nil), forCellWithReuseIdentifier: "goodpointCell")
+        collectionView.register(UINib(nibName: "videoCell", bundle: nil), forCellWithReuseIdentifier: "videoCell")
+        collectionView.register(UINib(nibName: "ExCell", bundle: nil), forCellWithReuseIdentifier: "ExCell")
+        
         //画像を丸くする
         photo.layer.cornerRadius = photo.frame.size.width * 0.5
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.isHidden = true
         self.tabBarController?.tabBar.isHidden = false
         // 画像の表示
-        photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(UserDefaults.standard.string(forKey: "photoId")!)
-        photo.sd_setImage(with: imageRef)
-        nameLabel.text = self.userDefaults.string(forKey: UserDefaultsData.name)
-        self.collectionView.reloadData()
+        if dataListener == nil{
+            let ref = Firestore.firestore().collection(DB).document(userDefaults.string(forKey: "uid")!)
+                dataListener = ref.addSnapshotListener(){ (querysnapshot , error) in
+                if let error = error {
+                    print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
+                    return
+                }
+                    if querysnapshot?.get("photoId") != nil {
+                        self.photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
+                        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querysnapshot?.get("photoId") as! String)
+                        self.photo.sd_setImage(with: imageRef)
+                    }
+                
+                    self.nameLabel.text = querysnapshot?.get("name") as? String
+                    self.ageLabel.text = String(querysnapshot?.get("age") as! Int) + "歳"
+                    self.regionLabel.text = querysnapshot?.get("region") as? String
+                    
+            }
+        }
+        
+        
         
         //本人確認の完了待機
         if userDefaults.integer(forKey: "identification") == 1 {
@@ -85,6 +110,7 @@ class MyProfile: UIViewController {
                         self.userDefaults.set(2, forKey: "identification")
                         self.identListener.remove()
                     }
+                    self.collectionView.reloadData()
                 }
             }
         }
@@ -106,16 +132,20 @@ class MyProfile: UIViewController {
         }
         
     }
-        
     
-    override func viewWillDisappear(_ animated: Bool) {
-        self.navigationController?.navigationBar.isHidden = false
+    //スクロールで隠す
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        } else {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+        }
     }
     
     //プロフィールを表示
     @IBAction func myprofile(_ sender: Any) {
         let profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
-        profile.profileSetData()
+        profile.ButtonMode = 3
         self.navigationController?.pushViewController(profile, animated: true)
     }
     
@@ -142,23 +172,39 @@ extension MyProfile:UICollectionViewDelegate,UICollectionViewDataSource,UICollec
         if collectionView.tag == 0 {
             return 3
         }else{
-            return 3
+            return 6
         }
     }
         
     //セルの中身
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView.tag == 0 {
-            let MypageHeader = collectionView.dequeueReusableCell(withReuseIdentifier: "MypageHeader", for: indexPath) as! MypageHeader
-            MypageHeader.setData(indexPath.row)
-            return MypageHeader
+            switch indexPath.row {
+            case 0:
+                let goodpointCell = collectionView.dequeueReusableCell(withReuseIdentifier: "goodpointCell", for: indexPath) as! goodpointCell
+                goodpointCell.addBorder(width: 2, color: ColorData.whitesmoke, position: .right)
+                return goodpointCell
+            case 1:
+                let videoCell = collectionView.dequeueReusableCell(withReuseIdentifier: "videoCell", for: indexPath) as! videoCell
+                videoCell.addBorder(width: 2, color: ColorData.whitesmoke, position: .right)
+                return videoCell
+            case 2:
+                let ExCell = collectionView.dequeueReusableCell(withReuseIdentifier: "ExCell", for: indexPath) as! ExCell
+                return ExCell
+            default:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+                return cell
+            }
+            
         }else{
             let MyProfileCell = collectionView.dequeueReusableCell(withReuseIdentifier: "MyProfileCell", for: indexPath) as! MyProfileCell
             MyProfileCell.setData(indexPath.row)
-            MyProfileCell.layer.borderWidth = 1
-            MyProfileCell.layer.borderColor = UIColor.lightGray.cgColor
             MyProfileCell.layer.cornerRadius = 20
-            MyProfileCell.backgroundColor = .white
+            MyProfileCell.batch.isHidden = true
+            MyProfileCell.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+            MyProfileCell.layer.shadowColor = UIColor.darkGray.cgColor
+            MyProfileCell.layer.shadowOpacity = 0.6
+            MyProfileCell.layer.shadowRadius = 1
             return MyProfileCell
         }
     }
@@ -167,15 +213,20 @@ extension MyProfile:UICollectionViewDelegate,UICollectionViewDataSource,UICollec
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView.tag == 0 {
             let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
-            let availableWidth = view.frame.width  - paddingSpace
+            let availableWidth = view.frame.width  - paddingSpace - 60
             let widthPerItem = availableWidth / itemsPerRow
             return CGSize(width: widthPerItem, height: self.collectionView.frame.height)
         }else{
             let paddingSpace = sectionInsets1.left * (itemsPerRow + 1)
-            let availableWidth = view.frame.width  - paddingSpace - 20
+            let availableWidth = view.frame.width  - paddingSpace - 60
             let widthPerItem = availableWidth / itemsPerRow
-            return CGSize(width: widthPerItem, height: 100 )
+            return CGSize(width: widthPerItem, height: widthPerItem + 20 )
         }
+    }
+    
+    //セルの行間
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 15
     }
         
     //セルを選択した時
@@ -183,13 +234,11 @@ extension MyProfile:UICollectionViewDelegate,UICollectionViewDataSource,UICollec
         if collectionView.tag == 0 {
         switch indexPath.row {
         case 0:
-            let goodpurchase = self.storyboard?.instantiateViewController(identifier: "GoodPointPurchase") as! GoodPointPurchase
-            goodpurchase.modalTransitionStyle = .crossDissolve
-            self.tabBarController?.tabBar.isHidden = true
-            present(goodpurchase,animated: true,completion: nil)
+            let GoodBilling = self.storyboard?.instantiateViewController(identifier: "GoodBilling") as! GoodBilling
+            self.navigationController?.pushViewController(GoodBilling, animated: true)
         case 1:
-            let UserStatus = self.storyboard?.instantiateViewController(identifier: "UserStatus") as! UserStatus
-            self.navigationController?.pushViewController(UserStatus, animated: true)
+            let CallBilling = self.storyboard?.instantiateViewController(identifier: "CallBilling") as! CallBilling
+            self.navigationController?.pushViewController(CallBilling, animated: true)
         case 2:
             let Purchase = self.storyboard?.instantiateViewController(identifier: "Purchase")
             let nav = UINavigationController.init(rootViewController: Purchase!)
@@ -206,6 +255,15 @@ extension MyProfile:UICollectionViewDelegate,UICollectionViewDataSource,UICollec
                 let Information = self.storyboard?.instantiateViewController(identifier: "Information") as! Information
                 Information.infoData = infoData
                 self.navigationController?.pushViewController(Information,animated: true)
+            case 3:
+                let goodhis = self.storyboard?.instantiateViewController(identifier: "Goodhistory") as! Goodhistory
+                self.navigationController?.pushViewController(goodhis, animated: true)
+            case 4:
+                let footprint = self.storyboard?.instantiateViewController(identifier: "Footprint") as! Footprint
+                self.navigationController?.pushViewController(footprint, animated: true)
+            case 5:
+                let setting = self.storyboard?.instantiateViewController(identifier: "Settings") as! Settings
+                self.navigationController?.pushViewController(setting, animated: true)
             default:
                 return
             }

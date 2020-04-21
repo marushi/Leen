@@ -41,8 +41,36 @@ class editProfileCell: UITableViewCell {
             content.setTitle(profileData?.name, for: .normal)
             title.text = titleArray[0]
         case 1:
-            if profileData?.tall != nil {
-                content.setTitle("\(profileData!.age!)" + "歳", for: .normal)
+            if let birthYear = self.profileData?.birthYear {
+                //西暦
+                let yf = DateFormatter()
+                yf.dateFormat = "YYYY"
+                let nowy:Int = Int(yf.string(from: Date()))!
+                //月
+                let mf = DateFormatter()
+                mf.dateFormat = "MM"
+                let nowm:Int = Int(mf.string(from: Date()))!
+                let birthMonth = self.profileData?.birthMonth
+                //日
+                let df = DateFormatter()
+                df.dateFormat = "dd"
+                let nowd:Int = Int(df.string(from: Date()))!
+                let birthDay = self.profileData?.birthDay
+                //年齢計算
+                var old:Int?
+                let roughOld = nowy - birthYear
+                if nowm > birthMonth! {
+                    old = roughOld
+                }else if nowm < birthMonth! {
+                    old = roughOld - 1
+                }else if nowm == birthMonth!{
+                    if nowd > birthDay! {
+                        old = roughOld
+                    }else{
+                        old = roughOld - 1
+                    }
+                }
+                content.setTitle(String(old!) + "歳　", for: .normal)
             }
             title.text = titleArray[1]
             content.setImage(UIImage(), for: .normal)

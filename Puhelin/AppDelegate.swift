@@ -19,7 +19,18 @@ import IQKeyboardManagerSwift
 class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
 
     var window: UIWindow?
-    var globalDateText:[String?] = []
+    var didBecomeActiveBool:Bool = false
+    
+    //--------select,down,good,footユーザーデータ用変数------------//
+    var selectUserData:[FootUsers] = []
+    var downUserData:[FootUsers] = []
+    var goodUserData:[FootUsers] = []
+    var FootUserData:[FootUsers] = []
+    //string文字列
+    var selectIdArray:[String] = []
+    var downIdArray:[String] = []
+    var goodIdArray:[String] = []
+    var footIdArray:[String] = []
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         //---------------------------------------
@@ -77,6 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
         AppEvents.activateApp()
     }
     
+    
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
@@ -90,8 +102,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-
-
     //
     //課金処理
     //
@@ -181,14 +191,6 @@ extension AppDelegate:MessagingDelegate {
         }else{
             let dataDict:[String: String] = ["token": fcmToken]
             NotificationCenter.default.post(name: Notification.Name("FCMToken"), object: nil, userInfo: dataDict)
-            var DB:String!
-            if UserDefaults.standard.integer(forKey: "gender") == 1 {
-                DB = Const.MalePath
-            }else{
-                DB = Const.FemalePath
-            }
-            let FIRref = Firestore.firestore().collection(DB).document(Auth.auth().currentUser!.uid)
-            FIRref.setData(dataDict,merge: true)
             UserDefaults.standard.set(fcmToken, forKey: "token")
         }
     }
