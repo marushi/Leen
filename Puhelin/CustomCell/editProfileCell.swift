@@ -15,7 +15,7 @@ class editProfileCell: UITableViewCell {
     @IBOutlet weak var content: UIButton!
     
     //定数
-    let titleArray:[String] = ["ニックネーム","年齢","居住地","身長","体型","職種","年収","性格","会話","目的","お酒","タバコ","好きなこと趣味"]
+    let titleArray:[String] = ["ニックネーム","年齢","居住地","身長","体型","職種","性格","会話","目的","お酒","タバコ","好きなこと趣味"]
     
     //変数
     var profileData:MyProfileData?
@@ -79,7 +79,7 @@ class editProfileCell: UITableViewCell {
             title.text = titleArray[2]
         case 3:
             if profileData?.tall == nil {
-                content.setTitle("未入力", for: .normal)
+                content.setTitle("", for: .normal)
             }else{
                 content.setTitle("\(profileData!.tall!)" + "cm", for: .normal)
             }
@@ -91,33 +91,33 @@ class editProfileCell: UITableViewCell {
             content.setTitle(profileData?.job, for: .normal)
             title.text = titleArray[5]
         
-        case 6:
+        /*case 6:
             content.setTitle(profileData?.income, for: .normal)
+            title.text = titleArray[6]*/
+        
+        case 6:
+            content.setTitle(profileData?.personality, for: .normal)
             title.text = titleArray[6]
         
         case 7:
-            content.setTitle(profileData?.personality, for: .normal)
+            content.setTitle(profileData?.talk, for: .normal)
             title.text = titleArray[7]
         
         case 8:
-            content.setTitle(profileData?.talk, for: .normal)
+            content.setTitle(profileData?.purpose, for: .normal)
             title.text = titleArray[8]
         
         case 9:
-            content.setTitle(profileData?.purpose, for: .normal)
+            content.setTitle(profileData?.alchoal, for: .normal)
             title.text = titleArray[9]
         
         case 10:
-            content.setTitle(profileData?.alchoal, for: .normal)
+            content.setTitle(profileData?.tabako, for: .normal)
             title.text = titleArray[10]
         
         case 11:
-            content.setTitle(profileData?.tabako, for: .normal)
-            title.text = titleArray[11]
-        
-        case 12:
             content.setTitle(profileData?.hobby, for: .normal)
-            title.text = titleArray[12]
+            title.text = titleArray[11]
 
         default:
             return

@@ -16,7 +16,7 @@ class SearchConditionsCell: UITableViewCell {
     
     var searchQuery:searchQueryData?
     
-    let titleArray:[String] = ["居住地","年齢","身長","出会いの目的","職種","年収","性格","会話","目的","お酒","タバコ"]
+    let titleArray:[String] = ["居住地","年齢","身長","出会いの目的","たばこ","年収","性格","会話","目的","お酒","タバコ"]
     
     
     override func awakeFromNib() {
@@ -34,13 +34,13 @@ class SearchConditionsCell: UITableViewCell {
         switch row {
         case 0:
             titleLabel.text = titleArray[0]
-            if searchQuery?.region == nil || searchQuery?.region == [] {
+            if searchQuery?.prefecturs == nil || searchQuery?.prefecturs == [] {
                 subLabel.text = "こだわらない"
             }else{
-                let Num:Int = searchQuery!.region!.count - 1
+                let Num:Int = searchQuery!.prefecturs!.count - 1
                 var str:String = ""
                 for i in 0...Num {
-                    str = str + "\(searchQuery!.region![i]),"
+                    str = str + "\(searchQuery!.prefecturs![i]),"
                 }
                 self.subLabel.text = str
             }
@@ -79,11 +79,11 @@ class SearchConditionsCell: UITableViewCell {
                 self.subLabel.text = searchQuery?.purpose
             }
         case 4:
-           // titleLabel.text = titleArray[4]
-            if searchQuery?.job == nil {
+           titleLabel.text = titleArray[4]
+            if searchQuery?.tabakoClass == nil {
                 self.subLabel.text = "こだわらない"
             }else{
-                self.subLabel.text = searchQuery?.job
+                self.subLabel.text = searchQuery?.tabakoClass
             }
         case 5:
            // titleLabel.text = titleArray[5]
@@ -125,10 +125,10 @@ class SearchConditionsCell: UITableViewCell {
         
         case 10:
             //titleLabel.text = titleArray[10]
-            if searchQuery?.tabako == nil {
+            if searchQuery?.tabakoClass == nil {
                 self.subLabel.text = "こだわらない"
             }else{
-                self.subLabel.text = searchQuery?.tabako
+                self.subLabel.text = searchQuery?.tabakoClass
             }
         default:
             return

@@ -154,28 +154,36 @@ class Confirm: UIViewController {
             ,"regionClass": str!
             ,"intro": self.introText
             ,"sentenceMessage": self.sentenceMes
-            ,"talk": "未選択"
-            ,"tall": "未選択"
-            ,"bodyType": "未選択"
-            ,"purpose": "未選択"
-            ,"signupDate": Date()
-            ,"tabako": "未選択"
-            ,"alchoal": "未選択"
-            ,"job": "未選択"
-            ,"income": "未選択"
-            ,"personality": "未選択"
-            ,"hobby": "未入力"
-            ,"identification":false
+            ,"talk": ""
+            ,"tall": ""
+            ,"bodyType": ""
+            ,"purpose": ""
+            ,"tabako": ""
+            ,"alchoal": ""
+            ,"job": ""
+            ,"personality": ""
+            ,"hobby": ""
             ,"newMesNum": 0
             ,"token": userDefaults.string(forKey: "token") as Any
             ,"birthYear": userDefaults.integer(forKey: "birthYear") as Any
             ,"birthMonth": userDefaults.integer(forKey: "birthMonth") as Any
             ,"birthDay": userDefaults.integer(forKey: "birthDay") as Any
+            ,"searchPermis": true
+            ,"identification":false
+            ,"signupDate": Date()
+            ,"goodLimit": 0
+            ,"callLimit": 0
+            ,"recoveryCard": 0
             ] as [String: Any]
         Ref.setData(Dic)
         
         //ユーザーデフォルト処理
-        userDefaults.set(0, forKey: "goodMode")
+        //課金事項
+        userDefaults.set(0, forKey: "goodLimit")
+        userDefaults.set(0, forKey: "callLimit")
+        userDefaults.set(0, forKey: "recoveryCard")
+        userDefaults.set(5, forKey: "remainGoodNum")
+        //本人確認
         userDefaults.set(0, forKey: "identification")
         
         //HUD

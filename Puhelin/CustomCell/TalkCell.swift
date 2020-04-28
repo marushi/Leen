@@ -30,6 +30,7 @@ class TalkCell: UITableViewCell {
         textMessage.textContainer.maximumNumberOfLines = 2
         textMessage.textContainer.lineBreakMode = .byTruncatingTail
         textMessage.isUserInteractionEnabled = false
+        textMessage.backgroundColor = .white
         noneReadedLabel.layer.cornerRadius = noneReadedLabel.frame.size.height / 2
         noneReadedLabel.clipsToBounds = true
         noneReadedLabel.isHidden = true
@@ -60,16 +61,28 @@ class TalkCell: UITableViewCell {
         let Ref = Firestore.firestore().collection(Users!).document(opUserId!)
         Ref.getDocument() { (querySnapshot, error) in
         if let error = error {
-            print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
-            return
+                print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
+                return
+            }
+            let photoId:String? = querySnapshot?.get("photoId") as? String
+                if photoId != "" && photoId != nil{
+                    self.photo.contentMode = .scaleAspectFill
+                    let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId!)
+                    self.photo.sd_setImage(with: imageRef)
+            }else{
+                    self.photo.contentMode = .scaleAspectFit
+                    if UserDefaults.standard.integer(forKey: "gender") == 2 {
+                    self.photo.image = UIImage(named: "male")
+            }else{
+                    self.photo.image = UIImage(named: "female")
+            }
+            
         }
-        self.photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot?.get("photoId") as! String)
-        self.photo.sd_setImage(with: imageRef)
-        let name = querySnapshot?.get("name") as! String
-        let age = querySnapshot?.get("age") as! Int
-        let region = querySnapshot?.get("region") as! String
-        self.nameLabel.text = "\(name) " + "\(age)歳 " + "\(region)"
+        if let name = querySnapshot?.get("name") as? String
+            ,let age = querySnapshot?.get("age") as? Int
+            ,let region = querySnapshot?.get("region") as? String {
+                self.nameLabel.text = "\(name) " + "\(age)歳 " + "\(region)"
+            }
         }
         
         if listener2 == nil{

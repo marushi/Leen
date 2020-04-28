@@ -25,11 +25,14 @@ class MyProfileCell: UICollectionViewCell {
         backView.layer.cornerRadius = 20
         backView.layer.borderColor = UIColor.lightGray.cgColor
         backView.layer.borderWidth = 1
+        backView.layer.shadowOffset = CGSize(width: 0, height: 1.0)
+        backView.layer.shadowColor = UIColor.darkGray.cgColor
+        backView.layer.shadowOpacity = 0.6
+        backView.layer.shadowRadius = 1
         
     }
     
     func setData(_ row: Int){
-        
         switch row {
         case 0:
             photo.image = UIImage(systemName: "folder")
@@ -37,33 +40,43 @@ class MyProfileCell: UICollectionViewCell {
             let ident = UserDefaults.standard.integer(forKey: "identification")
             if ident == 0 {
                 contentLabel.text = "未提出"
+                backView.layer.shadowOffset = CGSize(width: 0, height: 1.0)
+                backView.layer.shadowColor = UIColor.darkGray.cgColor
+                backView.layer.shadowOpacity = 0.6
+                backView.layer.shadowRadius = 1
+                photo.tintColor = ColorData.darkturquoise
             }else if ident == 1{
                 contentLabel.text = "申請中"
+                self.backView.layer.shadowOffset = CGSize(width: 0, height: 0)
+                backView.layer.shadowOpacity = 0
+                backView.layer.shadowRadius = 0
+                photo.tintColor = .lightGray
             }else if ident == 2 {
                 contentLabel.text = "確認済み"
+                self.backView.layer.shadowOffset = CGSize(width: 0, height: 0)
+                backView.layer.shadowOpacity = 0
+                backView.layer.shadowRadius = 0
+                photo.tintColor = .lightGray
             }
-        case 1:
+            /*case 1:
             photo.image = UIImage(systemName: "book")
             titleLabel.text = "使い方"
-            contentLabel.isHidden = true
-        case 2:
+            contentLabel.isHidden = true*/
+        /*case 1:
             photo.image = UIImage(systemName: "bell")
             titleLabel.text = "お知らせ"
-            contentLabel.isHidden = true
-        
-        case 3:
+            contentLabel.isHidden = true*/
+        case 1:
             photo.image = UIImage(systemName: "hand.thumbsup")
             titleLabel.text = "いいね履歴"
             contentLabel.isHidden = true
-        
-        case 4:
+        case 2:
             photo.image = UIImage(systemName: "person.2")
             titleLabel.text = "あしあと"
             contentLabel.isHidden = true
-        
-        case 5:
+        case 3:
             photo.image = UIImage(systemName: "map")
-            titleLabel.text = "各種設定"
+            titleLabel.text = "設定"
             contentLabel.isHidden = true
         default:
             return

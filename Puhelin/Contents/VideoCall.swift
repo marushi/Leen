@@ -8,6 +8,7 @@
 
 import UIKit
 import SkyWay
+import SCLAlertView
 
 class VideoCall: UIViewController{
     
@@ -16,6 +17,7 @@ class VideoCall: UIViewController{
     let apiKey = "7dc43da3-26d9-4c5b-bb15-b16ac1570364"
     let domain = "localhost"
     let lock: NSLock = NSLock.init()
+    let userDefaults = UserDefaults.standard
     
     //変数
     var arrayMediaStreams: NSMutableArray = []
@@ -28,9 +30,9 @@ class VideoCall: UIViewController{
     var roomName: String?
     var mode: Int?
     var delegate:VideoModal?
-    var timerNum: Int!
+    var timerNum: Double!
     var timer: Timer?
-    var possibleTime:Float!
+    var possibleTime:Double!
 
     //部品
     @IBOutlet var remoteView: SKWVideo!
@@ -43,7 +45,7 @@ class VideoCall: UIViewController{
         super.viewDidLoad()
         localView.layer.cornerRadius = 10
         lemoveButton.layer.cornerRadius = 10
-        progressTime.transform = CGAffineTransform(scaleX: 1.0, y: 10.0)
+        progressTime.transform = CGAffineTransform(scaleX: 1.0, y: 5.0)
         
         let nav = self.navigationController
         delegate = nav!.viewControllers[nav!.viewControllers.count - 2] as? PrepareRoom
@@ -53,9 +55,26 @@ class VideoCall: UIViewController{
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.possibleTime = 180
-        timerNum = Int(possibleTime)
-        timerLabel.text = "\(timerNum!)"
+        //時間制限ごとの処理
+        let num = userDefaults.integer(forKey: UserDefaultsData.callLimit)
+        if num == 0 {
+            possibleTime = 15 * 60
+        }
+        if num == 1 {
+            possibleTime = 30 * 60
+        }
+        if num == 2 {
+            possibleTime = 45 * 60
+        }
+        if num == 3 {
+            possibleTime = 60 * 60
+        }
+        timerNum = Double(possibleTime)
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .full
+        formatter.allowedUnits = [.minute,.hour,.second]
+        let outputString = formatter.string(from: timerNum)
+        timerLabel.text = outputString
         self.navigationController?.navigationBar.isHidden = true
         UIApplication.shared.isIdleTimerDisabled = true
         self.setupStream(peer: peer!)
@@ -178,13 +197,29 @@ class VideoCall: UIViewController{
             self.navigationController?.popViewController(animated: true)
             return
         }
-        sfuRoom.close()
         if self.mode == 0{
+            sfuRoom.close()
+            self.peer?.destroy()
             self.navigationController?.popViewController(animated: true)
         }else{
-            self.delegate?.videomodal(modalmode: 1)
-            self.navigationController?.popViewController(animated: true)
-        }
+            //アラート
+            let appearance = SCLAlertView.SCLAppearance(
+                    showCloseButton: false
+                )
+                let alertView = SCLAlertView(appearance: appearance)
+                alertView.addButton("退出する") {
+                    //探す画面に戻る
+                    sfuRoom.close()
+                    self.peer?.destroy()
+                    self.delegate?.videomodal(modalmode: 1)
+                    self.navigationController?.popViewController(animated: true)
+                }
+                alertView.addButton("戻る",backgroundColor: .lightGray,textColor: .black) {
+                    return
+                }
+                alertView.showWarning("ビデオチャットから退出します。", subTitle: "まだ通話時間は残っていますがよろしいですか？")
+            }
+            
     }
     
     //
@@ -196,9 +231,13 @@ class VideoCall: UIViewController{
             self.timer!.invalidate()
             self.leaveRoom(lemoveButton as Any)
         }else{
-            self.timerLabel.text = "\(timerNum!)"
+            let formatter = DateComponentsFormatter()
+            formatter.unitsStyle = .positional
+            formatter.allowedUnits = [.minute,.hour,.second]
+            let outputString = formatter.string(from: timerNum)
+            self.timerLabel.text = outputString
             let progressNum = 1 / possibleTime!
-            self.progressTime.setProgress(progressTime.progress + progressNum, animated: true)
+            self.progressTime.setProgress(progressTime.progress + Float(progressNum), animated: true)
         }
     }
 }

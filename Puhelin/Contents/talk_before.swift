@@ -8,10 +8,11 @@
 
 import UIKit
 import Firebase
+import AudioToolbox
 import SCLAlertView
 import XLPagerTabStrip
 
-class talk_before: UIViewController,IndicatorInfoProvider {
+class talk_before: UIViewController,IndicatorInfoProvider ,UIGestureRecognizerDelegate{
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var nonarray1: UILabel!
     @IBOutlet weak var nonarray2: UILabel!
@@ -37,6 +38,11 @@ class talk_before: UIViewController,IndicatorInfoProvider {
         tableView.rowHeight = 70
         tableView.tableFooterView = UIView(frame: .zero)
         tableView.isHidden = true
+        
+        // UILongPressGestureRecognizer宣言
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(cellLongPressed(recognizer:)))
+        longPressRecognizer.delegate = self
+        tableView.addGestureRecognizer(longPressRecognizer)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,10 +73,27 @@ class talk_before: UIViewController,IndicatorInfoProvider {
                 }
             }
         }
+        self.tableView.reloadData()
     }
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return itemInfo
     }
+    
+    @objc func cellLongPressed(recognizer: UILongPressGestureRecognizer) {
+
+        // 押された位置でcellのPathを取得
+        let point = recognizer.location(in: tableView)
+        let indexPath = tableView.indexPathForRow(at: point)
+
+        if indexPath == nil {
+
+        } else if recognizer.state == UIGestureRecognizer.State.began  {
+            // 長押しされた場合の処理
+            //AudioServicesPlaySystemSound(1519)
+            print(indexPath!.row)
+         }
+    }
+    
 }
 
 extension talk_before:UITableViewDelegate,UITableViewDataSource {
@@ -85,45 +108,20 @@ extension talk_before:UITableViewDelegate,UITableViewDataSource {
         TalkCell.setData(UserArray[indexPath.row])
         TalkCell.selectionStyle = .none
         TalkCell.photo.tag = indexPath.row + 1
+        TalkCell.backgroundColor = .white
         let avatarImage = TalkCell.viewWithTag(indexPath.row + 1) as! UIImageView
         let avatarImageTap = UITapGestureRecognizer(target: self, action: #selector(tappedAvatar))
         avatarImage.isUserInteractionEnabled = true
         avatarImage.addGestureRecognizer(avatarImageTap)
         return TalkCell
-        
     }
     
     //セルを選択した時の処理
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let ChatRoom = self.storyboard?.instantiateViewController(identifier: "ChatRoom") as! ChatRoom
         ChatRoom.setData(UserArray[indexPath.row])
+        ChatRoom.chatroommode = 0
         navigationController?.pushViewController(ChatRoom, animated: true)
-    }
-    
-    //スワイプで削除
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        let appearance = SCLAlertView.SCLAppearance(
-            showCloseButton: false
-        )
-        let alertView = SCLAlertView(appearance: appearance)
-        alertView.addButton("削除する") {
-            if editingStyle == .delete {
-                
-            //データベースから削除
-            let ref = Firestore.firestore()
-                let Ref = ref.collection(Const.ChatPath).document(self.UserArray[indexPath.row].roomId!)
-                let messeageRef = ref.collection(Const.ChatPath).document(self.UserArray[indexPath.row ].roomId!).collection(Const.MessagePath)
-                Ref.delete(completion: nil)
-                messeageRef.document().delete()
-            }
-            self.UserArray.remove(at: indexPath.row)
-            self.UserArray.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-        alertView.addButton("キャンセル",backgroundColor: .lightGray,textColor: .black) {
-            return
-        }
-        alertView.showWarning("本当に削除しますか？", subTitle: "この操作は取り消せません。")
     }
     
     //画像をタップ
@@ -142,9 +140,6 @@ extension talk_before:UITableViewDelegate,UITableViewDataSource {
     //バッチ処理
     @objc func TabbarButch(){
         let tabItem = self.tabBarController?.tabBar.items![2]
-        tabItem?.badgeValue = "\(talk_before.count)"
-        if talk_before.count <= 0 {
-            tabItem?.badgeValue = nil
-        }
+        tabItem?.badgeValue = ""
     }
 }

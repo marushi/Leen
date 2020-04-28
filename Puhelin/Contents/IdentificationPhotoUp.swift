@@ -21,6 +21,12 @@ class IdentificationPhotoUp: UIViewController,UIImagePickerControllerDelegate ,U
     }
     
     @IBAction func takePhoto(_ sender: Any) {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            let pickerController = UIImagePickerController()
+            pickerController.delegate = self
+            pickerController.sourceType = .camera
+            self.present(pickerController, animated: true, completion: nil)
+        }
     }
     
     @IBAction func Liblary(_ sender: Any) {

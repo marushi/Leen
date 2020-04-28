@@ -76,4 +76,9 @@ class EditIntroduction: UIViewController,UITextViewDelegate {
     }
     
     
+    @IBAction func modoru(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    
 }

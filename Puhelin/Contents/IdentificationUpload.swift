@@ -48,7 +48,7 @@ class IdentificationUpload: UIViewController {
             ref.setData(dic as [String : Any])
             //アイデンティフィケイションを申請中（１）に
             UserDefaults.standard.set(1, forKey: "identification")
-            UIApplication.shared.windows.first{ $0.isKeyWindow }?.rootViewController?.dismiss(animated: true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         }
     }
 }

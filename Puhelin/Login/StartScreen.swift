@@ -12,6 +12,7 @@ class StartScreen: UIViewController {
     var downLis :ListenerRegistration!
     var goodLis :ListenerRegistration!
     var footLis :ListenerRegistration!
+    var recieveLis :ListenerRegistration!
     var userData:MyProfileData?
     
     override func viewDidLoad() {
@@ -20,18 +21,24 @@ class StartScreen: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         //ログイン　→ Yes
-        if Auth.auth().currentUser != nil {
+        if self.userDefaults.string(forKey: "uid") != nil{
             //
             HUD.show(.progress)
             // ログイン時の処理
-            // uidを保持
-            self.userDefaults.set(Auth.auth().currentUser?.uid, forKey: "uid")
             let uid = self.userDefaults.string(forKey: "uid")
             //情報を取ってくる
             let ref = Firestore.firestore().collection(Const.FemalePath).document(uid!)
             ref.getDocument(){(document,error) in
                 if let error = error {
                     print(error)
+                    self.removeUserDefaults()
+                    if Auth.auth().currentUser != nil {
+                        do {
+                            try Auth.auth().signOut()
+                        } catch let signOutError as NSError {
+                          print ("Error signing out: %@", signOutError)
+                        }
+                    }
                     return
                 }
                 if document == nil {
@@ -63,6 +70,11 @@ class StartScreen: UIViewController {
             phoneLogin!.modalTransitionStyle = .crossDissolve
             self.present(phoneLogin!,animated: true, completion: nil)
         }
+    }
+    
+    func removeUserDefaults() {
+        let appDomain = Bundle.main.bundleIdentifier
+        UserDefaults.standard.removePersistentDomain(forName: appDomain!)
     }
     
     //情報の有無
@@ -128,7 +140,7 @@ class StartScreen: UIViewController {
                     }
                     self.fromAppDelegate.goodUserData = (querysnapshot?.documents.map { document in
                         print("DEBUG_PRINT: document取得 \(document.documentID)")
-                        let userData = FootUsers(document: document)
+                        let userData = goodData(document: document)
                         return userData
                         }
                         )!
@@ -159,6 +171,25 @@ class StartScreen: UIViewController {
                             self.fromAppDelegate.footIdArray.append(self.fromAppDelegate.FootUserData[i].uid!)
                         }
                     }
+                    if self.recieveLis == nil {
+                        let recieveRef = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(self.userDefaults.string(forKey: "uid")!).collection(Const.ReceiveData).order(by: "date",descending: true)
+                        self.recieveLis = recieveRef.addSnapshotListener() {(querysnapshot,error) in
+                            if let error = error {
+                                print(error)
+                                return
+                            }
+                            self.fromAppDelegate.receiveData = (querysnapshot?.documents.map { document in
+                                print("DEBUG_PRINT: document取得 \(document.documentID)")
+                                let userData = FootUsers(document: document)
+                                return userData
+                                }
+                                )!
+                            let num = self.fromAppDelegate.receiveData.count
+                            if num != 0 {
+                                for i in 0...num - 1{
+                                    self.fromAppDelegate.receiveIdArray.append(self.fromAppDelegate.FootUserData[i].uid!)
+                                }
+                            }
             //---^^^---
             let TabBarConrtroller = self.storyboard?.instantiateViewController(identifier: "TabBarConrtroller")
                     HUD.hide()
@@ -174,4 +205,6 @@ class StartScreen: UIViewController {
             }
         }
     }
+}
+}
 }

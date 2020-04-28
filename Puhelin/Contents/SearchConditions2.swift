@@ -15,13 +15,22 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     //データ用変数
     var cellNum:Int!
     var conditionCase:Int!
-    var selectRow:String?
+    var selectRow:String? = "こだわらない"
     var selectsArray:[String] = []
     var searchQuery:searchQueryData?
     var delegate:searchConditionDelegate?
     
     //データ用定数
-    let region = ["こだわらない","北海道","東北", "関東","中部","近畿","中国","四国","九州","沖縄"]
+    let region = ["こだわらない","北海道", "青森県", "岩手県", "宮城県", "秋田県",
+    "山形県", "福島県", "茨城県", "栃木県", "群馬県",
+    "埼玉県", "千葉県", "東京都", "神奈川県","新潟県",
+    "富山県", "石川県", "福井県", "山梨県", "長野県",
+    "岐阜県", "静岡県", "愛知県", "三重県", "滋賀県",
+    "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県",
+    "鳥取県", "島根県", "岡山県", "広島県", "山口県",
+    "徳島県", "香川県", "愛媛県", "高知県", "福岡県",
+    "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県",
+    "鹿児島県", "沖縄県"]
     let bodyType = ["こだわらない","ぽっちゃり","普通","細め"]
     let job = ["こだわらない","営業","会社員","医師","弁護士"]
     let income = ["こだわらない","200万","300万","1億以上"]
@@ -29,7 +38,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     let talk = ["こだわらない","おしゃべり","話す方","聞く方","聞き上手"]
     let purpose = ["こだわらない","ライトな関係","真剣交際"]
     let alchoal = ["こだわらない","ほぼ毎日","週２〜３回","ときどき","たまに","あまり飲まない","飲めない"]
-    let tabako = ["こだわらない","吸わない","ごくたまに","飲みの時だけ","1日に数本","1日に一箱"]
+    let tabako = ["こだわらない","吸う","吸わない"]
     let maleTall = ["こだわらない","〜160cm","160〜175cm","175cm〜"]
     let femaleTall = ["こだわらない","〜150cm","150〜165cm","165cm〜"]
     override func viewDidLoad() {
@@ -59,7 +68,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         if viewController is SearchCoditions {
             switch conditionCase {
             case 1:
-                self.searchQuery?.region = self.selectsArray
+                self.searchQuery?.prefecturs = self.selectsArray
             case 2:
                 self.searchQuery?.bodyType = self.selectRow
             case 3:
@@ -71,13 +80,19 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
             case 6:
                 self.searchQuery?.talk = self.selectRow
             case 7:
-                self.searchQuery?.purpose = self.selectRow
+                if selectRow != "こだわらない" {
+                    self.searchQuery?.purpose = self.selectRow
+                }
             case 8:
                 self.searchQuery?.alchoal = self.selectRow
             case 9:
-                self.searchQuery?.tabako = self.selectRow
+                if selectRow != "こだわらない" {
+                    self.searchQuery?.tabakoClass = self.selectRow
+                }
             case 10:
-                self.searchQuery?.tallClass = self.selectRow
+                if selectRow != "こだわらない" {
+                    self.searchQuery?.tallClass = self.selectRow
+                }
             default:
                 return
             }
@@ -213,6 +228,10 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         case 9:
             tableView.allowsMultipleSelectionDuringEditing = false
             cell.titleLabel.text = tabako[indexPath.row]
+            if let  str = self.searchQuery?.tabakoClass {
+                self.selectRow = str
+                searchQuery?.tabakoClass = nil
+            }
             if (selectRow == tabako[indexPath.row]){
                 cell.accessoryType = .checkmark
             }else{
@@ -327,8 +346,8 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
             cellNum = purpose.count
             conditionCase = 7
         case 4:
-            cellNum = job.count
-            conditionCase = 3
+            cellNum = tabako.count
+            conditionCase = 9
         case 5:
             cellNum = income.count
             conditionCase = 4

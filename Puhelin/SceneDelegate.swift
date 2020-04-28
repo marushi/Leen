@@ -57,11 +57,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let Today = "\(formatter.string(from: date))"
                 //違うなら回復
                 if lastLoginDate != Today {
-                    let num = self.userDefaults.integer(forKey: "goodMode")
+                    let num = self.userDefaults.integer(forKey: "goodLimit")
                     if num == 0{
-                        self.userDefaults.set(15, forKey: UserDefaultsData.remainGoodNum)
+                        self.userDefaults.set(5, forKey: UserDefaultsData.remainGoodNum)
                     }else if num == 1 {
-                        self.userDefaults.set(30, forKey: UserDefaultsData.remainGoodNum)
+                        self.userDefaults.set(10, forKey: UserDefaultsData.remainGoodNum)
+                    }else if num == 2 {
+                        self.userDefaults.set(15, forKey: UserDefaultsData.remainGoodNum)
+                    }else if num == 3 {
+                        self.userDefaults.set(20, forKey: UserDefaultsData.remainGoodNum)
                     }
                 }
                 }

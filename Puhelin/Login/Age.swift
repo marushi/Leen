@@ -60,6 +60,9 @@ class Age: UIViewController{
         self.navigationController?.popViewController(animated: true)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        textfield0.becomeFirstResponder()
+    }
     
     
     
@@ -102,11 +105,39 @@ class Age: UIViewController{
             return false
         }
         
+        //生年月日から年齢を計算
+        //西暦
+        let yf = DateFormatter()
+        yf.dateFormat = "YYYY"
+        let nowy:Int = Int(yf.string(from: Date()))!
+        //月
+        let mf = DateFormatter()
+        mf.dateFormat = "MM"
+        let nowm:Int = Int(mf.string(from: Date()))!
+        //日
+        let df = DateFormatter()
+        df.dateFormat = "dd"
+        let nowd:Int = Int(df.string(from: Date()))!
+        //年齢計算
+        var old:Int?
+        let roughOld = nowy - barthYear!
+        if nowm > barthMonth! {
+            old = roughOld
+        }else if nowm < barthMonth! {
+            old = roughOld - 1
+        }else if nowm == barthMonth!{
+            if nowd > barthDay! {
+                old = roughOld
+            }else{
+                old = roughOld - 1
+            }
+        }
         
         //エラー無し登録処理
         UserDefaults.standard.set(barthYear, forKey: "birthYear")
         UserDefaults.standard.set(barthMonth,forKey: "birthMonth")
         UserDefaults.standard.set(barthDay, forKey: "birthDay")
+        UserDefaults.standard.set(old,forKey: "age")
         return true
     }
 }

@@ -14,7 +14,7 @@ class ProfileCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var contentLabel: UILabel!
     //定数
-    let titleArray = ["ニックネーム","年齢","居住地","身長","体型","職種","年収","性格","会話","目的","お酒","タバコ","好きなこと趣味"]
+    let titleArray = ["ニックネーム","年齢","居住地","身長","体型","職種","性格","会話","目的","お酒","タバコ","好きなこと趣味"]
     //変数
     var profileData:MyProfileData?
     
@@ -36,10 +36,10 @@ class ProfileCell: UITableViewCell {
             contentLabel.text = profileData?.name
             titleLabel.text = titleArray[0]
         case 1:
-            if profileData?.tall != nil {
+            if profileData?.age != nil {
                 contentLabel.text = "\(profileData!.age!)" + "歳"
             }else{
-                contentLabel.text = "未選択"
+                contentLabel.text = ""
             }
             titleLabel.text = titleArray[1]
         case 2:
@@ -49,7 +49,7 @@ class ProfileCell: UITableViewCell {
             if profileData?.tall != nil {
                 contentLabel.text = "\(profileData!.tall!)" + "cm"
             }else{
-                contentLabel.text = "未選択"
+                contentLabel.text = ""
             }
             titleLabel.text = titleArray[3]
         case 4:
@@ -60,32 +60,28 @@ class ProfileCell: UITableViewCell {
             titleLabel.text = titleArray[5]
         
         case 6:
-            contentLabel.text = profileData?.income
+            contentLabel.text = profileData?.personality
             titleLabel.text = titleArray[6]
         
         case 7:
-            contentLabel.text = profileData?.personality
+            contentLabel.text = profileData?.talk
             titleLabel.text = titleArray[7]
         
         case 8:
-            contentLabel.text = profileData?.talk
+            contentLabel.text = profileData?.purpose
             titleLabel.text = titleArray[8]
         
         case 9:
-            contentLabel.text = profileData?.purpose
+            contentLabel.text = profileData?.alchoal
             titleLabel.text = titleArray[9]
         
         case 10:
-            contentLabel.text = profileData?.alchoal
+            contentLabel.text = profileData?.tabako
             titleLabel.text = titleArray[10]
         
         case 11:
-            contentLabel.text = profileData?.tabako
-            titleLabel.text = titleArray[11]
-        
-        case 12:
             contentLabel.text = profileData?.hobby
-            titleLabel.text = titleArray[12]
+            titleLabel.text = titleArray[11]
 
         default:
             return

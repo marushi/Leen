@@ -10,35 +10,43 @@ import UIKit
 import Firebase
 import RSKImageCropper
 
-extension Photo: RSKImageCropViewControllerDelegate {
-  //キャンセルを押した時の処理
-  func imageCropViewControllerDidCancelCrop(_ controller: RSKImageCropViewController) {
-    dismiss(animated: true, completion: nil)
-  }
-  //完了を押した後の処理
-  func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
-    dismiss(animated: true)
-    imageView.image = croppedImage
-    Button.isEnabled = true
-  }
-}
-
 
 class Photo: UIViewController, UIImagePickerControllerDelegate ,UINavigationControllerDelegate{
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var Button: UIButton!
+    @IBOutlet weak var selectButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         Button.isEnabled = false
         imageView.layer.cornerRadius = imageView.frame.size.width * 0.1
-        
-        Button.layer.cornerRadius = 10
+        imageView.layer.borderColor = UIColor.darkGray.cgColor
+        imageView.layer.borderWidth = 3
+        selectButton.layer.cornerRadius = selectButton.frame.size.height / 2
+        Button.layer.cornerRadius = Button.frame.size.height / 2
         Button.backgroundColor = UIColor.init(red: 1, green: 0.5, blue: 0.5, alpha: 1)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        imageView.contentMode = .scaleAspectFit
+        imageView.alpha = 0.7
+        if UserDefaults.standard.integer(forKey: "gender") == 1 {
+            imageView.image = UIImage(named: "male")
+        }else {
+            imageView.image = UIImage(named: "female")
+        }
+    }
+    
+    @IBAction func imagetap(_ sender: Any) {
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            let pickerController = UIImagePickerController()
+            pickerController.delegate = self
+            pickerController.sourceType = .photoLibrary
+            self.present(pickerController, animated: true, completion: nil)
+        }
+    }
     
     @IBAction func Photo(_ sender: Any) {
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
@@ -94,4 +102,37 @@ class Photo: UIViewController, UIImagePickerControllerDelegate ,UINavigationCont
  
         }
     }
+    
+    @IBAction func skipButton(_ sender: Any) {
+        let uid = Auth.auth().currentUser?.uid
+        if UserDefaults.standard.integer(forKey: "gender") == 1 {
+            let Ref = Firestore.firestore().collection(Const.MalePath).document(uid!)
+            let dic = ["photoId": ""]
+            Ref.setData(dic,merge: true)
+        }else{
+            let Ref = Firestore.firestore().collection(Const.FemalePath).document(uid!)
+            let dic = ["photoId": ""]
+            Ref.setData(dic,merge: true)
+        }
+        
+        UserDefaults.standard.set("", forKey: "photoId")
+        UIApplication.shared.windows.first{ $0.isKeyWindow }?.rootViewController?.dismiss(animated: true, completion: nil)
+    }
+    
 }
+
+extension Photo: RSKImageCropViewControllerDelegate {
+  //キャンセルを押した時の処理
+  func imageCropViewControllerDidCancelCrop(_ controller: RSKImageCropViewController) {
+    dismiss(animated: true, completion: nil)
+  }
+  //完了を押した後の処理
+  func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
+    dismiss(animated: true)
+    imageView.image = croppedImage
+    imageView.contentMode = .scaleAspectFill
+    imageView.alpha = 1
+    Button.isEnabled = true
+  }
+}
+

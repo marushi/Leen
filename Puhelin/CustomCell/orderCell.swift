@@ -15,7 +15,7 @@ class orderCell: UITableViewCell {
     
     var selectCell:Int?
     
-    let titleArray = ["ログイン順","登録日順","年齢順","運命に委ねる（ランダム）"]
+    let titleArray = ["ログイン順","登録日順","指定しない"]
     
     override func awakeFromNib() {
         super.awakeFromNib()

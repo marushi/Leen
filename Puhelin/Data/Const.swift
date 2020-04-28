@@ -21,4 +21,5 @@ struct Const {
     static let SelectUsers = "SelectUsers"
     static let DownUsers = "DownUsers"
     static let FoorPrints = "FootPrints"
+    static let ReceiveData = "ReceiveData"
 }

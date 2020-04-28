@@ -48,6 +48,7 @@ class ChatRoom: JSQMessagesViewController {
     var OpponentId: String?
     var Users:String?
     var topImage: UIImage = UIImage()
+    var opName:String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,7 +70,6 @@ class ChatRoom: JSQMessagesViewController {
         //待合室へのボタン
         // UIButtonのインスタンスを作成する
         button.addTarget(self, action: #selector(callButton(_:)), for: .touchUpInside)
-        button.frame = CGRect(x: (self.navigationController?.navigationBar.frame.size.width)! - 80, y: 40, width: 70, height: 70)
         let image = UIImage(systemName: "phone.fill")
         button.setImage(image, for: .normal)
         button.tintColor = ColorData.salmon
@@ -91,14 +91,20 @@ class ChatRoom: JSQMessagesViewController {
         //下のバーを消す
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.isHidden = false
+        if self.view.frame.size.width > 400 {
+            button.frame = CGRect(x: (self.navigationController?.navigationBar.frame.size.width)! * 0.7 , y: 50, width: 60, height: 60)
+        }else{
+            button.frame = CGRect(x: (self.navigationController?.navigationBar.frame.size.width)! * 0.7 , y: 30, width: 60, height: 60)
+        }
         self.navigationController?.view.addSubview(button)
+        
         //送信を反映
         self.finishReceivingMessage(animated: true)
         if chatroommode == 0{
             self.keyboardController.textView.inputView = picker
             self.keyboardController.textView.isEditable = false
         }else{
-            
+            self.button.isHidden = true
         }
         //既読処理
         readedFunction()
@@ -111,6 +117,12 @@ class ChatRoom: JSQMessagesViewController {
         buttonView?.removeFromSuperview()
     }
     
+    @IBAction func button(_ sender: Any) {
+        let BlackView = self.storyboard?.instantiateViewController(identifier: "BlackView") as! BlackView
+        BlackView.roomId = self.roomId!
+        BlackView.roomMode = 0
+        present(BlackView,animated: true,completion: nil)
+    }
     
     //既読処理
     func readedFunction(){
@@ -172,11 +184,9 @@ class ChatRoom: JSQMessagesViewController {
         if userDefaults.integer(forKey: "gender") == 1 {
             self.OpponentId = data.female
             Users = Const.FemalePath
-            self.navigationItem.title = data.name2
         } else if userDefaults.integer(forKey: "gender") == 2 {
             self.OpponentId = data.male
             Users = Const.MalePath
-            self.navigationItem.title = data.name1
         }
         
         //メッセージ取得
@@ -200,15 +210,18 @@ class ChatRoom: JSQMessagesViewController {
             }
         }
         
-        if listener2 == nil{
         // listener未登録なら、登録してスナップショットを受信する
         
             let Ref = Firestore.firestore().collection(Users!).document(OpponentId!)
-            listener2 = Ref.addSnapshotListener() { (querySnapshot, error) in
+            Ref.getDocument() { (querySnapshot, error) in
             if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
                 return
             }
+            //名前
+                if let name:String = querySnapshot?.get("name") as? String {
+                    self.navigationItem.title = name
+                }
             //画像を設定
             let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot?.get("photoId") as! String)
                 imageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
@@ -222,7 +235,6 @@ class ChatRoom: JSQMessagesViewController {
                     }
                 }
             }
-        }
     }
     
     //戻るボタン
@@ -595,3 +607,10 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
 }
 
 
+extension ChatRoom:dismissDelegate{
+    func selfdismissFunction(_ type: Bool) {
+        if type == true{
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
+}

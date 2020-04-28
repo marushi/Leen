@@ -19,10 +19,24 @@ class PhoneNumber: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.barTintColor = .white
+        self.navigationController?.navigationBar.shadowImage = UIImage()
         
         Button.backgroundColor = ColorData.salmon
-        Button.layer.cornerRadius = Button.frame.height * 0.5
+        Button.layer.cornerRadius = 10
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        tellNumberTextField.becomeFirstResponder()
+    }
+    
+    @IBAction func modoru(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     
     @IBAction func Button(_ sender: Any) {
         // 国番号を付与して変数に代入
@@ -30,10 +44,11 @@ class PhoneNumber: UIViewController {
         // 電話番号が10桁か11桁なのでバリデーションチェック
         if (phoneNumber.count == 13 || phoneNumber.count == 14) {
             // 入力した電話番号先に確認コードのメールを送信する
-            Auth.auth().settings?.isAppVerificationDisabledForTesting = true
+            //Auth.auth().settings?.isAppVerificationDisabledForTesting = true
             PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { (verificationID, error) in
                 if let error = error {
                     print(error)
+                    SCLAlertView().showInfo("通信エラー", subTitle: "通信環境をご確認ください。")
                     return
                 } else {
                     // 確認IDをアプリ側で保持しておく
@@ -51,8 +66,4 @@ class PhoneNumber: UIViewController {
         }
         
         }
-    
-    @IBAction func modoru(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
 }

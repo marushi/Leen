@@ -14,7 +14,8 @@ import XLPagerTabStrip
 
 class Talk:ButtonBarPagerTabStripViewController{
     
-   
+    var firstLaunch:Bool = false
+    
     override func viewDidLoad() {
         //バーの色
         settings.style.buttonBarBackgroundColor = .white
@@ -36,9 +37,10 @@ class Talk:ButtonBarPagerTabStripViewController{
     
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
-        self.navigationController?.navigationBar.barTintColor = .white
-        self.navigationController?.navigationBar.backgroundColor = .white
+        self.navigationController?.navigationBar.barTintColor = .systemBackground
         self.navigationController?.navigationBar.shadowImage = UIImage()
+        let tabItem = self.tabBarController?.tabBar.items![2]
+        tabItem?.badgeValue = nil
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -50,8 +52,19 @@ class Talk:ButtonBarPagerTabStripViewController{
         //管理されるViewControllerを返す処理
         let firstVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "First") as! talk_before
         let secondVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Second") as! talk_after
-        let childViewControllers:[UIViewController] = [firstVC, secondVC]
+        let childViewControllers:[UIViewController] = [firstVC,secondVC]
         return childViewControllers
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // スワイプごとに呼ばれるから一度だけ実行するようにする
+        if firstLaunch == false {
+            self.moveToViewController(at: 1, animated: false)
+            self.moveToViewController(at: 0, animated: false)
+            self.firstLaunch = true
+        }
+        
     }
 }
 

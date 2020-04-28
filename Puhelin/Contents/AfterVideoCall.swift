@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseUI
+import SCLAlertView
 
 class AfterVideoCall: UIViewController {
     
@@ -17,6 +18,7 @@ class AfterVideoCall: UIViewController {
     @IBOutlet weak var photo: UIImageView!
     @IBOutlet weak var selector: UISegmentedControl!
     @IBOutlet weak var OKbutton: UIButton!
+    @IBOutlet weak var remainNum: UILabel!
     
     //変数
     var selectorNum = 0
@@ -29,11 +31,17 @@ class AfterVideoCall: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         photo.layer.cornerRadius = photo.frame.size.height / 2
+        selector.layer.cornerRadius = 20
+        OKbutton.layer.cornerRadius = OKbutton.frame.size.height / 2
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        //マッチング券の残り枚数
+        let num = userDefaults.integer(forKey: UserDefaultsData.matchingNum)
+        remainNum.text = "×" + String(num) + "枚"
+        
         photo.image = topImage
-        let ref = Firestore.firestore().collection(userDefaults.string(forKey: "DB")!).document(opid!)
+        let ref = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(opid!)
         ref.getDocument() { (document, error) in
         if let error = error {
             print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
@@ -53,14 +61,40 @@ class AfterVideoCall: UIViewController {
     }
     
     @IBAction func okButton(_ sender: Any) {
+        //アラート1
+        let appearance1 = SCLAlertView.SCLAppearance(
+                showCloseButton: false
+            )
+            let alertView1 = SCLAlertView(appearance: appearance1)
+            alertView1.addButton("申請する") {
+                //探す画面に戻る
+                let ref = Firestore.firestore().collection(Const.ChatPath).document(self.roomName!)
+                let selfData = self.userDefaults.integer(forKey: "gender") + 2
+                let dic = ["\(selfData)": true]
+                ref.setData(dic, merge: true)
+                self.dismiss(animated: true, completion: nil)
+            }
+            alertView1.addButton("戻る",backgroundColor: .lightGray,textColor: .black) {
+                return
+            }
+        //アラート2
+        let appearance2 = SCLAlertView.SCLAppearance(
+            showCloseButton: false
+        )
+        let alertView2 = SCLAlertView(appearance: appearance2)
+        alertView2.addButton("今回は見送る") {
+            //探す画面に戻る
+            self.dismiss(animated: true, completion: nil)
+        }
+        alertView2.addButton("戻る",backgroundColor: .lightGray,textColor: .black) {
+            return
+        }
+        
+        //処理
         if selectorNum == 0 {
-            let ref = Firestore.firestore().collection(Const.ChatPath).document(self.roomName!)
-            let selfData = userDefaults.integer(forKey: "gender") + 2
-            let dic = ["\(selfData)": true]
-            ref.setData(dic, merge: true)
-            self.dismiss(animated: true, completion: nil)
+            alertView1.showSuccess("マッチングを申請します。", subTitle: "マッチングが成立した場合、マッチング券を1枚消費します。よろしいですか？")
         }else{
-            self.dismiss(animated: true, completion: nil)
+            alertView2.showSuccess("マッチングを見送ります。", subTitle: "選択し直すにはもう一度通話する必要があります。よろしいですか？")
         }
     }
     

@@ -20,6 +20,11 @@ class SMS: UIViewController {
         button.layer.cornerRadius = button.frame.size.height / 2
     }
     
+    @IBAction func modoru(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    
     @IBAction func Button(_ sender: Any) {
         // 確認コードを変数に代入
         if let verificationCode = confirmCodeTextField.text {
@@ -37,6 +42,8 @@ class SMS: UIViewController {
                     }
                     if let authResult = authResult {
                         print(authResult)
+                        let uid = Auth.auth().currentUser?.uid
+                        self.userDefaults.set(uid, forKey: "uid")
                         self.dismiss(animated: true, completion: nil)
                     }
                 }

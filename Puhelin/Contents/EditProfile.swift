@@ -2,6 +2,7 @@
 
 
 import UIKit
+import PKHUD
 import Firebase
 import FirebaseUI
 import SCLAlertView
@@ -17,6 +18,9 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var savesentenceButton: UIButton!
+    @IBOutlet weak var changeButton: UIButton!
+    @IBOutlet weak var deleteButton: UIButton!
+    
     //定数
     let userDefaults = UserDefaults.standard
     let uid = UserDefaults.standard.string(forKey: "uid")
@@ -52,12 +56,14 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
         textField.delegate = self
         savesentenceButton.isHidden = true
         savesentenceButton.isEnabled = false
+        changeButton.layer.cornerRadius = changeButton.frame.size.height / 2
+        deleteButton.layer.cornerRadius = deleteButton.frame.size.height / 2
         
         //tableViewの設定
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView(frame: .zero)
-        tableView.rowHeight = tableView.frame.height / 13
+        tableView.rowHeight = tableView.frame.height / 12
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -72,13 +78,38 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
     
     override func viewWillDisappear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
-        presentingViewController?.beginAppearanceTransition(true, animated: animated)
-        presentingViewController?.endAppearanceTransition()
     }
     
     //戻るボタン
     @IBAction func modoru(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    //チェンジボタン処理
+    @IBAction func changeButton(_ sender: Any) {
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            let pickerController = UIImagePickerController()
+            pickerController.delegate = self
+            pickerController.sourceType = .photoLibrary
+            self.present(pickerController, animated: true, completion: nil)
+        }
+    }
+    
+    //削除ボタン処理
+    @IBAction func deleteButton(_ sender: Any) {
+        if let photoId = self.profileData?.photoId {
+            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+            imageRef.delete{ error in
+              if let error = error {
+                print(error)
+              } else {
+                self.profileData?.photoId = ""
+                let ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(self.userDefaults.string(forKey: "uid")!)
+                ref.setData(["photoId":""], merge: true)
+                self.setUp()
+              }
+            }
+        }
     }
     
     @IBAction func photoButton(_ sender: Any) {
@@ -157,10 +188,19 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
     //セットアップ
     func setUp(){
         //データセット
-        if let photoId = self.profileData?.photoId {
-            photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
-            photo.sd_setImage(with: imageRef)
+        //自分の情報を設定
+            if self.profileData?.photoId != "" && self.profileData?.photoId != nil{
+            self.photo.contentMode = .scaleAspectFill
+            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(self.profileData!.photoId!)
+            self.photo.sd_setImage(with: imageRef)
+        }else{
+            self.photo.contentMode = .scaleAspectFit
+            if self.userDefaults.integer(forKey: "gender") == 1 {
+                self.photo.image = UIImage(named: "male")
+            }else{
+                self.photo.image = UIImage(named: "female")
+            }
+            
         }
         MessageButton.setTitle(profileData?.sentenceMessage, for: .normal)
         introTextView.text = profileData?.intro
@@ -176,32 +216,45 @@ extension EditProfile: RSKImageCropViewControllerDelegate {
   }
   //完了を押した後の処理
   func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
-    dismiss(animated: true)
-    photo.image = croppedImage
+    HUD.show(.progress)
     //---firebaseに保存---
     let date:Date = Date()
     //firebaseに写真をアップロード
     let registImage = croppedImage.jpegData(compressionQuality: 0.75)
-    let uid = Auth.auth().currentUser?.uid
+    let uid = userDefaults.string(forKey: "uid")
     let photoId:String = uid! + "\(date)" + ".jpg"
     let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
     let metadata = StorageMetadata()
     metadata.contentType = "image/jpeg"
+    
+    //前の画像を削除
+    if let photoId = self.profileData?.photoId {
+        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+        imageRef.delete(completion: nil)
+    }
+    
+    //画像のIDを保存
     imageRef.putData(registImage!, metadata: metadata) { (metadata, error) in
         if error != nil {
             // 画像のアップロード失敗
             print(error!)
             return
         }
-        let Ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(uid!)
-        let dic = ["photoId": photoId]
-        Ref.setData(dic,merge: true)
+        imageRef.downloadURL{(url,error) in
+        if let downloadUrl = url {
+            let downloadUrlStr = downloadUrl.absoluteString
+            let Ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(uid!)
+            let dic = ["photoURL": downloadUrlStr]
+            Ref.setData(dic,merge: true)
+            self.profileData?.photoId = photoId
+            self.dismiss(animated: true)
+            self.photo.contentMode = .scaleAspectFill
+            self.photo.image = croppedImage
+            HUD.hide()
+            }
+        }
     }
-    //前の画像を削除
-    if let photoId = self.profileData?.photoId {
-        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
-        imageRef.delete(completion: nil)
-    }
+    
     }
 }
 
@@ -210,7 +263,7 @@ extension EditProfile: RSKImageCropViewControllerDelegate {
 //
 extension EditProfile: UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 13
+        return 12
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -233,10 +286,22 @@ extension EditProfile: UITableViewDelegate,UITableViewDataSource{
             HobbyInputView.nameText = profileData?.name
             HobbyInputView.modalTransitionStyle = .crossDissolve
             present(HobbyInputView,animated: true,completion: nil)
-        }else if row == 12{
+        }else if row == 11{
             let HobbyInputView = self.storyboard?.instantiateViewController(identifier: "HobbyInputView") as! HobbyInputView
             HobbyInputView.inputMode = 1
             HobbyInputView.nameText = profileData?.hobby
+            HobbyInputView.modalTransitionStyle = .crossDissolve
+            present(HobbyInputView,animated: true,completion: nil)
+        }else if row == 5 {
+            let HobbyInputView = self.storyboard?.instantiateViewController(identifier: "HobbyInputView") as! HobbyInputView
+            HobbyInputView.inputMode = 2
+            HobbyInputView.nameText = profileData?.job
+            HobbyInputView.modalTransitionStyle = .crossDissolve
+            present(HobbyInputView,animated: true,completion: nil)
+        }else if row == 6 {
+            let HobbyInputView = self.storyboard?.instantiateViewController(identifier: "HobbyInputView") as! HobbyInputView
+            HobbyInputView.inputMode = 3
+            HobbyInputView.nameText = profileData?.personality
             HobbyInputView.modalTransitionStyle = .crossDissolve
             present(HobbyInputView,animated: true,completion: nil)
         }

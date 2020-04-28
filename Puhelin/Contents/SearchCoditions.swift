@@ -37,6 +37,7 @@ class SearchCoditions: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView(frame: .zero)
+        tableView.backgroundColor = .white
         tableView.rowHeight = 70
         resetButton.layer.cornerRadius = resetButton.frame.height / 2
         registButton.layer.cornerRadius = registButton.frame.height / 2
@@ -68,8 +69,8 @@ class SearchCoditions: UIViewController {
     }
     
     @IBAction func registCondition(_ sender: Any) {
-        if searchQuery?.region == [] && searchQuery?.minAge == nil && searchQuery?.maxAge == nil && searchQuery?.tallClass == nil && searchQuery?.purpose == nil {
-            self.delegate?.searchConResultFunction(query: self.searchQuery, type: 2)
+        if searchQuery?.prefecturs == [] && searchQuery?.minAge == nil && searchQuery?.maxAge == nil && searchQuery?.tallClass == nil && searchQuery?.purpose == nil && searchQuery?.tabakoClass == nil{
+            self.delegate?.searchConResultFunction(query: self.searchQuery, type: 3)
             self.navigationController?.popViewController(animated: true)
         }else{
             self.delegate?.searchConResultFunction(query: self.searchQuery,type: 1)
@@ -87,6 +88,10 @@ class SearchCoditions: UIViewController {
     }
     
     @IBAction func CancelButton(_ sender: Any) {
+        if searchQuery?.prefecturs == [] && searchQuery?.minAge == nil && searchQuery?.maxAge == nil && searchQuery?.tallClass == nil && searchQuery?.purpose == nil && searchQuery?.tabakoClass == nil{
+            self.tabBarController?.tabBar.isHidden = false
+            self.navigationController?.popViewController(animated: true)
+        }else{
         //アラート
         let appearance = SCLAlertView.SCLAppearance(
                 showCloseButton: false
@@ -102,6 +107,7 @@ class SearchCoditions: UIViewController {
             }
             alertView.showSuccess("検索条件は保存されません。よろしいですか？", subTitle: "")
         }
+    }
         
 }
 
@@ -120,18 +126,21 @@ extension SearchCoditions:UITableViewDelegate,UITableViewDataSource{
         label.textColor = ColorData.salmon
         label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         label.frame.size.height = 30
+        label.backgroundColor = .white
         return label
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 5
     }
     
+    //セルの中身
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchConditionsCell") as! SearchConditionsCell
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         cell.searchQuery = self.searchQuery
         cell.setUp(indexPath.row)
+        cell.backgroundColor = .white
         return cell
     }
     

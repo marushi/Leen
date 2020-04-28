@@ -12,7 +12,7 @@ class settingCell: UITableViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
     
-    let titleArray = ["退会手続き"]
+    let titleArray = ["ユーザー情報","プロフィールの公開設定","通知設定","メールアドレスの設定","削除ユーザー","ブロックユーザー"]
 
     override func awakeFromNib() {
         super.awakeFromNib()

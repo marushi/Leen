@@ -24,7 +24,7 @@
                         </constraints>
                     </imageView>
                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Fsv-mD-4j3">
-                        <rect key="frame" x="225" y="110" width="152" height="80"/>
+                        <rect key="frame" x="225" y="132" width="152" height="80"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="80" id="kyN-ka-Luu"/>
@@ -45,19 +45,19 @@
                         </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vYD-gI-Qzg">
-                        <rect key="frame" x="225" y="69" width="42" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <rect key="frame" x="225" y="92.5" width="39.5" height="19.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
                         <color key="textColor" red="1" green="0.50196078430000002" blue="0.44705882349999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aBM-NB-Bgb">
-                        <rect key="frame" x="225" y="43" width="42" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <rect key="frame" x="225" y="68" width="39.5" height="19.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
                         <color key="textColor" red="1" green="0.50196078430000002" blue="0.44705882349999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nBr-YB-Ddg">
-                        <rect key="frame" x="340" y="45" width="37" height="17"/>
+                        <rect key="frame" x="225" y="43" width="37" height="17"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -65,16 +65,16 @@
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="aBM-NB-Bgb" firstAttribute="top" secondItem="Ahu-1a-QLH" secondAttribute="top" constant="5" id="7Em-M7-5cC"/>
+                    <constraint firstItem="aBM-NB-Bgb" firstAttribute="top" secondItem="Ahu-1a-QLH" secondAttribute="top" constant="30" id="7Em-M7-5cC"/>
                     <constraint firstAttribute="trailing" secondItem="Fsv-mD-4j3" secondAttribute="trailing" constant="10" id="7Q0-wU-RKV"/>
                     <constraint firstItem="aBM-NB-Bgb" firstAttribute="leading" secondItem="Ahu-1a-QLH" secondAttribute="trailing" constant="10" id="AwR-Wi-7dM"/>
                     <constraint firstItem="BEW-22-X3z" firstAttribute="leading" secondItem="Ahu-1a-QLH" secondAttribute="trailing" constant="10" id="BV6-V3-R9S"/>
                     <constraint firstItem="Ahu-1a-QLH" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="Hf6-bf-5hB"/>
-                    <constraint firstAttribute="trailing" secondItem="nBr-YB-Ddg" secondAttribute="trailing" constant="10" id="MEg-DI-Xm2"/>
                     <constraint firstItem="Ahu-1a-QLH" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="N7t-hn-0GR"/>
                     <constraint firstItem="BEW-22-X3z" firstAttribute="bottom" secondItem="Ahu-1a-QLH" secondAttribute="bottom" id="OxP-P8-2Fr"/>
                     <constraint firstItem="vYD-gI-Qzg" firstAttribute="leading" secondItem="aBM-NB-Bgb" secondAttribute="leading" id="QoL-Xb-e5a"/>
-                    <constraint firstItem="nBr-YB-Ddg" firstAttribute="centerY" secondItem="aBM-NB-Bgb" secondAttribute="centerY" id="Rrj-CN-wjg"/>
+                    <constraint firstItem="nBr-YB-Ddg" firstAttribute="leading" secondItem="Ahu-1a-QLH" secondAttribute="trailing" constant="10" id="Rx2-Bm-YzI"/>
+                    <constraint firstItem="nBr-YB-Ddg" firstAttribute="top" secondItem="Ahu-1a-QLH" secondAttribute="top" constant="5" id="WAW-bn-it4"/>
                     <constraint firstAttribute="trailing" secondItem="BEW-22-X3z" secondAttribute="trailing" constant="10" id="XUb-aI-alt"/>
                     <constraint firstItem="Fsv-mD-4j3" firstAttribute="top" secondItem="vYD-gI-Qzg" secondAttribute="bottom" constant="20" id="Xov-3K-fMS"/>
                     <constraint firstItem="vYD-gI-Qzg" firstAttribute="top" secondItem="aBM-NB-Bgb" secondAttribute="bottom" constant="5" id="jHl-IN-QUC"/>

@@ -18,7 +18,20 @@ class goodpointCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        goodnum.text = String(userDefaults.integer(forKey: UserDefaultsData.remainGoodNum))
+        
         button.layer.cornerRadius = button.frame.size.height / 2
+    }
+    
+    func setdata(){
+        let type = userDefaults.integer(forKey: UserDefaultsData.goodLimit)
+        if type == 0 {
+            goodnum.text = "5"
+        }else if type == 1 {
+            goodnum.text = "10"
+        }else if type == 2 {
+            goodnum.text = "15"
+        }else if type == 3 {
+            goodnum.text = "20"
+        }
     }
 }

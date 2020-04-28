@@ -116,22 +116,27 @@ class GoodCell: UITableViewCell {
                 return
             }
                 self.profileData = MyProfileData(document: querySnapshot!)
-            //画像設定
-            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot!.get("photoId") as! String)
-            self.photo.sd_setImage(with: imageRef)
-            //その他情報設定
-            self.name.text = querySnapshot?.get("name") as? String
-            self.intro.text = querySnapshot?.get("intro") as? String
-            let age = querySnapshot?.get("age")
-            let region = querySnapshot?.get("region")
-            self.age.text = "\(age!)" + "才　" + "\(region!)"
-            //日付処理
-            let date:Timestamp? = querySnapshot?.get("date") as? Timestamp
-            let recieveDate: Date = date!.dateValue()
-            let formatter = DateFormatter()
-            formatter.dateFormat = "MM月dd日"
-            let showDate = "\(formatter.string(from: recieveDate))"
-            self.dateLabel.text = "\(showDate)"
+                //画像設定
+                if let photoId = self.profileData?.photoId {
+                    let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+                    self.photo.sd_setImage(with: imageRef)
+                }
+                //その他情報設定
+                self.name.text = querySnapshot?.get("name") as? String
+                self.intro.text = querySnapshot?.get("intro") as? String
+                let age = querySnapshot?.get("age")
+                let region = querySnapshot?.get("region")
+                self.age.text = "\(age!)" + "才　" + "\(region!)"
+                //日付処理
+                if let goodDate = querySnapshot?.get("date") as? Timestamp {
+                    let date:Timestamp? = goodDate
+                    let recieveDate: Date = date!.dateValue()
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "MM月dd日"
+                    let showDate = "\(formatter.string(from: recieveDate))"
+                    self.dateLabel.text = "\(showDate)"
+                }
+                
             }
         }
     }
@@ -157,8 +162,8 @@ class GoodCell: UITableViewCell {
                 as [String : Any]
             ChatRef.setData(DIc)
             let MesRef = ChatRef.collection(Const.MessagePath).document()
-            let Dic = ["senderId": userDefaults.string(forKey: UserDefaultsData.uid) as Any
-                ,"displayName": userDefaults.string(forKey: UserDefaultsData.name) as Any
+            let Dic = ["senderId": userDefaults.string(forKey: "uid") as Any
+                ,"displayName": userDefaults.string(forKey: "name") as Any
                 ,"text": "いいねありがとうございます！"
                 ,"sendTime": Date() as Any] as [String:Any]
             MesRef.setData(Dic)
@@ -177,8 +182,8 @@ class GoodCell: UITableViewCell {
                 ,"name1": self.profileData?.name as Any] as [String : Any]
             ChatRef.setData(DIc)
             let MesRef = ChatRef.collection(Const.MessagePath).document()
-            let Dic = ["senderId": userDefaults.string(forKey: UserDefaultsData.uid) as Any
-                ,"displayName": userDefaults.string(forKey: UserDefaultsData.name) as Any
+            let Dic = ["senderId": userDefaults.string(forKey: "uid") as Any
+                ,"displayName": userDefaults.string(forKey: "name") as Any
                 ,"text": "いいねありがとうございます！"
                 ,"sendTime": Date() as Any] as [String:Any]
             MesRef.setData(Dic)
@@ -198,10 +203,6 @@ class GoodCell: UITableViewCell {
             let selectDic = ["uid": opUserId!,"date":Date()] as [String : Any]
             selectRef.setData(selectDic)
             //--------ポイント処理-------
-            //goodpoint
-            var goodpoint = self.userDefaults.integer(forKey: UserDefaultsData.GoodPoint)
-            goodpoint -= 1
-            self.userDefaults.set(goodpoint, forKey: UserDefaultsData.GoodPoint)
             //remaingoodnum
             var remainNum = self.userDefaults.integer(forKey: UserDefaultsData.remainGoodNum)
             remainNum -= 1

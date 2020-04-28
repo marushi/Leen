@@ -10,12 +10,12 @@ import Foundation
 import UIKit
 
 class UserDefaultsData:NSObject {
-    static let PuhelinPoint = "PuhelinPoint"
-    static let GoodPoint = "GoodPoint"
-    static let uid = "uid"
-    static let name = "name"
-    static let gender = "gender"
     static let remainGoodNum = "remainGoodNum"
+    static let callLimit = "callLimit"
+    static let goodLimit = "goodLimit"
+    static let ticketNum = "recoveryTicket"
+    static let matchingNum = "matchingTicket"
+    static let identification = "identification"
     var myDB:String?
     var opDB:String?
     

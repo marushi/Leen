@@ -20,6 +20,6 @@ class searchQueryData: NSObject {
     var income:String?
     var personality:String?
     var alchoal:String?
-    var tabako:String?
+    var tabakoClass:String?
     var tallClass:String?
 }

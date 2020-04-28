@@ -24,13 +24,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
     //--------select,down,good,footユーザーデータ用変数------------//
     var selectUserData:[FootUsers] = []
     var downUserData:[FootUsers] = []
-    var goodUserData:[FootUsers] = []
+    var goodUserData:[goodData] = []
     var FootUserData:[FootUsers] = []
+    var receiveData:[FootUsers] = []
     //string文字列
     var selectIdArray:[String] = []
     var downIdArray:[String] = []
     var goodIdArray:[String] = []
     var footIdArray:[String] = []
+    var receiveIdArray:[String] = []
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         //---------------------------------------

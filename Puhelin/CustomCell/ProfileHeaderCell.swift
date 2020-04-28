@@ -10,36 +10,45 @@ import UIKit
 
 class ProfileHeaderCell: UICollectionViewCell {
     @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
     
+    let titleArray:[String] = ["身長","体型","会話","目的"]
     var data:MyProfileData?
     
     override func awakeFromNib() {
+        titleLabel.layer.cornerRadius = titleLabel.frame.size.height / 2
+        titleLabel.clipsToBounds = true
     }
     
     func setData(_ row:Int) {
         if data == nil {
             return
         }
+        self.titleLabel.text = self.titleArray[row]
         switch row {
         case 0:
             if data?.tall != nil{
                 label.text = "\(data!.tall!)cm"
             }else{
-                label.text = "未入力"
+                label.text = "-cm"
             }
-            self.addBorder(width: 1, color: .lightGray, position: .right)
+            //self.addBorder(width: 1, color: .lightGray, position: .right)
         case 1:
-            label.text = data?.bodyType
-            self.addBorder(width: 1, color: .lightGray, position: .right)
+            if data?.bodyType == "" {
+                label.text = "どちらでも"
+            }else{
+                label.text = data?.bodyType
+            }
+            //self.addBorder(width: 1, color: .lightGray, position: .right)
         case 2:
-            if data?.talk == "未選択" {
+            if data?.talk == "" {
                 label.text = "どちらでも"
             }else {
                 label.text = data?.talk
             }
-            self.addBorder(width: 1, color: .lightGray, position: .right)
+            //self.addBorder(width: 1, color: .lightGray, position: .right)
         case 3:
-            if data?.purpose == "未選択" {
+            if data?.purpose == "" {
                 label.text = "どちらでも"
             }else{
                 label.text = data?.purpose

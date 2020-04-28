@@ -13,6 +13,8 @@ class HobbyInputView: UIViewController,UITextFieldDelegate {
 
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var contentView: UIView!
+    @IBOutlet weak var registButton: UIButton!
+    @IBOutlet weak var mojisuseigen: UILabel!
     
     var inputMode:Int?
     var nameText:String?
@@ -30,6 +32,11 @@ class HobbyInputView: UIViewController,UITextFieldDelegate {
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = true
         textField.text = nameText
+        if inputMode == 0 {
+            mojisuseigen.text = "※ 文字数制限（2〜5文字以内）"
+        }else{
+            mojisuseigen.text = "※ 文字数制限（10文字以内）"
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -42,32 +49,63 @@ class HobbyInputView: UIViewController,UITextFieldDelegate {
         self.dismiss(animated: true, completion: nil)
     }
     
+    //-------textField------//
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let textNum = textField.text?.count else {
+            return true
+        }
+        if inputMode == 0 {
+            if textNum > 1 && textNum < 6 {
+                self.registButton.isEnabled = true
+                return true
+            }else{
+                registButton.isEnabled = false
+                return true
+            }
+        }else{
+            if textNum < 10 {
+                self.registButton.isEnabled = true
+                return true
+            }else{
+                registButton.isEnabled = false
+                return true
+            }
+        }
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        UIView.animate(withDuration: 0.3, animations: {
+            self.contentView.transform = CGAffineTransform(translationX: 0, y: -60)
+        })
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        UIView.animate(withDuration: 0.3, animations: {
+            self.contentView.transform = CGAffineTransform(translationX: 0, y: 60)
+        })
+    }
+    
     //保存
     @IBAction func registButton(_ sender: Any) {
         self.modalTransitionStyle = .crossDissolve
         var num:Int?
         
-        if UserDefaults.standard.integer(forKey: "gender") == 1{
-            let Ref = Firestore.firestore().collection(Const.MalePath).document(UserDefaults.standard.string(forKey: "uid")!)
-            if inputMode == 0{
-                num = 9
-                Ref.setData(["name":textField.text!],merge: true)
-                UserDefaults.standard.set(textField.text!, forKey: "name")
-            }else{
-                num = 10
-                Ref.setData(["hobby":textField.text!],merge: true)
-            }
-        }else{
-            let Ref = Firestore.firestore().collection(Const.FemalePath).document(UserDefaults.standard.string(forKey: "uid")!)
-            if inputMode == 0{
-                num = 9
-                Ref.setData(["name":textField.text!],merge: true)
-                UserDefaults.standard.set(textField.text!, forKey: "name")
-            }else{
-                num = 10
-                Ref.setData(["hobby":textField.text!],merge: true)
-            }
+        let Ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(UserDefaults.standard.string(forKey: "uid")!)
+        if inputMode == 0{
+            num = 9
+            Ref.setData(["name":textField.text!],merge: true)
+            UserDefaults.standard.set(textField.text!, forKey: "name")
+        }else if inputMode == 1{
+            num = 10
+            Ref.setData(["hobby":textField.text!],merge: true)
+        }else if inputMode == 2 {
+            num = 2
+            Ref.setData(["job":textField.text!],merge: true)
+        }else if inputMode == 3 {
+            num = 4
+            Ref.setData(["personality":textField.text!],merge: true)
         }
+        
         delegate?.perToEditText(text: textField.text!, row: num!)
         self.dismiss(animated: true, completion: nil)
     }

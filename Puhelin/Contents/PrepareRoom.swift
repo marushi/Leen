@@ -12,6 +12,7 @@ import SkyWay
 class PrepareRoom: UIViewController {
     
     // SkyWay Configuration Parameter
+    let userDefaults = UserDefaults.standard
     let apikey = "7dc43da3-26d9-4c5b-bb15-b16ac1570364"
     let domain = "localhost"
     var topImage: UIImage?
@@ -25,6 +26,7 @@ class PrepareRoom: UIViewController {
     
     @IBOutlet weak var localStreamView: SKWVideo!
     @IBOutlet weak var joinButton: UIButton!
+    @IBOutlet weak var remainNum: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,9 +40,23 @@ class PrepareRoom: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        //繋がるまでボタンつかえなくする
+        joinButton.isEnabled = false
+        joinButton.setTitle("接続中...", for: .normal)
+        joinButton.backgroundColor = ColorData.nijiiro
+        joinButton.layer.shadowOffset = CGSize(width: 0.0, height: 0)
+        joinButton.layer.shadowColor = UIColor.black.cgColor
+        joinButton.layer.shadowOpacity = 0
+        joinButton.layer.shadowRadius = 0
+        
+        //残り枚数
+        let num = userDefaults.integer(forKey: UserDefaultsData.matchingNum)
+        remainNum.text = "×" + String(num) + "枚"
+        
         self.navigationController?.navigationBar.isHidden = false
         
         if modalmode == 1{
+            modalmode = 0
             let AfterVideoCall = self.storyboard?.instantiateViewController(identifier: "AfterVideoCall") as! AfterVideoCall
             AfterVideoCall.modalTransitionStyle = .crossDissolve
             AfterVideoCall.roomName = roomName
@@ -81,6 +97,7 @@ class PrepareRoom: UIViewController {
     
     @IBAction func lemoveButton(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
+        peer?.destroy()
         peer = nil
         roomName = nil
         localStream = nil
@@ -99,12 +116,20 @@ extension PrepareRoom{
                 DispatchQueue.main.async {
                 }
                 print("your peerId: \(peerId)")
+                self.joinButton.isEnabled = true
+                self.joinButton.setTitle("通話を開始", for: .normal)
+                self.joinButton.backgroundColor = ColorData.salmon
+                self.joinButton.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+                self.joinButton.layer.shadowColor = UIColor.black.cgColor
+                self.joinButton.layer.shadowOpacity = 0.6
+                self.joinButton.layer.shadowRadius = 1
             }
         })
         
         peer.on(.PEER_EVENT_ERROR, callback:{ (obj) -> Void in
             if let error = obj as? SKWPeerError{
                 print("\(error)")
+                self.joinButton.setTitle("接続エラー", for: .normal)
             }
         })
     }

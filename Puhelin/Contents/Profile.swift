@@ -101,7 +101,6 @@ class Profile: UIViewController {
             // 文字の色
             .foregroundColor: ColorData.salmon
         ]
-        self.navigationController?.navigationBar.tintColor = ColorData.salmon
         
         if ButtonMode == 1{
             self.setData(searchUid!)
@@ -138,9 +137,8 @@ class Profile: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.navigationBar.titleTextAttributes = [
             // 文字の色
-            .foregroundColor: UIColor.black
+            .foregroundColor: UIColor.label
         ]
-        self.navigationController?.navigationBar.tintColor = .lightGray
         if ButtonMode == 3 {
             self.tabBarController?.tabBar.isHidden = false
             self.navigationController!.interactivePopGestureRecognizer!.isEnabled = false
@@ -148,7 +146,7 @@ class Profile: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        collectionView.addBorder(width: 1, color: .lightGray, position: .top)
+        //collectionView.addBorder(width: 1, color: .lightGray, position: .top)
         HUD.hide()
     }
     
@@ -179,36 +177,59 @@ class Profile: UIViewController {
             }
                 self.profileData = MyProfileData(document: querySnapshot!)
             //画像設定
-            if let photoId:String = querySnapshot?.get("photoId") as? String {
-                self.photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-                let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+            //自分の情報を設定
+                if self.profileData?.photoId != "" && self.profileData?.photoId != nil{
+                self.photo.contentMode = .scaleAspectFill
+                let imageRef = Storage.storage().reference().child(Const.ImagePath).child(self.profileData!.photoId!)
                 self.photo.sd_setImage(with: imageRef)
+            }else{
+                self.photo.contentMode = .scaleAspectFit
+                if self.userDefaults.integer(forKey: "gender") == 2 {
+                    self.photo.image = UIImage(named: "male")
+                }else{
+                    self.photo.image = UIImage(named: "female")
+                }
+                
             }
             //その他情報設定
-            let name = querySnapshot?.get("name")
-            let age =  querySnapshot?.get("age")
-            let region = querySnapshot?.get("region")
-            let intro = querySnapshot?.get("intro")
-            let sentenceMes = querySnapshot?.get("sentenceMessage")
-            self.name.text = "\(name!) " + "\(age!)才 " + "\(region!)"
-            self.introTextView.text = intro! as? String
-            self.sentenceMessage.text = sentenceMes! as? String
-            //今週入会かどうか
-            let weekAgo = Date(timeIntervalSinceNow: -60*60*24*4)
-            let date:Timestamp = querySnapshot?.get("signupDate") as! Timestamp
-            let signupDate: Date = date.dateValue()
-            if signupDate < weekAgo {
-                self.weekLabel.isHidden = true
-            }else{
-                self.weekLabel.isHidden = false
-            }
-            //通話OKかどうか
-                let identBool:Bool? = querySnapshot?.get("identification") as? Bool
-                if identBool == true {
-                    self.phoneLabel.isHidden = false
-                }else{
-                    self.phoneLabel.isHidden = true
+                var str:String = ""
+                if let name = querySnapshot?.get("name") as? String {
+                    str += name + "　"
                 }
+                if let age =  querySnapshot?.get("age") as? Int {
+                    str += String(age) + "歳　"
+                }
+                if let region = querySnapshot?.get("region") as? String {
+                    str += region
+                }
+                self.name.text = str
+                if let intro = querySnapshot?.get("intro") {
+                    self.introTextView.text = intro as? String
+                }
+                if let sentenceMes = querySnapshot?.get("sentenceMessage") {
+                    self.sentenceMessage.text = sentenceMes as? String
+                }
+           
+                //今週入会かどうか
+                if let date:Timestamp = querySnapshot?.get("signupDate") as? Timestamp {
+                    let weekAgo = Date(timeIntervalSinceNow: -60*60*24*4)
+                    let signupDate: Date = date.dateValue()
+                    if signupDate < weekAgo {
+                        self.weekLabel.isHidden = true
+                    }else{
+                        self.weekLabel.isHidden = false
+                    }
+                }
+        
+                //通話OKかどうか
+                if let identBool:Bool = querySnapshot?.get("identification") as? Bool {
+                    if identBool == true {
+                        self.phoneLabel.isHidden = false
+                    }else{
+                        self.phoneLabel.isHidden = true
+                    }
+                }
+                
             self.tableView.reloadData()
             self.collectionView.reloadData()
             }
@@ -234,9 +255,18 @@ class Profile: UIViewController {
             }
             self.profileData = MyProfileData(document: document!)
             //自分の情報を設定
-            if let photoId = self.profileData?.photoId {
-                let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+            if self.profileData?.photoId != "" && self.profileData?.photoId != nil{
+                self.photo.contentMode = .scaleAspectFill
+                let imageRef = Storage.storage().reference().child(Const.ImagePath).child(self.profileData!.photoId!)
                 self.photo.sd_setImage(with: imageRef)
+            }else{
+                self.photo.contentMode = .scaleAspectFit
+                if self.userDefaults.integer(forKey: "gender") == 1 {
+                    self.photo.image = UIImage(named: "male")
+                }else{
+                    self.photo.image = UIImage(named: "female")
+                }
+                
             }
             
             let name = self.profileData!.name
@@ -285,7 +315,7 @@ class Profile: UIViewController {
             //Hud
             HUD.show(.progress)
             //相手のいいねリストに自分を追加
-            let Ref = Firestore.firestore().collection(UserDefaults.standard.string(forKey: "DB")!).document(opUserId!).collection(Const.GoodPath).document(userDefaults.string(forKey: "uid")!)
+            let Ref = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(opUserId!).collection(Const.GoodPath).document(userDefaults.string(forKey: "uid")!)
             let Dic = ["uid": userDefaults.string(forKey: "uid")!
                 ,"name":userDefaults.string(forKey: "name")!
                 ,"date":Date()] as [String: Any]
@@ -294,11 +324,12 @@ class Profile: UIViewController {
             let selectRef = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!).collection(Const.SelectUsers).document(opUserId!)
             let selectDic = ["uid": opUserId!,"date":Date()] as [String : Any]
             selectRef.setData(selectDic)
+            //相手のレシーブリストに入れる
+            let opRecRef = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(
+                opUserId!).collection(Const.ReceiveData).document(userDefaults.string(forKey: "uid")!)
+            let opRecDic = ["uid":userDefaults.string(forKey: "uid")!,"date":Date()] as [String : Any]
+            opRecRef.setData(opRecDic)
             //--------ポイント処理-------
-            //goodpoint
-            var goodpoint = self.userDefaults.integer(forKey: UserDefaultsData.GoodPoint)
-            goodpoint -= 1
-            self.userDefaults.set(goodpoint, forKey: UserDefaultsData.GoodPoint)
             //remaingoodnum
             var remainNum = self.userDefaults.integer(forKey: UserDefaultsData.remainGoodNum)
             remainNum -= 1
@@ -311,7 +342,7 @@ class Profile: UIViewController {
                 self.limitGoodNum.isHidden = true
                 self.view.isUserInteractionEnabled = false
                 UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2, animations: {
-                    self.scrollView.contentOffset = CGPoint(x: 0, y: self.scrollView.contentInset.top -  2 * ( self.navigationController?.navigationBar.frame.size.height)!)
+                    self.scrollView.contentOffset = CGPoint(x: 0, y: self.scrollView.contentInset.top - 2 * ( self.navigationController?.navigationBar.frame.size.height)!)
                 })
                 UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.2, animations: {
                     AudioServicesPlaySystemSound(1519)
@@ -346,8 +377,8 @@ class Profile: UIViewController {
                     ,"name2": self.profileData?.name as Any] as [String : Any]
                 ChatRef.setData(DIc)
                 let MesRef = ChatRef.collection(Const.MessagePath).document()
-                let Dic = ["senderId": userDefaults.string(forKey: UserDefaultsData.uid) as Any
-                    ,"displayName": userDefaults.string(forKey: UserDefaultsData.name) as Any
+                let Dic = ["senderId": userDefaults.string(forKey: "uid") as Any
+                    ,"displayName": userDefaults.string(forKey: "name") as Any
                     ,"text": "いいねありがとうございます！"
                     ,"sendTime": Date() as Any] as [String:Any]
                 MesRef.setData(Dic)
@@ -363,8 +394,8 @@ class Profile: UIViewController {
                     ,"name1": self.profileData?.name as Any] as [String : Any]
                 ChatRef.setData(DIc)
                 let MesRef = ChatRef.collection(Const.MessagePath).document()
-                let Dic = ["senderId": userDefaults.string(forKey: UserDefaultsData.uid) as Any
-                    ,"displayName": userDefaults.string(forKey: UserDefaultsData.name) as Any
+                let Dic = ["senderId": userDefaults.string(forKey: "uid") as Any
+                    ,"displayName": userDefaults.string(forKey: "name") as Any
                     ,"text": "いいねありがとうございます！"
                     ,"sendTime": Date() as Any] as [String:Any]
                 MesRef.setData(Dic)
@@ -422,7 +453,7 @@ extension Profile : UICollectionViewDataSource,UICollectionViewDelegate,UICollec
 
 extension Profile:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 13
+        return 12
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

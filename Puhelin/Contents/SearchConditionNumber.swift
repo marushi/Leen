@@ -72,13 +72,29 @@ extension SearchConditionNumber: UIPickerViewDelegate,UIPickerViewDataSource {
         return arrayNum
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    /*func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
             if row == 0 {
                 return"\(ageArray[row])"
             }else{
                 return "\(ageArray[row])" + "歳"
             }
+    }*/
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+
+        // 表示するラベルを生成する
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 18)
+        label.textColor = .red
+        if row == 0 {
+            label.text = "\(ageArray[row])"
+        }else{
+            label.text =  "\(ageArray[row])" + "歳"
+        }
+        return label
     }
+
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerMode == 1 {

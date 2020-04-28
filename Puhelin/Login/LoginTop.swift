@@ -22,6 +22,7 @@ class LoginTop: UIViewController {
     var downLis :ListenerRegistration!
     var goodLis :ListenerRegistration!
     var footLis :ListenerRegistration!
+    var recieveLis:ListenerRegistration!
     var userData:MyProfileData?
     var pageViewController:UIPageViewController!
     var controllers: [ UIViewController ] = []
@@ -38,9 +39,8 @@ class LoginTop: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
         //ログインしている場合
-        if Auth.auth().currentUser != nil {
+        if self.userDefaults.string(forKey: "uid") != nil {
             HUD.show(.progress)
-            self.userDefaults.set(Auth.auth().currentUser?.uid, forKey: "uid")
             let uid = self.userDefaults.string(forKey: "uid")
             //情報を取ってくる
             let ref = Firestore.firestore().collection(Const.FemalePath).document(uid!)
@@ -160,7 +160,7 @@ class LoginTop: UIViewController {
                     }
                     self.fromAppDelegate.goodUserData = (querysnapshot?.documents.map { document in
                         print("DEBUG_PRINT: document取得 \(document.documentID)")
-                        let userData = FootUsers(document: document)
+                        let userData = goodData(document: document)
                         return userData
                         }
                         )!
@@ -191,6 +191,25 @@ class LoginTop: UIViewController {
                             self.fromAppDelegate.footIdArray.append(self.fromAppDelegate.FootUserData[i].uid!)
                         }
                     }
+                    if self.recieveLis == nil {
+                    let recieveRef = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(self.userDefaults.string(forKey: "uid")!).collection(Const.ReceiveData).order(by: "date",descending: true)
+                    self.recieveLis = recieveRef.addSnapshotListener() {(querysnapshot,error) in
+                        if let error = error {
+                            print(error)
+                            return
+                        }
+                        self.fromAppDelegate.receiveData = (querysnapshot?.documents.map { document in
+                            print("DEBUG_PRINT: document取得 \(document.documentID)")
+                            let userData = FootUsers(document: document)
+                            return userData
+                            }
+                            )!
+                        let num = self.fromAppDelegate.receiveData.count
+                        if num != 0 {
+                            for i in 0...num - 1{
+                                self.fromAppDelegate.receiveIdArray.append(self.fromAppDelegate.FootUserData[i].uid!)
+                            }
+                        }
             //---^^^---
             //userDefaults保存処理
                     self.userDefaults.set(self.userData?.name, forKey: "name")
@@ -208,7 +227,8 @@ class LoginTop: UIViewController {
             }
         }
     }
-    
+        }
+    }
 }
 
 extension LoginTop:UIPageViewControllerDataSource,UIPageViewControllerDelegate{

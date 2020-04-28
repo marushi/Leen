@@ -76,10 +76,19 @@ class SearchCell: UICollectionViewCell {
             }
             let userData = MyProfileData(document: data!)
             // 画像の表示
-            if userData.photoId != nil {
-                self.photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
+            //自分の情報を設定
+            if userData.photoId != "" && userData.photoId != nil{
+                self.photo.contentMode = .scaleAspectFill
                 let imageRef = Storage.storage().reference().child(Const.ImagePath).child(userData.photoId!)
                 self.photo.sd_setImage(with: imageRef)
+            }else{
+                self.photo.contentMode = .scaleAspectFit
+                if UserDefaults.standard.integer(forKey: "gender") == 2 {
+                    self.photo.image = UIImage(named: "male")
+                }else{
+                    self.photo.image = UIImage(named: "female")
+                }
+                
             }
             
             //その他データ
@@ -90,6 +99,9 @@ class SearchCell: UICollectionViewCell {
                 self.regionLabel.text = "\(userData.age!)" + "歳"
             }
             if let region = userData.region {
+                self.region.text = region
+            }
+            /*if let region = userData.region {
                 if self.hokkaidou.contains(region) {
                     self.region.text = "北海道"
                 }
@@ -117,7 +129,7 @@ class SearchCell: UICollectionViewCell {
                 if self.okinawa.contains(region) {
                     self.region.text = "沖縄"
                 }
-            }
+            }*/
             if userData.sentenceMessage != nil {
                 self.sentenceMes.text = userData.sentenceMessage
             }

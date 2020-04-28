@@ -10,12 +10,18 @@ import UIKit
 
 class videoCell: UICollectionViewCell {
 
-    @IBOutlet weak var button: UIButton!
+    //@IBOutlet weak var button: UIButton!
+    @IBOutlet weak var ticketNum: UILabel!
+    
+    let userDefaults = UserDefaults.standard
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
-        button.layer.cornerRadius = button.frame.size.height / 2
+        //button.layer.cornerRadius = button.frame.size.height / 2
     }
-
+    
+    func setData() {
+        let num:Int = userDefaults.integer(forKey: UserDefaultsData.matchingNum)
+        ticketNum.text = "×" + String(num)
+    }
 }

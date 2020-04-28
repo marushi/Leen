@@ -20,7 +20,7 @@ class Footprint: UIViewController {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = 240
+        tableView.rowHeight = 220
         tableView.tableFooterView = UIView(frame: .zero)
         //セルの登録
         let nib = UINib(nibName: "GoodCell", bundle: nil)
@@ -29,7 +29,7 @@ class Footprint: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = true
-        let ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(UserDefaults.standard.string(forKey: "uid")!).collection(Const.FoorPrints)
+        let ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(UserDefaults.standard.string(forKey: "uid")!).collection(Const.FoorPrints).order(by: "date" , descending: true).limit(to: 7)
         ref.getDocuments() {(document , error) in
             if let error = error {
                 print(error)
@@ -73,7 +73,13 @@ extension Footprint:UITableViewDelegate,UITableViewDataSource {
         cell.footBool = true
         return cell
     }
-    
+    //セルをタップした時
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let Profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
+        Profile.setData(footUsers[indexPath.row].uid!)
+        Profile.ButtonMode = 2
+        present(Profile,animated: true,completion: nil)
+    }
     
 }
 

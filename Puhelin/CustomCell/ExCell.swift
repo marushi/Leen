@@ -10,14 +10,20 @@ import UIKit
 
 class ExCell: UICollectionViewCell {
 
-    @IBOutlet weak var title: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var ticketNum: UILabel!
+    //@IBOutlet weak var remainGoodNum: UILabel!
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        title.layer.cornerRadius = title.frame.size.height / 2
-        title.clipsToBounds = true
+    }
+    
+    func setData(){
+        let num = UserDefaults.standard.integer(forKey: UserDefaultsData.remainGoodNum)
+        let num2 = UserDefaults.standard.integer(forKey: UserDefaultsData.ticketNum)
+        self.ticketNum.text = "×" + String(num2)
+        //self.remainGoodNum.text = String(num)
     }
 
 }

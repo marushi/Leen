@@ -93,35 +93,9 @@ extension talk_after:UITableViewDataSource,UITableViewDelegate{
     
     //セルを選択した時の処理
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let ChatRoom = self.storyboard?.instantiateViewController(identifier: "ChatRoom") as! ChatRoom
-        ChatRoom.setData(UserArray2[indexPath.row])
-        navigationController?.pushViewController(ChatRoom, animated: true)
-    }
-    
-    //スワイプで削除
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        let appearance = SCLAlertView.SCLAppearance(
-            showCloseButton: false
-        )
-        let alertView = SCLAlertView(appearance: appearance)
-        alertView.addButton("削除する") {
-            if editingStyle == .delete {
-                
-            //データベースから削除
-            let ref = Firestore.firestore()
-                let Ref = ref.collection(Const.ChatPath).document(self.UserArray2[indexPath.row - 1].roomId!)
-                let messeageRef = ref.collection(Const.ChatPath).document(self.UserArray2[indexPath.row - 1].roomId!).collection(Const.MessagePath)
-                Ref.delete(completion: nil)
-                messeageRef.document().delete()
-            }
-            self.UserArray2.remove(at: indexPath.row)
-            self.UserArray2.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-        alertView.addButton("キャンセル",backgroundColor: .lightGray,textColor: .black) {
-            return
-        }
-        alertView.showWarning("本当に削除しますか？", subTitle: "この操作は取り消せません。")
+        let ChatRoom2 = self.storyboard?.instantiateViewController(identifier: "ChatRoom2") as! ChatRoom2
+        ChatRoom2.setData(UserArray2[indexPath.row])
+        navigationController?.pushViewController(ChatRoom2, animated: true)
     }
     
     //画像をタップ
@@ -140,9 +114,6 @@ extension talk_after:UITableViewDataSource,UITableViewDelegate{
     //バッチ処理
     @objc func TabbarButch(){
         let tabItem = self.tabBarController?.tabBar.items![2]
-        tabItem?.badgeValue = "\(talk_after.count)"
-        if talk_before.count <= 0 {
-            tabItem?.badgeValue = nil
-        }
+        tabItem?.badgeValue = ""
     }
 }

@@ -22,13 +22,15 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     @IBOutlet weak var myProfileButton: UIButton!
     @IBOutlet weak var heartBackimage: UIImageView!
     
+    let fromAppDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
+    
     var Goods: [goodData] = []
     var listener: ListenerRegistration!
     var DB = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.navigationBar.barTintColor = .white
+        self.navigationController?.navigationBar.barTintColor = .systemBackground
         self.navigationController?.navigationBar.shadowImage = UIImage()
         //tableviewの設定
         tableView.delegate = self
@@ -72,24 +74,25 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
                 if self.Goods.count == 0 || self.Goods == []{
                     tabItem?.badgeValue = nil
                 }
+                //いいねがゼロの場合の画面表示
+                if self.Goods.count == 0 {
+                    self.tableView.isHidden = true
+                    self.setUp()
+                } else {
+                    self.tableView.isHidden = false
+                    self.heartImage.isHidden = true
+                    self.nonHeartText.isHidden = true
+                    self.nonHeartText2.isHidden = true
+                    self.myProfileButton.isHidden = true
+                    self.ButtonTopLabel.isHidden = true
+                    self.heartBackimage.isHidden = true
+                }
                 // TableViewの表示を更新する
                 self.tableView.reloadData()
             }
             
         }
-        //いいねがゼロの場合の画面表示
-        if self.Goods.count == 0 {
-            self.tableView.isHidden = true
-            self.setUp()
-        } else {
-            self.tableView.isHidden = false
-            self.heartImage.isHidden = true
-            self.nonHeartText.isHidden = true
-            self.nonHeartText2.isHidden = true
-            self.myProfileButton.isHidden = true
-            self.ButtonTopLabel.isHidden = true
-            self.heartBackimage.isHidden = true
-        }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -141,7 +144,7 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
             TopCell.titleLabel.text = String(self.Goods.count) + "人からいいねが来ています！"
             return TopCell
         }else{
-            tableView.rowHeight = 210
+            tableView.rowHeight = 220
             GoodCell.setData(Goods[indexPath.row - 1])
             GoodCell.selectionStyle = UITableViewCell.SelectionStyle.none
             return GoodCell
@@ -169,12 +172,14 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
                 let Ref = ref.collection(Const.FemalePath).document(userDefaults.string(forKey: "uid")!).collection(Const.GoodPath).document(Goods[indexPath.row - 1].uid!)
                 Ref.delete(completion: nil)
             }
-            Goods.remove(at: indexPath.row - 1)
-            tableView.deleteRows(at: [indexPath], with: .fade)
             //自分のdownListに入れる
             let downRef = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!).collection(Const.DownUsers).document(Goods[indexPath.row - 1].uid!)
             let downDic = ["uid":Goods[indexPath.row - 1].uid as Any,"date":Date()] as [String : Any]
             downRef.setData(downDic)
+            
+            //配列から削除
+            Goods.remove(at: indexPath.row - 1)
+            tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
 }
