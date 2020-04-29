@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>25938610952-jj4c5b8jc7h11la0rgpn21sed1f7ju6o.apps.googleusercontent.com</string>
+	<string>25938610952-p37o1dvn28u42uk10n8kd6rq5jshl2vq.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.25938610952-jj4c5b8jc7h11la0rgpn21sed1f7ju6o</string>
+	<string>com.googleusercontent.apps.25938610952-p37o1dvn28u42uk10n8kd6rq5jshl2vq</string>
 	<key>API_KEY</key>
 	<string>AIzaSyD080mNIB2JDQr65sfpu6EIhWiUM0A0isw</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>shion.maruko.Puhelin</string>
+	<string>inoue.tomoki.Puhelin</string>
 	<key>PROJECT_ID</key>
 	<string>puhelin-1befe</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:25938610952:ios:9887d3a35613d1809ffabd</string>
+	<string>1:25938610952:ios:48734df4ce1794359ffabd</string>
 	<key>DATABASE_URL</key>
 	<string>https://puhelin-1befe.firebaseio.com</string>
 </dict>

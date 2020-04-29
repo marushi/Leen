@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		617DC44F0D4118856E088CF7 /* Pods_Puhelin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E560E78DE7D03BBD309CCAF /* Pods_Puhelin.framework */; };
+		7100B8912459616900030F08 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7100B8902459616900030F08 /* GoogleService-Info.plist */; };
+		7100B8932459666E00030F08 /* UserInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7100B8922459666E00030F08 /* UserInformation.swift */; };
 		BF02AF8823F50C150021551B /* TabBarConrtroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF8723F50C150021551B /* TabBarConrtroller.swift */; };
 		BF02AF8A23F6A1DB0021551B /* Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF8923F6A1DB0021551B /* Region.swift */; };
 		BF02AF8D23F6B7F80021551B /* Confirm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF02AF8C23F6B7F80021551B /* Confirm.swift */; };
@@ -59,7 +61,6 @@
 		BFA2904724462DE2003DAC8B /* videoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFA2904524462DE1003DAC8B /* videoCell.xib */; };
 		BFA48333242C966E00DB5227 /* ProfileHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA48332242C966E00DB5227 /* ProfileHeaderCell.swift */; };
 		BFAD14CF24557E3400398E7E /* PublishSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD14CE24557E3400398E7E /* PublishSetting.swift */; };
-		BFAD14D1245586EF00398E7E /* UserInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD14D0245586EF00398E7E /* UserInformation.swift */; };
 		BFAD14D42455B8FE00398E7E /* UserInformationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD14D224558ABC00398E7E /* UserInformationCell.swift */; };
 		BFAD14D62456B0C400398E7E /* MatchingTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD14D52456B0C400398E7E /* MatchingTicket.swift */; };
 		BFAD14D92456B8BB00398E7E /* matchingTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD14D72456B8BB00398E7E /* matchingTicketCell.swift */; };
@@ -84,7 +85,6 @@
 		BFCD98E12413C68900E27BD3 /* scheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCD98E02413C68900E27BD3 /* scheduleCell.swift */; };
 		BFCD98E32414EFBA00E27BD3 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCD98E22414EFB900E27BD3 /* ProfileCell.swift */; };
 		BFCD98E52415617700E27BD3 /* NGView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCD98E42415617700E27BD3 /* NGView.swift */; };
-		BFD0D05F23F2D600009B1ADF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFD0D05E23F2D600009B1ADF /* GoogleService-Info.plist */; };
 		BFD0D06223F2D7DA009B1ADF /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06123F2D7DA009B1ADF /* StartScreen.swift */; };
 		BFD0D06523F2E203009B1ADF /* PhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06423F2E203009B1ADF /* PhoneNumber.swift */; };
 		BFD0D06723F2E218009B1ADF /* SMS.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD0D06623F2E218009B1ADF /* SMS.swift */; };
@@ -126,6 +126,8 @@
 /* Begin PBXFileReference section */
 		3414E138C21E023253AB82BC /* Pods-Puhelin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Puhelin.release.xcconfig"; path = "Target Support Files/Pods-Puhelin/Pods-Puhelin.release.xcconfig"; sourceTree = "<group>"; };
 		6E560E78DE7D03BBD309CCAF /* Pods_Puhelin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Puhelin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7100B8902459616900030F08 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7100B8922459666E00030F08 /* UserInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInformation.swift; sourceTree = "<group>"; };
 		B50E768569167CE1306C95C0 /* Pods-Puhelin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Puhelin.debug.xcconfig"; path = "Target Support Files/Pods-Puhelin/Pods-Puhelin.debug.xcconfig"; sourceTree = "<group>"; };
 		BF02AF8723F50C150021551B /* TabBarConrtroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarConrtroller.swift; sourceTree = "<group>"; };
 		BF02AF8923F6A1DB0021551B /* Region.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Region.swift; sourceTree = "<group>"; };
@@ -182,7 +184,6 @@
 		BFA2904524462DE1003DAC8B /* videoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = videoCell.xib; sourceTree = "<group>"; };
 		BFA48332242C966E00DB5227 /* ProfileHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderCell.swift; sourceTree = "<group>"; };
 		BFAD14CE24557E3400398E7E /* PublishSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishSetting.swift; sourceTree = "<group>"; };
-		BFAD14D0245586EF00398E7E /* UserInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInformation.swift; sourceTree = "<group>"; };
 		BFAD14D224558ABC00398E7E /* UserInformationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInformationCell.swift; sourceTree = "<group>"; };
 		BFAD14D52456B0C400398E7E /* MatchingTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchingTicket.swift; sourceTree = "<group>"; };
 		BFAD14D72456B8BB00398E7E /* matchingTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchingTicketCell.swift; sourceTree = "<group>"; };
@@ -207,7 +208,6 @@
 		BFCD98E02413C68900E27BD3 /* scheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = scheduleCell.swift; sourceTree = "<group>"; };
 		BFCD98E22414EFB900E27BD3 /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		BFCD98E42415617700E27BD3 /* NGView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NGView.swift; sourceTree = "<group>"; };
-		BFD0D05E23F2D600009B1ADF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		BFD0D06123F2D7DA009B1ADF /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
 		BFD0D06423F2E203009B1ADF /* PhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumber.swift; sourceTree = "<group>"; };
 		BFD0D06623F2E218009B1ADF /* SMS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SMS.swift; sourceTree = "<group>"; };
@@ -331,7 +331,7 @@
 				BF0FDE2223F2D34600C02B76 /* LaunchScreen.storyboard */,
 				BF02AF8B23F6A83E0021551B /* Puhelin.entitlements */,
 				BF0FDE2523F2D34600C02B76 /* Info.plist */,
-				BFD0D05E23F2D600009B1ADF /* GoogleService-Info.plist */,
+				7100B8902459616900030F08 /* GoogleService-Info.plist */,
 			);
 			path = Puhelin;
 			sourceTree = "<group>";
@@ -401,7 +401,7 @@
 				BFD27834243DB4B400282B51 /* Goodhistory.swift */,
 				BFA2903024405D2F003DAC8B /* Settings.swift */,
 				BFAD14CE24557E3400398E7E /* PublishSetting.swift */,
-				BFAD14D0245586EF00398E7E /* UserInformation.swift */,
+				7100B8922459666E00030F08 /* UserInformation.swift */,
 			);
 			path = Contents;
 			sourceTree = "<group>";
@@ -518,7 +518,7 @@
 				BFAD14DA2456B8BB00398E7E /* matchingTicketCell.xib in Resources */,
 				BFD82C7223F3CE7B0058EBC4 /* GoodCell.xib in Resources */,
 				BF977CC12449C7D100B60D53 /* orderCell.xib in Resources */,
-				BFD0D05F23F2D600009B1ADF /* GoogleService-Info.plist in Resources */,
+				7100B8912459616900030F08 /* GoogleService-Info.plist in Resources */,
 				BF5CC19024386D170071C3AA /* searchTopCell.xib in Resources */,
 				BFA2904724462DE2003DAC8B /* videoCell.xib in Resources */,
 				BF56B392242758D7002D83F9 /* goodPointPurchaseCell.xib in Resources */,
@@ -662,13 +662,13 @@
 				BFBD2308240418DD000DBDA5 /* PrepareRoom.swift in Sources */,
 				BFD0D06B23F2E247009B1ADF /* Age.swift in Sources */,
 				BFAD14D92456B8BB00398E7E /* matchingTicketCell.swift in Sources */,
+				7100B8932459666E00030F08 /* UserInformation.swift in Sources */,
 				BF253F522423778000F93739 /* ProductManager.swift in Sources */,
 				BFD2782D2439EB1C00282B51 /* GoodBilling.swift in Sources */,
 				BFA290432445E0FD003DAC8B /* talk_after.swift in Sources */,
 				BFCD98D7241255CB00E27BD3 /* SearchConditions2.swift in Sources */,
 				BFBD23062403D0A4000DBDA5 /* VideoCall.swift in Sources */,
 				BFD82C6523F3CDFB0058EBC4 /* SearchCell.swift in Sources */,
-				BFAD14D1245586EF00398E7E /* UserInformation.swift in Sources */,
 				BF3AD51C24325195002896DC /* information2.swift in Sources */,
 				BFD0D06923F2E22B009B1ADF /* NickName.swift in Sources */,
 				BFD27831243C989900282B51 /* talkAddCell.swift in Sources */,
@@ -834,6 +834,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
+				lll = "";
 			};
 			name = Debug;
 		};
@@ -843,9 +844,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Puhelin/Puhelin.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development: conquerx1@gmail.com (7332S2BC32)";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = YTQ2PNQMMN;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XBRQSUFLK4;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = Puhelin/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -853,12 +854,13 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.1;
-				PRODUCT_BUNDLE_IDENTIFIER = shion.maruko.Puhelin;
+				PRODUCT_BUNDLE_IDENTIFIER = inoue.tomoki.Puhelin;
 				PRODUCT_NAME = Leen;
-				PROVISIONING_PROFILE_SPECIFIER = Ligar;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
+				lll = "";
 			};
 			name = Release;
 		};
