@@ -15,8 +15,9 @@ class TabBarConrtroller: UITabBarController {
         super.viewDidLoad()
 
         UITabBar.appearance().tintColor = ColorData.darkturquoise
+        tabBar.backgroundColor = ColorData.profileback
+        
     }
-    
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)

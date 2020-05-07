@@ -81,10 +81,17 @@ class PrepareRoom: UIViewController {
     }
     
     @IBAction func joinButton(_ sender: Any) {
+        //本人確認を促す画面
+        if userDefaults.integer(forKey: "identification") != 2 {
+            let vc = self.storyboard?.instantiateViewController(identifier: "NGView") as! NGView
+            vc.modalTransitionStyle = .crossDissolve
+            present(vc,animated: true,completion: nil)
+        }else{
         let VideoCall = self.storyboard?.instantiateViewController(identifier: "VideoCall") as! VideoCall
         VideoCall.peer = peer
         VideoCall.roomName = roomName
         self.navigationController?.pushViewController(VideoCall, animated: true)
+        }
     }
     
     //ローカルストリームの設定

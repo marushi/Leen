@@ -173,7 +173,7 @@ class Confirm: UIViewController {
             ,"signupDate": Date()
             ,"goodLimit": 0
             ,"callLimit": 0
-            ,"recoveryCard": 0
+            ,"recoveryTicket": 0
             ] as [String: Any]
         Ref.setData(Dic)
         
@@ -181,7 +181,7 @@ class Confirm: UIViewController {
         //課金事項
         userDefaults.set(0, forKey: "goodLimit")
         userDefaults.set(0, forKey: "callLimit")
-        userDefaults.set(0, forKey: "recoveryCard")
+        userDefaults.set(0, forKey: "recoveryTicket")
         userDefaults.set(5, forKey: "remainGoodNum")
         //本人確認
         userDefaults.set(0, forKey: "identification")

@@ -25,6 +25,7 @@ class ChatRoom2: JSQMessagesViewController{
     var Users:String?
     var topImage: UIImage = UIImage()
     var opName:String?
+    var profileData:MyProfileData?
     
 override func viewDidLoad() {
     super.viewDidLoad()
@@ -55,6 +56,10 @@ override func viewDidLoad() {
         self.listener3.remove()
         let buttonView = self.navigationController?.view.viewWithTag(1)
         buttonView?.removeFromSuperview()
+        //部屋に入室
+        let ref = Firestore.firestore().collection(Const.MatchingPath).document(roomId!)
+        let num = userDefaults.integer(forKey: "gender")
+        ref.setData(["roomEnter" + String(num):false],merge: true)
     }
         
     @IBAction func button(_ sender: Any) {
@@ -66,6 +71,10 @@ override func viewDidLoad() {
         
     //既読処理
     func readedFunction(){
+        //部屋に入室
+        let ref = Firestore.firestore().collection(Const.MatchingPath).document(roomId!)
+        let num = userDefaults.integer(forKey: "gender")
+        ref.setData(["roomEnter" + String(num):true],merge: true)
         if listener3 == nil{
         // listener未登録なら、登録してスナップショットを受信する
             let Ref = Firestore.firestore().collection(Const.MatchingPath).document(roomId!).collection(Const.MessagePath).whereField("readed", isEqualTo: false).whereField("senderId", isEqualTo: OpponentId!)
@@ -101,6 +110,7 @@ override func viewDidLoad() {
     func useMatchingTicket() {
         //"firstEnter1""firstEnter2""useMatchingTicket1""useMatchingTicket2"
         let ref = Firestore.firestore().collection(Const.MatchingPath).document(roomId!)
+        let Ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!)
         ref.getDocument(){ (data,error) in
             if let error = error {
                 print(error)
@@ -119,8 +129,9 @@ override func viewDidLoad() {
                     //チケット処理
                     let num = self.userDefaults.integer(forKey: UserDefaultsData.matchingNum)
                     let registNum = num - 1
-                    //モーダル済み処理
                     self.userDefaults.set(registNum, forKey: UserDefaultsData.matchingNum)
+                    Ref.setData([UserDefaultsData.matchingNum:registNum], merge: true)
+                    //モーダル済み処理
                     ref.setData(["useMatchingTicket1":true],merge: true)
                     //モーダル
                     let MatchSplashView = self.storyboard?.instantiateViewController(identifier: "MatchSplashView") as! MatchSplashView
@@ -134,8 +145,9 @@ override func viewDidLoad() {
                     //チケット処理
                     let num = self.userDefaults.integer(forKey: UserDefaultsData.matchingNum)
                     let registNum = num - 1
-                    //モーダル済み処理
                     self.userDefaults.set(registNum, forKey: UserDefaultsData.matchingNum)
+                    Ref.setData([UserDefaultsData.matchingNum:registNum], merge: true)
+                    //モーダル済み処理
                     ref.setData(["useMatchingTicket2":true],merge: true)
                     //モーダル
                     let MatchSplashView = self.storyboard?.instantiateViewController(identifier: "MatchSplashView") as! MatchSplashView
@@ -205,6 +217,7 @@ override func viewDidLoad() {
                     print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
                     return
                 }
+                    self.profileData = MyProfileData(document: querySnapshot!)
                 //名前
                     if let name:String = querySnapshot?.get("name") as? String {
                         self.navigationItem.title = name
@@ -326,6 +339,9 @@ override func viewDidLoad() {
                 ,"readed": false
                 ,"token": userDefaults.string(forKey: "token") as Any] as [String:Any]
             Ref.setData(Dic)
+            //最新メッセージとして記録
+                let ref = Firestore.firestore().collection(Const.MatchingPath).document(roomId!)
+                ref.setData(["LastRefreshTime":date as Any,"LastRefreshMessage":text as Any],merge: true)
             //textFieldをクリアする
             self.inputToolbar.contentView.textView.text = ""
             self.finishSendingMessage()
@@ -367,7 +383,7 @@ override func viewDidLoad() {
             
     @objc func tappedAvatar() {
         let Profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
-        Profile.setData(OpponentId!)
+        Profile.profileData = profileData
         Profile.goodButton.isHidden = true
         present(Profile,animated: true,completion: nil)
     }

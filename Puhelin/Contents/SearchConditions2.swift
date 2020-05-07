@@ -36,7 +36,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
     let income = ["こだわらない","200万","300万","1億以上"]
     let personality = ["こだわらない","マイペース","明るい"]
     let talk = ["こだわらない","おしゃべり","話す方","聞く方","聞き上手"]
-    let purpose = ["こだわらない","ライトな関係","真剣交際"]
+    let purpose = ["こだわらない","お話だけ","友達探し","恋人探し"]
     let alchoal = ["こだわらない","ほぼ毎日","週２〜３回","ときどき","たまに","あまり飲まない","飲めない"]
     let tabako = ["こだわらない","吸う","吸わない"]
     let maleTall = ["こだわらない","〜160cm","160〜175cm","175cm〜"]
@@ -46,6 +46,7 @@ class SearchConditions2: UIViewController,UITableViewDataSource,UITableViewDeleg
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView(frame: .zero)
+        tableView.backgroundColor = ColorData.whitesmoke
         let nav = self.navigationController
         delegate = nav!.viewControllers[nav!.viewControllers.count - 2] as? SearchCoditions
         self.navigationController?.delegate = self

@@ -7,60 +7,35 @@
 //
 
 import UIKit
-import RSKImageCropper
 
-class IdentificationPhotoUp: UIViewController,UIImagePickerControllerDelegate ,UINavigationControllerDelegate{
+class IdentificationPhotoUp: UIViewController{
+    
+    @IBOutlet weak var titleLabel: UILabel!
+    
+    let titleTextArray = ["画像が不明瞭です。","書類が対象外の書類です。","生年月日が異なります。"]
+    let userDefaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.barTintColor = .white
+        self.navigationController?.navigationBar.titleTextAttributes = [
+        // 文字の色
+            .foregroundColor: UIColor.black
+        ]
+        titleLabel.layer.borderColor = ColorData.salmon.cgColor
+        titleLabel.layer.borderWidth = 2
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        let num = userDefaults.integer(forKey: UserDefaultsData.identification)
+        setText(num - 3)
+    }
+    
+    func setText(_ num:Int) {
+        titleLabel.text = titleTextArray[num]
+    }
     
     @IBAction func modoru(_ sender: Any) {
-        self.navigationController?.popViewController(animated: true)
+        self.dismiss(animated: true, completion: nil)
     }
-    
-    @IBAction func takePhoto(_ sender: Any) {
-        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            let pickerController = UIImagePickerController()
-            pickerController.delegate = self
-            pickerController.sourceType = .camera
-            self.present(pickerController, animated: true, completion: nil)
-        }
-    }
-    
-    @IBAction func Liblary(_ sender: Any) {
-        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            let pickerController = UIImagePickerController()
-            pickerController.delegate = self
-            pickerController.sourceType = .photoLibrary
-            self.present(pickerController, animated: true, completion: nil)
-        }
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-      let image = info[.originalImage] as! UIImage
-      self.dismiss(animated: true, completion: nil)
-      let imageCropVC = RSKImageCropViewController(image: image, cropMode: .square)
-        imageCropVC.moveAndScaleLabel.text = "切り取り範囲を選択"
-        imageCropVC.cancelButton.setTitle("キャンセル", for: .normal)
-        imageCropVC.chooseButton.setTitle("完了", for: .normal)
-      imageCropVC.delegate = self as RSKImageCropViewControllerDelegate
-      present(imageCropVC, animated: true)
-    }
-    
-}
-
-extension IdentificationPhotoUp: RSKImageCropViewControllerDelegate {
-  //キャンセルを押した時の処理
-  func imageCropViewControllerDidCancelCrop(_ controller: RSKImageCropViewController) {
-    dismiss(animated: true, completion: nil)
-  }
-  //完了を押した後の処理
-  func imageCropViewController(_ controller: RSKImageCropViewController, didCropImage croppedImage: UIImage, usingCropRect cropRect: CGRect, rotationAngle: CGFloat) {
-    let upload = self.storyboard?.instantiateViewController(identifier: "IdentificationUpload") as! IdentificationUpload
-    upload.identImage = croppedImage
-    self.navigationController?.pushViewController(upload, animated: true)
-    dismiss(animated: true)
-  }
 }

@@ -32,7 +32,7 @@ class Profile: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var limitGoodNum: UILabel!
     @IBOutlet weak var tableView: UITableView!
-    
+    @IBOutlet weak var xmarkView: UIImageView!
     
     //定数
     let fromAppDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -63,7 +63,9 @@ class Profile: UIViewController {
         view4.layer.cornerRadius = viewCornerRadius
         sentenceMessage.textContainerInset = UIEdgeInsets.zero
         sentenceMessage.textContainer.lineFragmentPadding = 0
+        sentenceMessage.backgroundColor = .white
         introTextView.isUserInteractionEnabled = false
+        introTextView.backgroundColor = .white
         weekLabel.layer.cornerRadius = weekLabel.frame.size.height / 2
         weekLabel.isEnabled = false
         weekLabel.adjustsImageWhenDisabled = false
@@ -75,6 +77,7 @@ class Profile: UIViewController {
         collectionView.layer.cornerRadius = viewCornerRadius
         collectionView.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
         collectionView.isUserInteractionEnabled = false
+        xmarkView.layer.cornerRadius = xmarkView.frame.size.height / 2
         
         //ボタンの設定
         goodButton.addTarget(self, action: #selector(Button(_:)), for: UIControl.Event.touchUpInside)
@@ -88,12 +91,12 @@ class Profile: UIViewController {
         goodButton.layer.shadowRadius = 6
         self.view.addSubview(goodButton)
         
+         let tapGestureRecognizer1 = UITapGestureRecognizer(target: self, action: #selector(self.xmarkAction(gestureRecognizer:)))
+        self.xmarkView.addGestureRecognizer(tapGestureRecognizer1)
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        HUD.show(.progress)
-        
         goodView.isHidden = true
         self.tabBarController?.tabBar.isHidden = true
         self.navigationController?.navigationBar.isHidden = false
@@ -101,9 +104,9 @@ class Profile: UIViewController {
             // 文字の色
             .foregroundColor: ColorData.salmon
         ]
-        
+        //サーチ画面
         if ButtonMode == 1{
-            self.setData(searchUid!)
+            self.profileSetData()
             goodButton.setTitle("いいね！", for: .normal)
             goodButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
             //いいね！ボタンを灰色に
@@ -112,21 +115,55 @@ class Profile: UIViewController {
             }
             //いいね済みの場合
             let selectId = fromAppDelegate.selectIdArray
-            if selectId.firstIndex(of: opUserId!) != nil {
+            if selectId.firstIndex(of: (profileData?.uid)!) != nil {
                 self.goodButton.setTitle("いいね！済み", for: .normal)
                 self.goodButton.backgroundColor = .lightGray
                 self.goodButton.isEnabled = false
             }
             //相手のあしあとリストに自分を追加
-            let footRef = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(opUserId!).collection(Const.FoorPrints).document(userDefaults.string(forKey: "uid")!)
+            let footRef = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document((profileData?.uid)!).collection(Const.FoorPrints).document(userDefaults.string(forKey: "uid")!)
             let footDic = ["uid":userDefaults.string(forKey: "uid")!,"date":Date()] as [String : Any]
             footRef.setData(footDic)
+            
+            let num = self.userDefaults.integer(forKey: UserDefaultsData.remainGoodNum)
+            if num <= 0 {
+                self.goodButton.setTitle("いいね！がありません", for: .normal)
+                self.goodButton.backgroundColor = .lightGray
+                self.goodButton.isEnabled = false
+            }
+            //いいね受信画面
         }else if ButtonMode == 2 {
             goodButton.setTitle("話してみる！", for: .normal)
+            //マイページから
         }else if ButtonMode == 3{
             goodButton.setTitle("編集する", for: .normal)
+            xmarkView.isHidden = true
             profileSetData()
-        }else{
+        }else if ButtonMode == 4 {
+            goodButton.setTitle("いいね！", for: .normal)
+            goodButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
+            //いいね！ボタンを灰色に
+            if userDefaults.integer(forKey: UserDefaultsData.remainGoodNum) == 0 {
+                goodButton.backgroundColor = .lightGray
+            }
+            //いいね済みの場合
+            let selectId = fromAppDelegate.selectIdArray
+            if selectId.firstIndex(of: (opUserId)!) != nil {
+                self.goodButton.setTitle("いいね！済み", for: .normal)
+                self.goodButton.backgroundColor = .lightGray
+                self.goodButton.isEnabled = false
+            }
+            let num = self.userDefaults.integer(forKey: UserDefaultsData.remainGoodNum)
+            if num <= 0 {
+                self.goodButton.setTitle("いいね！がありません", for: .normal)
+                self.goodButton.backgroundColor = .lightGray
+                self.goodButton.isEnabled = false
+            }
+        }else if ButtonMode == 5 {
+            goodButton.isHidden = true
+        }
+        else{
+            profileSetData()
         }
         
         goodButton.frame = CGRect(x: (self.view.frame.width - 300) / 2, y: self.view.frame.height - 100, width: 300, height: 60)
@@ -136,8 +173,8 @@ class Profile: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.navigationBar.titleTextAttributes = [
-            // 文字の色
-            .foregroundColor: UIColor.label
+        // 文字の色
+            .foregroundColor: UIColor.black
         ]
         if ButtonMode == 3 {
             self.tabBarController?.tabBar.isHidden = false
@@ -145,16 +182,14 @@ class Profile: UIViewController {
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        //collectionView.addBorder(width: 1, color: .lightGray, position: .top)
-        HUD.hide()
-    }
-    
     @IBAction func headerViewAction(_ sender: Any) {
         self.modalTransitionStyle = .coverVertical
         self.dismiss(animated: true, completion: nil)
     }
     
+    @objc func xmarkAction(gestureRecognizer: UITapGestureRecognizer) {
+        self.dismiss(animated: true, completion: nil)
+    }
     
     //戻るボタン
     @IBAction func modoru(_ sender: Any) {
@@ -165,12 +200,8 @@ class Profile: UIViewController {
     func setData(_ userData: String) {
         //データ入れ
         opUserId = userData
-        
-        
-        if listener == nil{
-        // listener未登録なら、登録してスナップショットを受信する
             let Ref = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(opUserId!)
-            listener = Ref.addSnapshotListener() { (querySnapshot, error) in
+            Ref.getDocument() { (querySnapshot, error) in
             if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
                 return
@@ -222,63 +253,76 @@ class Profile: UIViewController {
                 }
         
                 //通話OKかどうか
-                if let identBool:Bool = querySnapshot?.get("identification") as? Bool {
-                    if identBool == true {
+                if let identBool:Int = querySnapshot?.get("identification") as? Int {
+                    if identBool == 2 {
                         self.phoneLabel.isHidden = false
                     }else{
                         self.phoneLabel.isHidden = true
                     }
+                }else{
+                    self.phoneLabel.isHidden = true
                 }
-                
-            self.tableView.reloadData()
-            self.collectionView.reloadData()
-            }
+                self.tableView.reloadData()
+                self.collectionView.reloadData()
         }
     }
     
     func profileSetData(){
-        
-        var DB = ""
-        
-        //自分の性別を入れる
-        if UserDefaults.standard.integer(forKey: "gender") == 1 {
-            DB = Const.MalePath
-        } else if UserDefaults.standard.integer(forKey: "gender") == 2 {
-            DB = Const.FemalePath
-        }
-        
-        let Ref = Firestore.firestore().collection(DB).document(userDefaults.string(forKey: "uid")!)
-        Ref.getDocument() { (document, error) in
-        if let error = error {
-            print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
-            return
-            }
-            self.profileData = MyProfileData(document: document!)
-            //自分の情報を設定
-            if self.profileData?.photoId != "" && self.profileData?.photoId != nil{
-                self.photo.contentMode = .scaleAspectFill
-                let imageRef = Storage.storage().reference().child(Const.ImagePath).child(self.profileData!.photoId!)
-                self.photo.sd_setImage(with: imageRef)
+        //自分の情報を設定
+        if self.profileData?.photoId != "" && self.profileData?.photoId != nil{
+            self.photo.contentMode = .scaleAspectFill
+            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(self.profileData!.photoId!)
+            self.photo.sd_setImage(with: imageRef)
+        }else{
+            self.photo.contentMode = .scaleAspectFit
+            if self.userDefaults.integer(forKey: "gender") == 2 {
+                if ButtonMode == 3 {
+                    self.photo.image = UIImage(named: "female")
+                }else{
+                    self.photo.image = UIImage(named: "male")
+                }
             }else{
-                self.photo.contentMode = .scaleAspectFit
-                if self.userDefaults.integer(forKey: "gender") == 1 {
+                if ButtonMode == 3 {
                     self.photo.image = UIImage(named: "male")
                 }else{
                     self.photo.image = UIImage(named: "female")
                 }
-                
             }
-            
-            let name = self.profileData!.name
-            let age = self.profileData!.age
-            let region = self.profileData!.region
-            let intro = self.profileData!.intro
-            let sentenceMes = self.profileData!.sentenceMessage
-            self.name.text = "\(name!) " + "\(age!)才 " + "\(region!)"
-            self.introTextView.text = intro!
-            self.sentenceMessage.text = sentenceMes!
-            self.tableView.reloadData()
-            self.collectionView.reloadData()
+        }
+        self.opUserId = profileData?.uid
+        if let name = self.profileData?.name
+        ,let age = self.profileData?.age
+        ,let region = self.profileData?.region
+        ,let intro = self.profileData?.intro
+            ,let sentenceMes = self.profileData!.sentenceMessage {
+            self.name.text = "\(name) " + "\(age)才 " + "\(region)"
+            self.introTextView.text = intro
+            self.sentenceMessage.text = sentenceMes
+        }
+        self.tableView.reloadData()
+        self.collectionView.reloadData()
+        //通話OKかどうか
+        if let identBool:Int = profileData?.identification {
+            if identBool == 2 {
+                self.phoneLabel.isHidden = false
+            }else{
+                self.phoneLabel.isHidden = true
+            }
+        }else{
+            self.phoneLabel.isHidden = true
+        }
+        
+        //今週入会かどうか
+        if let date:Timestamp = profileData?.signupDate{
+            let weekAgo = Date(timeIntervalSinceNow: -60*60*24*4)
+            let signupDate: Date = date.dateValue()
+            if signupDate < weekAgo {
+                self.weekLabel.isHidden = true
+            }else{
+                self.weekLabel.isHidden = false
+            }
+        }else{
+            self.weekLabel.isHidden = true
         }
     }
     
@@ -342,7 +386,7 @@ class Profile: UIViewController {
                 self.limitGoodNum.isHidden = true
                 self.view.isUserInteractionEnabled = false
                 UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.2, animations: {
-                    self.scrollView.contentOffset = CGPoint(x: 0, y: self.scrollView.contentInset.top - 2 * ( self.navigationController?.navigationBar.frame.size.height)!)
+                    self.scrollView.contentOffset = CGPoint(x: 0, y: self.scrollView.contentInset.top)
                 })
                 UIView.addKeyframe(withRelativeStartTime: 0.5, relativeDuration: 0.2, animations: {
                     AudioServicesPlaySystemSound(1519)
@@ -357,7 +401,9 @@ class Profile: UIViewController {
             }, completion: { _ in
                 self.view.isUserInteractionEnabled = true
                 self.scrollView.isScrollEnabled = true
-                self.navigationController?.popViewController(animated: true)
+                self.presentingViewController?.beginAppearanceTransition(true, animated: true)
+                self.presentingViewController?.endAppearanceTransition()
+                self.dismiss(animated: true, completion: nil)
             })
             
         }else if ButtonMode == 2 {

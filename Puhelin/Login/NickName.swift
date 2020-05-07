@@ -24,6 +24,12 @@ class NickName: UIViewController ,UITextFieldDelegate{
         titleLabel.layer.shadowColor = UIColor.black.cgColor
         titleLabel.layer.shadowOpacity = 0.6
         titleLabel.layer.shadowRadius = 1
+        
+        text.layer.borderColor = UIColor.lightGray.cgColor
+        text.layer.borderWidth = 1
+        text.backgroundColor = .white
+        text.attributedPlaceholder = NSAttributedString(string: "名前を入力してください。", attributes: [.foregroundColor : UIColor.lightGray])
+        text.layer.cornerRadius = 5
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
@@ -38,8 +44,8 @@ class NickName: UIViewController ,UITextFieldDelegate{
         }
             
         //文字数が15文字以上の場合
-        if nameText!.count > 15 {
-            SCLAlertView().showInfo("名前が長すぎます。", subTitle: "名前は15文字以下で入力してください。")
+        if nameText!.count > 7 {
+            SCLAlertView().showInfo("名前が長すぎます。", subTitle: "名前は6文字以下で入力してください。")
             return false
         }
             

@@ -20,6 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, PurchaseManagerDelegate{
 
     var window: UIWindow?
     var didBecomeActiveBool:Bool = false
+    var myProfileData:MyProfileData?
+    var Ref:Query?
+    var searchQuery:searchQueryData?
     
     //--------select,down,good,footユーザーデータ用変数------------//
     var selectUserData:[FootUsers] = []

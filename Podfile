@@ -22,4 +22,5 @@ target 'Puhelin' do
   pod 'Google-Mobile-Ads-SDK'
   pod 'IQKeyboardManagerSwift'
   pod 'XLPagerTabStrip'
+  pod "SkeletonView"
 end

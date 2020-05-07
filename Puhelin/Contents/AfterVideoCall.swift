@@ -67,6 +67,11 @@ class AfterVideoCall: UIViewController {
             )
             let alertView1 = SCLAlertView(appearance: appearance1)
             alertView1.addButton("申請する") {
+                let num = self.userDefaults.integer(forKey: UserDefaultsData.matchingNum)
+                if num <= 0 {
+                    SCLAlertView().showSuccess("マッチング券がありません。", subTitle: "")
+                    return
+                }
                 //探す画面に戻る
                 let ref = Firestore.firestore().collection(Const.ChatPath).document(self.roomName!)
                 let selfData = self.userDefaults.integer(forKey: "gender") + 2

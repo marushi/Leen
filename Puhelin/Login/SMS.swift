@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PKHUD
 import Firebase
 
 class SMS: UIViewController {
@@ -18,6 +19,10 @@ class SMS: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         button.layer.cornerRadius = button.frame.size.height / 2
+        confirmCodeTextField.layer.borderColor = UIColor.lightGray.cgColor
+        confirmCodeTextField.layer.borderWidth = 1
+        confirmCodeTextField.backgroundColor = .white
+        confirmCodeTextField.layer.cornerRadius = 5
     }
     
     @IBAction func modoru(_ sender: Any) {
@@ -26,6 +31,7 @@ class SMS: UIViewController {
     
     
     @IBAction func Button(_ sender: Any) {
+        HUD.show(.progress)
         // 確認コードを変数に代入
         if let verificationCode = confirmCodeTextField.text {
             // 先ほどの画面で保存した値を取得
@@ -37,19 +43,19 @@ class SMS: UIViewController {
                 Auth.auth().signIn(with: credential) {(authResult, error) in
                     if let error = error {
                         print(error)
-                        
+                        HUD.hide()
                         return
                     }
                     if let authResult = authResult {
                         print(authResult)
                         let uid = Auth.auth().currentUser?.uid
                         self.userDefaults.set(uid, forKey: "uid")
+                        HUD.hide()
                         self.dismiss(animated: true, completion: nil)
                     }
                 }
             }
         }
     }
-    
     
 }

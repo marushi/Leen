@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseUI
+import SCLAlertView
 import JSQMessagesViewController
 
 class ChatRoom: JSQMessagesViewController {
@@ -19,12 +20,12 @@ class ChatRoom: JSQMessagesViewController {
     let picker = UIPickerView()
     let datePicker: UIDatePicker = UIDatePicker()
     let textField = UITextField()
-    let selectMessages = ["未選択","挨拶","日程調整","日程変更","キャンセル","送信ミス"]
-    let greetMessages = ["未選択","初めまして！マッチングありがとうございます！","ありがとうございます！","承知しました！","すみません！","日程調整しましょう！"]
-    let scheduleMessages = ["未選択","日時を提案","返信ー了承","返信ー再提案"]
-    let scheduleChangeMessages = ["未選択","すみません、諸事情により予定の日時にビデオチャットすることができません。日程を変更しませんか？","すみません遅れます！"]
-    let cancelMessages = ["未選択","すみません、諸事情により予定していた時間にビデオチャットすることができません。また、今後も日程調整が厳しいため通話はなかったことにしてください。"]
-    let missMessages = ["未選択","すみません、間違えました。上記のメッセージは無視してください。","すみません送信ミスです！"]
+    let selectMessages = ["未選択","挨拶","日程調整","通話前","通話後","その他"]
+    let greetMessages = ["未選択","初めまして！マッチングありがとうございます！","こちらこそありがとうございます！","日程調整しましょう！","日程調整しませんか？","いいですね！","承知しました！"]
+    let scheduleMessages = ["未選択","日時を提案","返信ー了承","すみません、いただいた日時では合わせることが難しそうです。","大丈夫です！","そうしましょう！","楽しみにしてます！"]
+    let beforCall = ["未選択","通話ルームに入ります！","すみません遅れます！","すみません、時間に間に合いません。","すみません、急用が入ってしまいました。","日程変更できないでしょうか？","すみません、予定が合わなくなってしまったため今回はキャンセルさせてください。","○分後でも大丈夫ですか？"]
+    let afterCall = ["未選択","もう一度通話しませんか？","今からもう一度通話しませんか？","通話が切れてしまいました。","ごめんなさい時間が取れそうにないです。","別の日にしませんか？","また時間ができたらご連絡します。"]
+    let otherMessages = ["未選択","すみません送信ミスです！","ありがとうございます！","大丈夫です！","了解です！","わかりました。","申し訳ないです。","すみません。","いいですね！","ありがとうございました。"]
     let okayMes_1 = Array(1...31)
     let okayMes_2 = Array(0...24)
     let okayMes_3 = Array(0...3).map {($0 * 15)}
@@ -49,6 +50,7 @@ class ChatRoom: JSQMessagesViewController {
     var Users:String?
     var topImage: UIImage = UIImage()
     var opName:String?
+    var profileData:MyProfileData?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -115,6 +117,11 @@ class ChatRoom: JSQMessagesViewController {
         self.listener3.remove()
         let buttonView = self.navigationController?.view.viewWithTag(1)
         buttonView?.removeFromSuperview()
+        
+        //部屋から退出
+        let ref = Firestore.firestore().collection(Const.ChatPath).document(roomId!)
+        let num = userDefaults.integer(forKey: "gender")
+        ref.setData(["roomEnter" + String(num):false],merge: true)
     }
     
     @IBAction func button(_ sender: Any) {
@@ -126,6 +133,10 @@ class ChatRoom: JSQMessagesViewController {
     
     //既読処理
     func readedFunction(){
+        //部屋に入室
+        let ref = Firestore.firestore().collection(Const.ChatPath).document(roomId!)
+        let num = userDefaults.integer(forKey: "gender")
+        ref.setData(["roomEnter" + String(num):true],merge: true)
         if listener3 == nil{
         // listener未登録なら、登録してスナップショットを受信する
             let Ref = Firestore.firestore().collection(Const.ChatPath).document(roomId!).collection(Const.MessagePath).whereField("readed", isEqualTo: false).whereField("senderId", isEqualTo: OpponentId!)
@@ -151,7 +162,6 @@ class ChatRoom: JSQMessagesViewController {
                     }
                     self.noneReadedMes = 0
                 }else{
-                    
                 }
             }
         }
@@ -217,14 +227,15 @@ class ChatRoom: JSQMessagesViewController {
             if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
                 return
-            }
-            //名前
+                }
+                self.profileData = MyProfileData(document: querySnapshot!)
+                //名前
                 if let name:String = querySnapshot?.get("name") as? String {
                     self.navigationItem.title = name
                 }
-            //画像を設定
-            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot?.get("photoId") as! String)
-                imageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+                //画像を設定
+                let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querySnapshot?.get("photoId") as! String)
+                    imageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
                     if let error = error {
                         print(error)
                     } else {
@@ -334,6 +345,9 @@ class ChatRoom: JSQMessagesViewController {
             ,"readed": false
             ,"token": userDefaults.string(forKey: "token") as Any] as [String:Any]
         Ref.setData(Dic)
+        //最新メッセージとして記録
+            let ref = Firestore.firestore().collection(Const.ChatPath).document(roomId!)
+            ref.setData(["LastRefreshTime":date as Any,"LastRefreshMessage":text as Any],merge: true)
         //textFieldをクリアする
         self.inputToolbar.contentView.textView.text = ""
         self.finishSendingMessage()
@@ -375,7 +389,7 @@ class ChatRoom: JSQMessagesViewController {
         
     @objc func tappedAvatar() {
         let Profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
-        Profile.setData(OpponentId!)
+        Profile.profileData = profileData
         Profile.goodButton.isHidden = true
         present(Profile,animated: true,completion: nil)
     }
@@ -437,6 +451,7 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
         }
     }
     
+    //タイトルの数
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch pickerMode {
         case 0:
@@ -446,11 +461,11 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
         case 2:
             return scheduleMessages.count
         case 3:
-            return scheduleChangeMessages.count
+            return beforCall.count
         case 4:
-            return cancelMessages.count
+            return afterCall.count
         case 5:
-            return missMessages.count
+            return otherMessages.count
         case 22:
             switch component {
             case 0:
@@ -467,6 +482,7 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
         }
     }
     
+    //ピッカーのタイトル
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch pickerMode {
         case 0:
@@ -476,11 +492,11 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
         case 2:
             return scheduleMessages[row]
         case 3:
-            return scheduleChangeMessages[row]
+            return beforCall[row]
         case 4:
-            return cancelMessages[row]
+            return afterCall[row]
         case 5:
-            return missMessages[row]
+            return otherMessages[row]
         case 22:
             switch component {
             case 0:
@@ -498,21 +514,22 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
         }
     }
     
+    //選択したときの処理
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerMode == 0 {
             switch row {
             case 0:
                 return
             case 1:
-                selectMode = 1
+                selectMode = 1  //挨拶
             case 2:
-                selectMode = 2
+                selectMode = 2  //日程調整
             case 3:
-                selectMode = 3
+                selectMode = 3  //通話前
             case 4:
-                selectMode = 4
+                selectMode = 4  //通話後
             case 5:
-                selectMode = 5
+                selectMode = 5  //その他
             default:
                 return
             }
@@ -530,19 +547,19 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
                 if row == 0 {
                 pickerText = ""
                 }else{
-                pickerText = scheduleChangeMessages[row]
+                pickerText = beforCall[row]
                 }
             case 4:
                 if row == 0 {
                 pickerText = ""
                 }else{
-                pickerText = cancelMessages[row]
+                pickerText = afterCall[row]
                 }
             case 5:
                 if row == 0 {
                 pickerText = ""
                 }else{
-                pickerText = missMessages[row]
+                pickerText = otherMessages[row]
                 }
             case 22:
                 switch component {
@@ -590,13 +607,14 @@ extension ChatRoom: UIPickerViewDelegate,UIPickerViewDataSource{
                 self.present(schedule!,animated: true,completion: nil)
             case 2:
                 pickerMode = 22
-                self.keyboardController.textView.text = "ご提案ありがとうございます。では" + okayText_1 + okayText_2 + okayText_3
+                self.keyboardController.textView.text = "ご提案ありがとうございます！では、"
                 picker.reloadAllComponents()
             default:
-                return
+                self.keyboardController.textView.text = scheduleMessages[scheduleadjustMode]
+                self.inputToolbar.contentView.rightBarButtonItem.isEnabled = true
             }
         }else if pickerMode == 22 {
-            self.keyboardController.textView.text = "ご提案ありがとうございます。では、 " + okayText_1 + okayText_2 + okayText_3 + "  にお電話しましょう！"
+            self.keyboardController.textView.text = "ご提案ありがとうございます！では、 " + okayText_1 + okayText_2 + okayText_3 + "  でも大丈夫ですか？"
             self.inputToolbar.contentView.rightBarButtonItem.isEnabled = true
         }
         else{

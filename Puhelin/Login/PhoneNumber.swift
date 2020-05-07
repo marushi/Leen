@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PKHUD
 import Firebase
 import SCLAlertView
 
@@ -21,9 +22,19 @@ class PhoneNumber: UIViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.barTintColor = .white
         self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.titleTextAttributes = [
+        // 文字の色
+            .foregroundColor: UIColor.black
+        ]
+        
         
         Button.backgroundColor = ColorData.salmon
         Button.layer.cornerRadius = 10
+        tellNumberTextField.layer.borderColor = UIColor.lightGray.cgColor
+        tellNumberTextField.layer.borderWidth = 1
+        tellNumberTextField.backgroundColor = .white
+        tellNumberTextField.attributedPlaceholder = NSAttributedString(string: "電話番号を入力してください。", attributes: [.foregroundColor : UIColor.lightGray])
+        tellNumberTextField.layer.cornerRadius = 5
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -39,6 +50,8 @@ class PhoneNumber: UIViewController {
     
     
     @IBAction func Button(_ sender: Any) {
+        //
+        HUD.show(.progress)
         // 国番号を付与して変数に代入
         let phoneNumber = "+81" + tellNumberTextField.text!
         // 電話番号が10桁か11桁なのでバリデーションチェック
@@ -48,6 +61,7 @@ class PhoneNumber: UIViewController {
             PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { (verificationID, error) in
                 if let error = error {
                     print(error)
+                    HUD.hide()
                     SCLAlertView().showInfo("通信エラー", subTitle: "通信環境をご確認ください。")
                     return
                 } else {
@@ -58,11 +72,13 @@ class PhoneNumber: UIViewController {
                     }
                     // 確認コードの認証画面へ
                     let SMS = self.storyboard?.instantiateViewController(identifier: "SMS") as! SMS
+                    HUD.hide()
                     self.navigationController?.pushViewController(SMS, animated: true)
                 }
             }
         }else{
-          SCLAlertView().showInfo("電話番号の形式が正しくありません。", subTitle: "10桁または11桁で入力してください。")
+            HUD.hide()
+            SCLAlertView().showInfo("電話番号の形式が正しくありません。", subTitle: "10桁または11桁で入力してください。")
         }
         
         }

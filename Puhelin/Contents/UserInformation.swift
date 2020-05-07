@@ -5,7 +5,10 @@
 //  Created by 丸子司恩 on 2020/04/26.
 //  Copyright © 2020 shion.maruko. All rights reserved.
 //
+
 import UIKit
+import Firebase
+import SCLAlertView
 
 class UserInformation: UIViewController {
     
@@ -37,6 +40,33 @@ class UserInformation: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
+    @IBAction func logOut(_ sender: Any) {
+        //アラート
+        let appearance = SCLAlertView.SCLAppearance(
+                showCloseButton: false
+            )
+            let alertView = SCLAlertView(appearance: appearance)
+            alertView.addButton("ログアウトする") {
+                //探す画面に戻る
+                let firebaseAuth = Auth.auth()
+                do {
+                  try firebaseAuth.signOut()
+                } catch let signOutError as NSError {
+                  print ("Error signing out: %@", signOutError)
+                }
+                self.removeUserDefaults()
+                self.dismiss(animated: true, completion: nil)
+            }
+            alertView.addButton("戻る",backgroundColor: .lightGray,textColor: .black) {
+                return
+            }
+            alertView.showSuccess("ログアウトします。よろしいですか？", subTitle: "ログアウトすると通知などが届かなくなります。")
+    }
+    
+    func removeUserDefaults() {
+        let appDomain = Bundle.main.bundleIdentifier
+        UserDefaults.standard.removePersistentDomain(forName: appDomain!)
+    }
 }
 
 extension UserInformation:UITableViewDataSource,UITableViewDelegate {

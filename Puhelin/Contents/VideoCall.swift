@@ -8,6 +8,7 @@
 
 import UIKit
 import SkyWay
+import AVFoundation
 import SCLAlertView
 
 class VideoCall: UIViewController{
@@ -18,13 +19,14 @@ class VideoCall: UIViewController{
     let domain = "localhost"
     let lock: NSLock = NSLock.init()
     let userDefaults = UserDefaults.standard
+    let session: AVAudioSession = AVAudioSession.sharedInstance()
     
     //変数
     var arrayMediaStreams: NSMutableArray = []
     var arrayVideoViews: NSMutableDictionary = [:]
     var peer: SKWPeer?
     var localStream: SKWMediaStream?
-    var sfuRoom: SKWSFURoom?
+    var sfuRoom: SKWMeshRoom?
     var stream: SKWMediaStream?
     var video: SKWVideo?
     var roomName: String?
@@ -50,9 +52,54 @@ class VideoCall: UIViewController{
         let nav = self.navigationController
         delegate = nav!.viewControllers[nav!.viewControllers.count - 2] as? PrepareRoom
         
+    }
+    
+    func addAudioSessionObservers() {
+        
+        AVAudioSession.sharedInstance()
+        
+        let center = NotificationCenter.default
+        //割り込み（他アプリの通話とか）
+        center.addObserver(self, selector: #selector(handleInterruption(_:)), name: AVAudioSession.interruptionNotification, object: nil)
+        
+        //経路変化（イヤホンとか）
+        center.addObserver(self, selector: #selector(audioSessionRouteChanged(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
         
     }
+    
+    //割り込み（他アプリの通話とか
+    @objc func handleInterruption(_ notification: Notification) {
+        
+        
+    }
+    
+    //経路変化（イヤホンとか）
+    @objc func audioSessionRouteChanged(_ notification: Notification) {
+        guard let desc = notification.userInfo?[AVAudioSessionRouteChangePreviousRouteKey] as? AVAudioSessionRouteDescription
+                else { return }
+            let outputs = desc.outputs
+            for component in outputs {
+                if component.portType == AVAudioSession.Port.headphones ||
+                    component.portType == AVAudioSession.Port.bluetoothA2DP ||
+                    component.portType == AVAudioSession.Port.bluetoothLE ||
+                    component.portType == AVAudioSession.Port.bluetoothHFP {
+                    // イヤホン(Bluetooth含む)が抜かれた時の処理
+                    //スピーカーにする
+                        do {
+                            try self.session.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+                        } catch let error as NSError {
+                            //エラー処理
+                            print(error)
+                        }
+                    
+                    return
+                }
+            }
+        // イヤホン(Bluetooth含む)が差された時の処理
+        }
+    
 
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         //時間制限ごとの処理
@@ -78,6 +125,7 @@ class VideoCall: UIViewController{
         self.navigationController?.navigationBar.isHidden = true
         UIApplication.shared.isIdleTimerDisabled = true
         self.setupStream(peer: peer!)
+        self.addAudioSessionObservers()
         self.joinRoom()
     }
 
@@ -86,7 +134,6 @@ class VideoCall: UIViewController{
         super.viewDidDisappear(animated)
         self.navigationController?.navigationBar.isHidden = false
     }
-
     //デイニシャライザ
     deinit {
         localStream = nil
@@ -107,16 +154,24 @@ class VideoCall: UIViewController{
             
         // join SFU room
         let option = SKWRoomOption.init()
-        option.mode = .ROOM_MODE_SFU
+        option.mode = .ROOM_MODE_MESH
         option.stream = self.localStream
-        sfuRoom = peer?.joinRoom(withName: roomName!, options: option) as? SKWSFURoom
+        sfuRoom = peer?.joinRoom(withName: roomName!, options: option) as? SKWMeshRoom
             
             
         // room event handling
         //　入った時に呼ばれるOPEN
         sfuRoom?.on(.ROOM_EVENT_OPEN, callback: {obj in
             self.mode = 0
-            
+            //スピーカーにする
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                do {
+                    try self.session.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+                } catch let error as NSError {
+                    //エラー処理
+                    print(error)
+                }
+            }
         })
         
         //閉じた時に呼ばれるCLOSE
@@ -247,3 +302,6 @@ protocol VideoModal {
     func videomodal(modalmode: Int)
 }
 
+extension Notification.Name {
+    static let AVAudioSessionRouteChange = Notification.Name("AVAudioSessionRouteChange")
+}

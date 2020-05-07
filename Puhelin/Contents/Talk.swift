@@ -1,10 +1,3 @@
-//
-//  Talk.swift
-//  Puhelin
-//
-//  Created by 丸子司恩 on 2020/02/12.
-//  Copyright © 2020 shion.maruko. All rights reserved.
-//
 
 import UIKit
 import PKHUD
@@ -17,6 +10,12 @@ class Talk:ButtonBarPagerTabStripViewController{
     var firstLaunch:Bool = false
     
     override func viewDidLoad() {
+        self.navigationController?.navigationBar.barTintColor = .white
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.titleTextAttributes = [
+        // 文字の色
+            .foregroundColor: UIColor.black
+        ]
         //バーの色
         settings.style.buttonBarBackgroundColor = .white
         //ボタンの色
@@ -37,14 +36,11 @@ class Talk:ButtonBarPagerTabStripViewController{
     
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
-        self.navigationController?.navigationBar.barTintColor = .systemBackground
-        self.navigationController?.navigationBar.shadowImage = UIImage()
         let tabItem = self.tabBarController?.tabBar.items![2]
         tabItem?.badgeValue = nil
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        self.navigationController?.navigationBar.barTintColor = nil
         self.navigationController?.navigationBar.isHidden = false
     }
     

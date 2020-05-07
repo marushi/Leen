@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import PKHUD
+import Firebase
 import StoreKit
 import SCLAlertView
 import GoogleMobileAds
@@ -32,9 +34,11 @@ class GoodBilling: UIViewController,GADRewardedAdDelegate {
     @IBOutlet weak var goodRmain: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var ticketNum: UILabel!
+    @IBOutlet weak var restore: UIButton!
     
     //購入処理用
-    let productIdentifiers : [String] = ["goodLimitRelease1","goodLimitRelease2","goodLimitRelease3","goodRecoveryCard"]
+    let productIdentifiers : [String] = ["goodLimitRelease1","goodLimitRelease2","goodLimitRelease3"]
+    let recovery = "goodRecoveryCard"
     let userDefaults = UserDefaults.standard
     let type = UserDefaults.standard.integer(forKey: "goodLimit")
     var rewardedAd: GADRewardedAd?
@@ -50,6 +54,7 @@ class GoodBilling: UIViewController,GADRewardedAdDelegate {
         coverView1.layer.cornerRadius = 30
         coverView2.layer.cornerRadius = 30
         coverView3.layer.cornerRadius = 30
+        restore.layer.cornerRadius = 20
         standardView.layer.cornerRadius = 30
         standard2.layer.cornerRadius = 30
         standard3.layer.cornerRadius = 30
@@ -78,7 +83,7 @@ class GoodBilling: UIViewController,GADRewardedAdDelegate {
         standardView.layer.shadowColor = UIColor.black.cgColor
         standard2.layer.shadowColor = UIColor.black.cgColor
         standard3.layer.shadowColor = UIColor.black.cgColor
-        
+        restore.isHidden = true
         // プロダクト情報取得
         fetchProductInformationForIds(productIdentifiers)
         
@@ -199,6 +204,7 @@ class GoodBilling: UIViewController,GADRewardedAdDelegate {
         print("purchase1")
         purchaseType = 1
         if type == 0 {
+            HUD.show(.progress)
         startPurchase(productIdentifier: productIdentifiers[0])
         }
     }
@@ -206,6 +212,7 @@ class GoodBilling: UIViewController,GADRewardedAdDelegate {
         print("purchase2")
         purchaseType = 2
         if type == 1 {
+            HUD.show(.progress)
         startPurchase(productIdentifier: productIdentifiers[1])
         }
     }
@@ -213,13 +220,15 @@ class GoodBilling: UIViewController,GADRewardedAdDelegate {
         print("purchase3")
         purchaseType = 3
         if type == 2 {
+            HUD.show(.progress)
         startPurchase(productIdentifier: productIdentifiers[2])
         }
     }
     @objc func tapGesture4(gestureRecognizer: UITapGestureRecognizer){
         print("purchase4")
         purchaseType = 4
-        startPurchase(productIdentifier: productIdentifiers[3])
+        HUD.show(.progress)
+        startPurchase(productIdentifier: recovery)
     }
     @objc func tapGesture5(gestureRecognizer: UITapGestureRecognizer){
         let num = userDefaults.integer(forKey: UserDefaultsData.remainGoodNum)
@@ -232,6 +241,12 @@ class GoodBilling: UIViewController,GADRewardedAdDelegate {
         }
         
     }
+    
+    @IBAction func restoreButton(_ sender: Any) {
+        HUD.show(.progress)
+        startRestore()
+    }
+    
     
     //広告の報酬処理
     func rewardedAd(_ rewardedAd: GADRewardedAd, userDidEarn reward: GADAdReward) {
@@ -300,20 +315,27 @@ extension GoodBilling:PurchaseManagerDelegate{
         print("課金終了！！")
         //------------課金処理---------------
         let type = self.purchaseType
-        if type == 1 {
-            self.userDefaults.set(1, forKey: UserDefaultsData.goodLimit)
-        }
-        if type == 2 {
-            self.userDefaults.set(2, forKey: UserDefaultsData.goodLimit)
-        }
-        if type == 3 {
-            self.userDefaults.set(3, forKey: UserDefaultsData.goodLimit)
-        }
+        //回復券処理
+        if type == 4 {
+            let num = self.userDefaults.integer(forKey: UserDefaultsData.ticketNum)
+            let num2 = num + 1
+            self.userDefaults.set(num2, forKey: UserDefaultsData.ticketNum)
+            //DBの保存
+            let ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!)
+            ref.setData([UserDefaultsData.ticketNum:num2], merge: true)
+        }else{
+        //上限解放
+        self.userDefaults.set(type, forKey: UserDefaultsData.goodLimit)
         //回復券
         let num = self.userDefaults.integer(forKey: UserDefaultsData.ticketNum)
         let num2 = num + 1
         self.userDefaults.set(num2, forKey: UserDefaultsData.ticketNum)
+        //DBの保存
+        let ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!)
+        ref.setData([UserDefaultsData.goodLimit:type as Any,UserDefaultsData.ticketNum:num2], merge: true)
+        }
         
+        HUD.hide()
         loadView()
         viewDidLoad()
         viewWillAppear(true)
@@ -327,6 +349,7 @@ extension GoodBilling:PurchaseManagerDelegate{
         // コンテンツ解放処理
         //---------------------------
         //コンテンツ解放が終了したら、この処理を実行(true: 課金処理全部完了, false 課金処理中断)
+        HUD.hide()
         decisionHandler(true)
     }
 
@@ -334,18 +357,23 @@ extension GoodBilling:PurchaseManagerDelegate{
     func purchaseManager(_ purchaseManager: PurchaseManager!, didFailWithError error: NSError!) {
         print("課金失敗！！")
         // TODO errorを使ってアラート表示
+        SCLAlertView().showError("課金エラー", subTitle: "お手数ですがもう一度お試しください。")
+        HUD.hide()
     }
 
     // リストア終了時に呼び出される(個々のトランザクションは”課金終了”で処理)
     func purchaseManagerDidFinishRestore(_ purchaseManager: PurchaseManager!) {
         print("リストア終了！！")
         // TODO インジケータなどを表示していたら非表示に
+        HUD.hide()
+        SCLAlertView().showSuccess("購入内容の復元が完了しました。", subTitle: "")
     }
 
     // 承認待ち状態時に呼び出される(ファミリー共有)
     func purchaseManagerDidDeferred(_ purchaseManager: PurchaseManager!) {
         print("承認待ち！！")
         // TODO インジケータなどを表示していたら非表示に
+        HUD.hide()
 
     }
 

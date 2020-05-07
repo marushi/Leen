@@ -4,9 +4,11 @@ import Firebase
 
 
 class StartScreen: UIViewController {
-
+    @IBOutlet weak var imageView: UIImageView!
+    
     let userDefaults = UserDefaults.standard
     let fromAppDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
+    let imageNameArray = ["Ligar","Ligar3","Ligar4","Ligar5","Ligar6","Ligar7","Ligar8","Ligar9","Ligar10","Ligar11","Ligar12","Ligar13","Ligar14","Ligar15","Ligar16","Ligar17"]
     
     var selectLis :ListenerRegistration!
     var downLis :ListenerRegistration!
@@ -18,12 +20,17 @@ class StartScreen: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+    }
 
     override func viewDidAppear(_ animated: Bool) {
+        self.LaunchAction()
+    }
+    
+    func LaunchAction(){
         //ログイン　→ Yes
         if self.userDefaults.string(forKey: "uid") != nil{
-            //
-            HUD.show(.progress)
             // ログイン時の処理
             let uid = self.userDefaults.string(forKey: "uid")
             //情報を取ってくる
@@ -38,6 +45,10 @@ class StartScreen: UIViewController {
                         } catch let signOutError as NSError {
                           print ("Error signing out: %@", signOutError)
                         }
+                        let phoneLogin = self.storyboard?.instantiateViewController(identifier: "LoginTop")
+                        phoneLogin!.modalTransitionStyle = .crossDissolve
+                        HUD.hide()
+                        self.present(phoneLogin!,animated: true, completion: nil)
                     }
                     return
                 }
@@ -50,6 +61,18 @@ class StartScreen: UIViewController {
                     Ref.getDocument(){(document2,error) in
                         if let error = error{
                             print(error)
+                            self.removeUserDefaults()
+                            if Auth.auth().currentUser != nil {
+                                do {
+                                    try Auth.auth().signOut()
+                                } catch let signOutError as NSError {
+                                  print ("Error signing out: %@", signOutError)
+                                }
+                                let phoneLogin = self.storyboard?.instantiateViewController(identifier: "LoginTop")
+                                phoneLogin!.modalTransitionStyle = .crossDissolve
+                                HUD.hide()
+                                self.present(phoneLogin!,animated: true, completion: nil)
+                            }
                             return
                         }
                         self.userData = MyProfileData(document: document2!)
@@ -87,6 +110,28 @@ class StartScreen: UIViewController {
             self.present(NavigationController!,animated: true,completion: nil)
         }else {
             //---データ用のスナップショットを登録する---
+            //データがある場合(過去にログイン済みの場合）
+            //課金データと本人確認データをuserdefaultsに入れる
+            //いいね数
+            if let remaingood:Int = self.userData?.remainGoodNum{
+                self.userDefaults.set(remaingood, forKey: UserDefaultsData.remainGoodNum)
+            }
+            //いいね制限
+            if let goodLimit:Int = self.userData?.goodLimit{
+                self.userDefaults.set(goodLimit, forKey: UserDefaultsData.goodLimit)
+            }
+            //マッチング券
+            if let matchingTicket:Int = self.userData?.matchingTicket{
+                self.userDefaults.set(matchingTicket, forKey: UserDefaultsData.matchingNum)
+            }
+            //回復券
+            if let recoveryTicket:Int = self.userData?.recoveryTicket{
+                self.userDefaults.set(recoveryTicket, forKey: UserDefaultsData.ticketNum)
+            }
+            //本人確認
+            if let ident:Int = self.userData?.identification{
+                self.userDefaults.set(ident, forKey: UserDefaultsData.identification)
+            }
             //selectData
             if self.selectLis == nil {
                 let selectRef = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(self.userDefaults.string(forKey: "uid")!).collection(Const.SelectUsers).order(by: "date",descending: true)
@@ -207,4 +252,32 @@ class StartScreen: UIViewController {
     }
 }
 }
+    
+    func startAnimation(){
+        // UIImage の配列を作る
+        var imageListArray :Array<UIImage> = []
+        // UIImage 各要素を追加、ちょっと冗長的ですが...
+        for i in 0...15 {
+            imageListArray.append(UIImage(named:self.imageNameArray[i])!)
+        }
+        // 画像Arrayをアニメーションにセット
+        imageView.animationImages = imageListArray
+        
+        // 間隔（秒単位）
+        imageView.animationDuration = 1
+        // 繰り返し
+        imageView.animationRepeatCount = 1
+        // アニメーションを開始
+        imageView.startAnimating()
+        // アニメーションを終了
+        //imageView.stopAnimating()
+               
+    }
+}
+private extension ArraySlice {
+
+    var startItem: Element {
+        return self[self.startIndex]
+    }
+
 }

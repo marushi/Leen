@@ -29,7 +29,7 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     let Tall:[Int] = Array(140..<200)
     let bodyType = ["こだわらない","太ってる","ぽっちゃり","普通","細め","鍛えてる","自信あり","モデル級"]
     let talk = ["こだわらない","おしゃべり","話す方","聞く方","聞き上手"]
-    let purpose = ["こだわらない","通話だけ","異性の友達","真剣交際"]
+    let purpose = ["こだわらない","通話だけ","友達探し","恋人探し"]
     let alchoal = ["こだわらない","ほぼ毎日","週２〜３回","ときどき","たまに","あまり飲まない","飲めない"]
     let tabako = ["こだわらない","吸わない","吸う","相手が嫌ならやめる"]
     let prefectures = ["北海道", "青森県", "岩手県", "宮城県", "秋田県",
@@ -52,6 +52,7 @@ class Personality2: UIViewController ,UITableViewDelegate,UITableViewDataSource{
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView(frame: .zero)
+        tableView.backgroundColor = .white
         
         //アウトレットの設定
         let viewWidth = contentView.frame.width

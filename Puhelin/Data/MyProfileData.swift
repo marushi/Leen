@@ -17,8 +17,9 @@ class MyProfileData: NSObject {
     var region: String?
     var photoId: String?
     var sentenceMessage: String?
-    var identification: Bool?
+    var identification: Int?
     var signupDate: Timestamp?
+    var loginDate: Timestamp?
     var tall: Int?
     var bodyType: String?
     var purpose: String?
@@ -34,6 +35,11 @@ class MyProfileData: NSObject {
     var birthYear: Int?
     var birthMonth: Int?
     var birthDay: Int?
+    //課金項目
+    var remainGoodNum:Int?
+    var goodLimit:Int?
+    var matchingTicket:Int?
+    var recoveryTicket: Int?
     
     init(document: DocumentSnapshot) {
         self.uid = document.documentID
@@ -43,7 +49,7 @@ class MyProfileData: NSObject {
         self.region = document.get("region") as? String
         self.photoId = document.get("photoId") as? String
         self.sentenceMessage = document.get("sentenceMessage") as? String
-        self.identification = document.get("identification") as? Bool
+        self.identification = document.get("identification") as? Int
         self.signupDate = document.get("signupDate") as? Timestamp
         self.tall = document.get("tall") as? Int
         self.bodyType = document.get("bodyType") as? String
@@ -60,6 +66,11 @@ class MyProfileData: NSObject {
         self.birthYear = document.get("birthYear") as? Int
         self.birthMonth = document.get("birthMonth") as? Int
         self.birthDay = document.get("birthDay") as? Int
+        self.remainGoodNum = document.get("remainGoodNum") as? Int
+        self.goodLimit = document.get("goodLimit") as? Int
+        self.matchingTicket = document.get("matchingTicket") as? Int
+        self.recoveryTicket = document.get("recoveryTicket") as? Int
+        self.loginDate = document.get("LoginDate") as? Timestamp
         
     }
 }

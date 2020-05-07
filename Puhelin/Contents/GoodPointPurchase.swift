@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import PKHUD
+import Firebase
 import SCLAlertView
 import GoogleMobileAds
 
@@ -97,7 +99,7 @@ class GoodPointPurchase: UIViewController, GADRewardedAdDelegate{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first! //このタッチイベントの場合確実に1つ以上タッチ点があるので`!`つけてOKです
         let location = touch.location(in: self.view) //in: には対象となるビューを入れます
-        let ynum = self.view.frame.size.height - 270
+        let ynum = self.view.frame.size.height - 300
         if location.y < ynum {
             self.dismiss(animated: true, completion: nil)
         }
@@ -137,6 +139,7 @@ extension GoodPointPurchase:UICollectionViewDelegate,UICollectionViewDataSource,
         
     //セルを選択した時
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        HUD.show(.progress)
         let num = indexPath.row
         //満タンに回復する
         if num == 0 {
@@ -145,6 +148,7 @@ extension GoodPointPurchase:UICollectionViewDelegate,UICollectionViewDataSource,
             )
             let alertView = SCLAlertView(appearance: appearance)
             alertView.addButton("回復する") {
+                
                 let num = self.userDefaults.integer(forKey: UserDefaultsData.remainGoodNum)
                 let num2 = self.userDefaults.integer(forKey: UserDefaultsData.goodLimit)
                 let num3 = self.userDefaults.integer(forKey: UserDefaultsData.ticketNum)
@@ -164,24 +168,36 @@ extension GoodPointPurchase:UICollectionViewDelegate,UICollectionViewDataSource,
                 
                 //処理
                 if num3 <= 0 {
+                    HUD.hide()
                     SCLAlertView().showSuccess("回復券がありません。", subTitle: "回復券を購入してください。")
                     return
                 }else{
                     if num >= limit! {
+                        HUD.hide()
                         SCLAlertView().showSuccess("いいね数が満タンです。", subTitle: "使い切ってから回復してください。")
                         return
                     }else{
+                        //1枚消費
+                        let registnum = num3 - 1
                         self.userDefaults.set(limit, forKey: UserDefaultsData.remainGoodNum)
-                        self.userDefaults.set(num3 - 1, forKey: UserDefaultsData.ticketNum)
+                        self.userDefaults.set(registnum, forKey: UserDefaultsData.ticketNum)
+                        //保存
+                        let ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(self.userDefaults.string(forKey: "uid")!)
+                        ref.setData([UserDefaultsData.ticketNum:registnum], merge: true)
+                        
                         self.viewWillAppear(true)
+                        HUD.hide()
+                        let subTitleText = String(num) + "　→　" + String(limit!)
+                        SCLAlertView().showSuccess("回復完了", subTitle: subTitleText)
                         return
                     }
                 }
             }
             alertView.addButton("キャンセル",backgroundColor: .lightGray,textColor: .black) {
+                HUD.hide()
                 return
             }
-            alertView.showSuccess("いいね数を満タンにします。", subTitle: "回復券を1枚消費して回復してもよろしいですか？")
+            alertView.showInfo("いいね数を満タンにします。", subTitle: "回復券を1枚消費して回復してもよろしいですか？")
         }
         //広告を見て１回復
         if num == 1 {
@@ -201,16 +217,21 @@ extension GoodPointPurchase:UICollectionViewDelegate,UICollectionViewDataSource,
                 limit = 20
             }
             if num >= limit! {
+                HUD.hide()
                 SCLAlertView().showSuccess("いいね数が満タンです", subTitle: "これ以上回復するには上限を増やしてください。")
             }else{
                 if rewardedAd?.isReady == true {
+                    HUD.hide()
                    rewardedAd?.present(fromRootViewController: self, delegate:self)
+                }else{
+                    HUD.hide()
                 }
             }
         }
         //上限を増やすページへ
         if num == 2 {
             let GoodBilling = self.storyboard?.instantiateViewController(identifier: "GoodBilling") as! GoodBilling
+            HUD.hide()
             self.present(GoodBilling,animated: true,completion: nil)
         }
     }
