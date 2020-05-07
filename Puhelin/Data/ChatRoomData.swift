@@ -16,6 +16,8 @@ class ChatRoomData: NSObject {
     var male: String?
     var name1:String?
     var name2:String?
+    var LastRefreshTime:Timestamp?
+    var LastRefreshMessage:String?
     
     
     init(document: QueryDocumentSnapshot) {
@@ -25,5 +27,7 @@ class ChatRoomData: NSObject {
         self.male = Dic["1"] as? String
         self.name1 = Dic["name1"] as? String
         self.name2 = Dic["name2"] as? String
+        self.LastRefreshTime = Dic["LastRefreshTime"] as? Timestamp
+        self.LastRefreshMessage = Dic["LastRefreshMessage"] as? String
     }
 }

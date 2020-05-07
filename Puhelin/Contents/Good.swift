@@ -30,12 +30,17 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.navigationBar.barTintColor = .systemBackground
+        self.navigationController?.navigationBar.barTintColor = .white
         self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.titleTextAttributes = [
+        // 文字の色
+            .foregroundColor: UIColor.black
+        ]
         //tableviewの設定
         tableView.delegate = self
         tableView.dataSource  = self
         tableView.tableFooterView = UIView(frame: .zero)
+        tableView.backgroundColor = ColorData.whitesmoke
         myProfileButton.layer.cornerRadius = myProfileButton.frame.size.height / 2
         myProfileButton.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
         myProfileButton.layer.shadowColor = UIColor.black.cgColor
@@ -122,6 +127,7 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
     
     @IBAction func moveToProfile(_ sender: Any) {
         let profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
+        profile.profileData = self.fromAppDelegate.myProfileData
         profile.ButtonMode = 3
         self.navigationController!.pushViewController(profile,animated: true)
         
@@ -142,6 +148,7 @@ class Good: UIViewController ,UITableViewDelegate,UITableViewDataSource{
             TopCell.selectionStyle = .none
             TopCell.isUserInteractionEnabled = false
             TopCell.titleLabel.text = String(self.Goods.count) + "人からいいねが来ています！"
+            TopCell.backgroundColor = .white
             return TopCell
         }else{
             tableView.rowHeight = 220

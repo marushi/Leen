@@ -52,8 +52,14 @@ class EditProfile: UIViewController, UIImagePickerControllerDelegate ,UINavigati
         MessageButton.imageEdgeInsets = UIEdgeInsets.init(top: 0, left: self.view.frame.size.width - 30, bottom: 0, right: 0)
         MessageButton.titleEdgeInsets = UIEdgeInsets.init(top: 0, left: 20, bottom: 0, right: 0)
         introTextView.isEditable = false
+        introTextView.backgroundColor = .white
         textField.isHidden = true
         textField.delegate = self
+        textField.layer.borderColor = UIColor.lightGray.cgColor
+        textField.layer.borderWidth = 1
+        textField.backgroundColor = .white
+        textField.attributedPlaceholder = NSAttributedString(string: "", attributes: [.foregroundColor : UIColor.lightGray])
+        textField.layer.cornerRadius = 5
         savesentenceButton.isHidden = true
         savesentenceButton.isEnabled = false
         changeButton.layer.cornerRadius = changeButton.frame.size.height / 2
@@ -238,23 +244,20 @@ extension EditProfile: RSKImageCropViewControllerDelegate {
         if error != nil {
             // 画像のアップロード失敗
             print(error!)
+            HUD.hide()
             return
         }
-        imageRef.downloadURL{(url,error) in
-        if let downloadUrl = url {
-            let downloadUrlStr = downloadUrl.absoluteString
-            let Ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(uid!)
-            let dic = ["photoURL": downloadUrlStr]
-            Ref.setData(dic,merge: true)
-            self.profileData?.photoId = photoId
-            self.dismiss(animated: true)
-            self.photo.contentMode = .scaleAspectFill
-            self.photo.image = croppedImage
-            HUD.hide()
-            }
-        }
+        let Ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(uid!)
+        let dic = ["photoId": photoId]
+        Ref.setData(dic,merge: true)
     }
-    
+    self.profileData?.photoId = photoId
+    dismiss(animated: true)
+    DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+        HUD.hide()
+        self.photo.contentMode = .scaleAspectFill
+        self.photo.image = croppedImage
+    }
     }
 }
 

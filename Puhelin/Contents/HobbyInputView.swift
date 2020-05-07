@@ -24,6 +24,11 @@ class HobbyInputView: UIViewController,UITextFieldDelegate {
         super.viewDidLoad()
         contentView.layer.cornerRadius = 10
         textField.delegate = self
+        textField.layer.borderColor = UIColor.lightGray.cgColor
+        textField.layer.borderWidth = 1
+        textField.backgroundColor = .white
+        textField.attributedPlaceholder = NSAttributedString(string: "", attributes: [.foregroundColor : UIColor.lightGray])
+        textField.layer.cornerRadius = 5
         //delegateの設定
         let nav = self.presentingViewController as? UINavigationController
         delegate = nav?.topViewController as? EditProfile
@@ -33,7 +38,7 @@ class HobbyInputView: UIViewController,UITextFieldDelegate {
         self.tabBarController?.tabBar.isHidden = true
         textField.text = nameText
         if inputMode == 0 {
-            mojisuseigen.text = "※ 文字数制限（2〜5文字以内）"
+            mojisuseigen.text = "※ 文字数制限（2〜6文字以内）"
         }else{
             mojisuseigen.text = "※ 文字数制限（10文字以内）"
         }
@@ -55,7 +60,7 @@ class HobbyInputView: UIViewController,UITextFieldDelegate {
             return true
         }
         if inputMode == 0 {
-            if textNum > 1 && textNum < 6 {
+            if textNum > 1 && textNum < 7 {
                 self.registButton.isEnabled = true
                 return true
             }else{

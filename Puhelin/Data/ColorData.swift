@@ -24,4 +24,5 @@ struct ColorData {
     static let nijiiro = UIColor.init(red: 246/255, green: 191/255, blue: 188/255, alpha: 1)
     static let lightOrange = UIColor.init(red: 1, green: 191/255, blue: 127/255, alpha: 1)
     static let floralwhite = UIColor.init(red: 1, green: 250/255, blue: 240/255, alpha: 1)
+    static let gainsboro = UIColor.init(red: 220/255, green: 220/255, blue: 220/255, alpha: 1)
 }

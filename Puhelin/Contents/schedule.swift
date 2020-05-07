@@ -36,7 +36,7 @@ class schedule: UIViewController,UITableViewDelegate,UITableViewDataSource {
         button.backgroundColor = UIColor.init(red: 1, green: 0.5, blue: 0.5, alpha: 1)
         button.setTitleColor(.white, for: .normal)
         button.setTitle("決定", for: .normal)
-        button.frame = CGRect(x: (self.view.frame.width - 200) / 2, y: self.view.frame.height - 50, width: 200, height: 40)
+        button.frame = CGRect(x: (self.view.frame.width - 200) / 2, y: self.view.frame.height - 60, width: 200, height: 40)
         self.view.addSubview(button)
     }
     
@@ -61,7 +61,7 @@ class schedule: UIViewController,UITableViewDelegate,UITableViewDataSource {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first! //このタッチイベントの場合確実に1つ以上タッチ点があるので`!`つけてOKです
         let location = touch.location(in: self.view) //in: には対象となるビューを入れます
-        let ynum = self.view.frame.size.height - 250
+        let ynum = self.view.frame.size.height - 330
         if location.y < ynum {
             self.dismiss(animated: true, completion: nil)
         }

@@ -19,6 +19,9 @@ class TalkCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     
     var jsqMessages:[MessageData]?
+    var profileData:MyProfileData?
+    var opUid:String?
+    let userDefaults = UserDefaults.standard
     @objc dynamic var noneReadedMes:Int = 0
     
     
@@ -43,97 +46,50 @@ class TalkCell: UITableViewCell {
     }
     
     func setData(_ userData: ChatRoomData) {
-        var listener2: ListenerRegistration!
-        var listener3: ListenerRegistration!
-        var opUserId:String?
-        var Users:String?
-        
-        //性別毎に相手のuidを取得
-        photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-        if UserDefaults.standard.integer(forKey: "gender") == 1 {
-            opUserId = userData.female
-            Users = "Female_Users"
-        }else if UserDefaults.standard.integer(forKey: "gender") == 2 {
-            opUserId = userData.male
-            Users = "Male_Users"
-        }
-        
-        let Ref = Firestore.firestore().collection(Users!).document(opUserId!)
-        Ref.getDocument() { (querySnapshot, error) in
-        if let error = error {
-                print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
-                return
-            }
-            let photoId:String? = querySnapshot?.get("photoId") as? String
-                if photoId != "" && photoId != nil{
-                    self.photo.contentMode = .scaleAspectFill
-                    let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId!)
-                    self.photo.sd_setImage(with: imageRef)
+        //画像
+        let photoId:String? = profileData?.photoId
+        if photoId != "" && photoId != nil{
+            self.photo.contentMode = .scaleAspectFill
+            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId!)
+            self.photo.sd_setImage(with: imageRef)
+        }else{
+            self.photo.contentMode = .scaleAspectFit
+            if UserDefaults.standard.integer(forKey: "gender") == 2 {
+                self.photo.image = UIImage(named: "male")
             }else{
-                    self.photo.contentMode = .scaleAspectFit
-                    if UserDefaults.standard.integer(forKey: "gender") == 2 {
-                    self.photo.image = UIImage(named: "male")
-            }else{
-                    self.photo.image = UIImage(named: "female")
-            }
-            
-        }
-        if let name = querySnapshot?.get("name") as? String
-            ,let age = querySnapshot?.get("age") as? Int
-            ,let region = querySnapshot?.get("region") as? String {
-                self.nameLabel.text = "\(name) " + "\(age)歳 " + "\(region)"
+                self.photo.image = UIImage(named: "female")
             }
         }
-        
-        if listener2 == nil{
-        // listener未登録なら、登録してスナップショットを受信する
-            let Ref = Firestore.firestore().collection(Const.ChatPath).document(userData.roomId!).collection(Const.MessagePath).order(by: "sendTime",descending: true).limit(to: 1)
-            listener2 = Ref.addSnapshotListener() { (querySnapshot, error) in
-            if let error = error {
-                print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
-                return
-            }
-                self.jsqMessages = querySnapshot!.documents.map { document in
-                    print("DEBUG_PRINT_Message: document取得 \(document.documentID)")
-                    let mesData = MessageData(document: document)
-                    return mesData
-                }
-                if self.jsqMessages!.count != 0 {
-                    self.textMessage.text = self.jsqMessages![0].text
-                    let date:Timestamp = self.jsqMessages![0].sendTime!
-                    let recieveDate: Date = date.dateValue()
-                    // 日付のフォーマット
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "MM月dd日"
-                    //(from: datePicker.date))を指定してあげることで
-                    //datePickerで指定した日付が表示される
-                    let showDate = "\(formatter.string(from: recieveDate))"
-                    self.dateLabel.text = "\(showDate)"
-                }else{
-                    self.textMessage.text = ""
-                }
-            }
+        //情報
+        if let name = profileData?.name
+            ,let age = profileData?.age
+            ,let region = profileData?.region {
+            self.nameLabel.text = "\(name) " + "\(age)歳 " + "\(region)"
         }
-        if listener3 == nil{
-        // listener未登録なら、登録してスナップショットを受信する
-            let Ref = Firestore.firestore().collection(Const.ChatPath).document(userData.roomId!).collection(Const.MessagePath).whereField("readed", isEqualTo: false).whereField("senderId", isEqualTo: opUserId!)
-                listener3 = Ref.addSnapshotListener() { (querySnapshot, error) in
-                    if let error = error {
-                print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
-                return
-                }
-                    if querySnapshot?.count != 0 {
-                        self.noneReadedLabel.isHidden = false
-                        self.noneReadedMes = querySnapshot!.count
-                        self.noneReadedLabel.text = "\(String(describing: self.noneReadedMes))"
-                    }else{
-                        self.noneReadedLabel.isHidden = true
-                        self.noneReadedMes = 0
-                    }
-            }
+        //最新メッセージ
+        if let textData = userData.LastRefreshMessage {
+            textMessage.text = textData
+        }
+        //日付処理
+        if let lastDate = userData.LastRefreshTime {
+            let date:Timestamp? = lastDate
+            let recieveDate: Date = date!.dateValue()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MM月dd日"
+            let showDate = "\(formatter.string(from: recieveDate))"
+            dateLabel.text = "\(showDate)"
+        }
+        //未読メッセージ処理
+        if self.noneReadedMes == 0 {
+            noneReadedLabel.isHidden = true
+            textMessage.textColor = .lightGray
+        }else{
+            noneReadedLabel.isHidden = false
+            noneReadedLabel.text = String(self.noneReadedMes)
+            textMessage.textColor = .darkGray
         }
     }
-    
+        
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         let preNum:Int = change![.oldKey] as! Int
         let newNum:Int = change![.newKey] as! Int

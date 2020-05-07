@@ -10,6 +10,7 @@ import UIKit
 import PKHUD
 import Firebase
 import FirebaseUI
+import AudioToolbox
 import SCLAlertView
 
 class GoodCell: UITableViewCell {
@@ -25,7 +26,6 @@ class GoodCell: UITableViewCell {
     var Goods: goodData!
     var listener: ListenerRegistration!
     var opUserId:String?
-    var Users:String?
     var profileData:MyProfileData?
     //足跡用
     var footUsers:[FootUsers] = []
@@ -39,6 +39,7 @@ class GoodCell: UITableViewCell {
         
         textView.textContainer.lineBreakMode = .byTruncatingTail
         textView.textContainer.maximumNumberOfLines = 4
+        textView.backgroundColor = .white
         textView.isUserInteractionEnabled = false
         
         photo.layer.cornerRadius = photo.frame.size.width * 0.1
@@ -54,35 +55,24 @@ class GoodCell: UITableViewCell {
 
     }
     
-    func setFootData(_ row:Int) {
+    func setFootData(_ data:FootUsers) {
         goodButton.setTitle("いいね！", for: .normal)
         //日付処理
-        let date:Timestamp? = footUsers[row].date
+        let date:Timestamp? = data.date
         let recieveDate: Date = date!.dateValue()
         let formatter = DateFormatter()
         formatter.dateFormat = "MM月dd日"
         let showDate = "\(formatter.string(from: recieveDate))"
         dateLabel.text = "\(showDate)"
         //データ入れ
-        let id:String = footUsers[row].uid!
-        self.opUserId = id
-        let ref = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(id)
-        ref.getDocument(){(document,error) in
-            if let error = error{
-                print(error)
-                return
-            }
-            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(document?.get("photoId") as! String)
-            self.photo.sd_setImage(with: imageRef)
-            self.name.text = document?.get("name") as? String
-            let age:Int = document?.get("age") as! Int
-            let region:String = document?.get("region") as! String
-            self.age.text = "\(age)" + "才　" + "\(region)"
-            self.intro.text = document?.get("sentenceMessage") as? String
-        }
+        self.name.text = profileData?.name
+        let age:Int? = profileData?.age
+        let region:String? = profileData?.region
+        self.age.text = "\(age!)" + "才　" + "\(region!)"
+        self.intro.text = profileData?.intro
         //いいねしているかどうか
         let select = fromAppDelegate.selectIdArray
-        if select.firstIndex(of: id) != nil {
+        if select.firstIndex(of: profileData!.uid) != nil {
             goodButton.setTitle("いいね！済み", for: .normal)
             goodButton.backgroundColor = .lightGray
             goodButton.isEnabled = false
@@ -93,23 +83,20 @@ class GoodCell: UITableViewCell {
     func setData(_ goodData: goodData) {
         //データ入れ
         Goods = goodData
+        opUserId = goodData.uid
         //日付入れ
-        //日付処理
-        dateLabel.isHidden = true
-        
-        //性別毎に相手のuidを取得
-        photo.sd_imageIndicator = SDWebImageActivityIndicator.gray
-        if UserDefaults.standard.integer(forKey: "gender") == 1 {
-            opUserId = goodData.uid
-            Users = "Female_Users"
-        }else if UserDefaults.standard.integer(forKey: "gender") == 2 {
-            opUserId = goodData.uid
-            Users = "Male_Users"
+        if let goodDate = goodData.date {
+            let date:Timestamp? = goodDate
+            let recieveDate: Date = date!.dateValue()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MM月dd日"
+            let showDate = "\(formatter.string(from: recieveDate))"
+            self.dateLabel.text = "\(showDate)"
         }
         
         if listener == nil{
         // listener未登録なら、登録してスナップショットを受信する
-            let Ref = Firestore.firestore().collection(Users!).document(opUserId!)
+            let Ref = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(opUserId!)
             listener = Ref.addSnapshotListener() { (querySnapshot, error) in
             if let error = error {
                 print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
@@ -117,9 +104,18 @@ class GoodCell: UITableViewCell {
             }
                 self.profileData = MyProfileData(document: querySnapshot!)
                 //画像設定
-                if let photoId = self.profileData?.photoId {
-                    let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId)
+                //自分の情報を設定
+                if self.profileData?.photoId != "" && self.profileData?.photoId != nil{
+                    self.photo.contentMode = .scaleAspectFill
+                    let imageRef = Storage.storage().reference().child(Const.ImagePath).child((self.profileData?.photoId!)!)
                     self.photo.sd_setImage(with: imageRef)
+                }else{
+                    self.photo.contentMode = .scaleAspectFit
+                    if UserDefaults.standard.integer(forKey: "gender") == 2 {
+                        self.photo.image = UIImage(named: "male")
+                    }else{
+                        self.photo.image = UIImage(named: "female")
+                    }
                 }
                 //その他情報設定
                 self.name.text = querySnapshot?.get("name") as? String
@@ -127,15 +123,6 @@ class GoodCell: UITableViewCell {
                 let age = querySnapshot?.get("age")
                 let region = querySnapshot?.get("region")
                 self.age.text = "\(age!)" + "才　" + "\(region!)"
-                //日付処理
-                if let goodDate = querySnapshot?.get("date") as? Timestamp {
-                    let date:Timestamp? = goodDate
-                    let recieveDate: Date = date!.dateValue()
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "MM月dd日"
-                    let showDate = "\(formatter.string(from: recieveDate))"
-                    self.dateLabel.text = "\(showDate)"
-                }
                 
             }
         }
@@ -147,6 +134,7 @@ class GoodCell: UITableViewCell {
         
         //HUD
         HUD.flash(.success,delay: 0.5)
+        AudioServicesPlaySystemSound(1520)
         
         //チャットルーム作成
         let ChatRef = Firestore.firestore().collection(Const.ChatPath).document()
@@ -158,7 +146,9 @@ class GoodCell: UITableViewCell {
                 ,"token1": userDefaults.string(forKey: "token")!
                 ,"token2": self.profileData?.token as Any
                 ,"name1": userDefaults.string(forKey: "name")!
-                ,"name2": self.profileData?.name as Any]
+                ,"name2": self.profileData?.name as Any
+                ,"LastRefreshTime":Date()
+                ,"LastRefreshMessage":"いいねありがとうございます！"]
                 as [String : Any]
             ChatRef.setData(DIc)
             let MesRef = ChatRef.collection(Const.MessagePath).document()

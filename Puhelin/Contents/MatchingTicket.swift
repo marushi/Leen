@@ -7,7 +7,10 @@
 //
 
 import UIKit
+import PKHUD
+import Firebase
 import StoreKit
+import SCLAlertView
 
 class MatchingTicket: UIViewController {
     
@@ -57,7 +60,7 @@ class MatchingTicket: UIViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first! //このタッチイベントの場合確実に1つ以上タッチ点があるので`!`つけてOKです
         let location = touch.location(in: self.view) //in: には対象となるビューを入れます
-        let ynum = self.view.frame.size.height - 270
+        let ynum = self.view.frame.size.height - 300
         if location.y < ynum {
             self.dismiss(animated: true, completion: nil)
         }
@@ -91,9 +94,12 @@ extension MatchingTicket:UICollectionViewDelegate,UICollectionViewDataSource,UIC
         return CGSize(width: widthPerItem, height: self.collectionView.frame.size.height)
     }
     
+    //セルを選択する
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        HUD.show(.progress)
         num = indexPath.row
         startPurchase(productIdentifier: productIdentifiers[num!])
+        
     }
 }
 
@@ -146,7 +152,10 @@ extension MatchingTicket:PurchaseManagerDelegate{
         }
         let registNum = remainNum + plusNum!
         self.userDefaults.set(registNum, forKey: UserDefaultsData.matchingNum)
+        let ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!)
+        ref.setData([UserDefaultsData.matchingNum:registNum], merge: true)
         
+        HUD.hide()
         loadView()
         viewDidLoad()
         viewWillAppear(true)
@@ -160,6 +169,7 @@ extension MatchingTicket:PurchaseManagerDelegate{
         // コンテンツ解放処理
         //---------------------------
         //コンテンツ解放が終了したら、この処理を実行(true: 課金処理全部完了, false 課金処理中断)
+        HUD.hide()
         decisionHandler(true)
     }
 
@@ -167,18 +177,22 @@ extension MatchingTicket:PurchaseManagerDelegate{
     func purchaseManager(_ purchaseManager: PurchaseManager!, didFailWithError error: NSError!) {
         print("課金失敗！！")
         // TODO errorを使ってアラート表示
+        HUD.hide()
+        SCLAlertView().showError("課金エラー", subTitle: "お手数ですがもう一度お試しください。")
     }
 
     // リストア終了時に呼び出される(個々のトランザクションは”課金終了”で処理)
     func purchaseManagerDidFinishRestore(_ purchaseManager: PurchaseManager!) {
         print("リストア終了！！")
         // TODO インジケータなどを表示していたら非表示に
+        HUD.hide()
     }
 
     // 承認待ち状態時に呼び出される(ファミリー共有)
     func purchaseManagerDidDeferred(_ purchaseManager: PurchaseManager!) {
         print("承認待ち！！")
         // TODO インジケータなどを表示していたら非表示に
+        HUD.hide()
 
     }
 

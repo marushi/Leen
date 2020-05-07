@@ -18,6 +18,7 @@ class SearchCoditions: UIViewController {
     @IBOutlet weak var registButton: UIButton!
     
     let userDefaults = UserDefaults.standard
+    let fromAppDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
     let sectionTitle = ["検索項目","年齢","身長","出会いの目的"]
     
     var UserArray:[UserData] = []
@@ -27,7 +28,6 @@ class SearchCoditions: UIViewController {
     var minAge:Int = 20
     var maxAge:Int = 30
     var searchQuery:searchQueryData?
-    var delegate:searchConResultDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,13 +54,17 @@ class SearchCoditions: UIViewController {
             DB = Const.MalePath
             UserDefaults.standard.set(DB, forKey: "DB")
         }
-        
-        let pre = self.navigationController?.viewControllers[0] as? Search
-        delegate = pre
     }
     
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = true
+        //検索条件があるかどうか
+        if let query = fromAppDelegate.searchQuery {
+            self.searchQuery = query
+        }else{
+            self.searchQuery = searchQueryData()
+        }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -70,27 +74,50 @@ class SearchCoditions: UIViewController {
     
     @IBAction func registCondition(_ sender: Any) {
         if searchQuery?.prefecturs == [] && searchQuery?.minAge == nil && searchQuery?.maxAge == nil && searchQuery?.tallClass == nil && searchQuery?.purpose == nil && searchQuery?.tabakoClass == nil{
-            self.delegate?.searchConResultFunction(query: self.searchQuery, type: 3)
-            self.navigationController?.popViewController(animated: true)
+            //設定されていないとき
+            self.dismiss(animated: true, completion: nil)
         }else{
-            self.delegate?.searchConResultFunction(query: self.searchQuery,type: 1)
-            self.navigationController?.popViewController(animated: true)
+            //Refを決める
+            var Ref:Query?
+            Ref = Firestore.firestore().collection(UserDefaultsData.init().opDB!).limit(to: 30).whereField("searchPermis", isEqualTo: true)
+            let num:Int = searchQuery!.prefecturs!.count - 1
+            if num >= 0 {
+                Ref = Ref!.whereField("region", in: searchQuery!.prefecturs!)
+            }
+            if searchQuery?.purpose  != nil && searchQuery?.purpose != "こだわらない" {
+                Ref = Ref!.whereField("purpose", isEqualTo: searchQuery?.purpose as Any)
+            }
+            if searchQuery?.tabakoClass != nil && searchQuery?.tabakoClass != "こだわらない" {
+                Ref = Ref!.whereField("tabakoClass", isEqualTo: searchQuery?.tabakoClass as Any)
+            }
+            if searchQuery?.tallClass != nil && searchQuery?.tallClass != "こだわらない" {
+                Ref = Ref!.whereField("tallClass", isEqualTo: searchQuery?.tallClass as Any)
+            }
+            if searchQuery?.minAge != nil{
+                Ref = Ref!.whereField("age", isGreaterThanOrEqualTo: searchQuery?.minAge as Any )
+            }
+            if searchQuery?.maxAge != nil{
+                Ref = Ref!.whereField("age", isLessThanOrEqualTo: searchQuery?.maxAge as Any )
+            }
+            //RefをAppDelegateのRefに入れる
+            fromAppDelegate.Ref = Ref
+            fromAppDelegate.searchQuery = self.searchQuery
+            //Searchに通知を送る
+            NotificationCenter.default.post(name: .notifyName, object: nil)
+            self.dismiss(animated: true, completion: nil)
         }
-        
     }
     
     
     @IBAction func resetButton(_ sender: Any) {
         searchQuery = nil
         searchQuery = searchQueryData()
-        self.delegate?.searchConResultFunction(query: self.searchQuery, type: 3)
-        self.navigationController?.popViewController(animated: true)
+        self.tableView.reloadData()
     }
     
     @IBAction func CancelButton(_ sender: Any) {
         if searchQuery?.prefecturs == [] && searchQuery?.minAge == nil && searchQuery?.maxAge == nil && searchQuery?.tallClass == nil && searchQuery?.purpose == nil && searchQuery?.tabakoClass == nil{
-            self.tabBarController?.tabBar.isHidden = false
-            self.navigationController?.popViewController(animated: true)
+            self.dismiss(animated: true, completion: nil)
         }else{
         //アラート
         let appearance = SCLAlertView.SCLAppearance(
@@ -100,7 +127,7 @@ class SearchCoditions: UIViewController {
             alertView.addButton("さがす画面へ") {
                 //探す画面に戻る
                 self.tabBarController?.tabBar.isHidden = false
-                self.navigationController?.popViewController(animated: true)
+                self.dismiss(animated: true, completion: nil)
             }
             alertView.addButton("戻る",backgroundColor: .lightGray,textColor: .black) {
                 return
@@ -170,4 +197,8 @@ extension SearchCoditions:searchConditionDelegate{
 
 protocol searchConResultDelegate {
     func searchConResultFunction(query:searchQueryData?,type: Int)
+}
+
+extension Notification.Name {
+    static let notifyName = Notification.Name("notifyName")
 }

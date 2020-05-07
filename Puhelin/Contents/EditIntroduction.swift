@@ -25,6 +25,7 @@ class EditIntroduction: UIViewController,UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         textView.delegate = self
+        textView.backgroundColor = .white
         button.layer.cornerRadius = button.frame.size.height / 2
         button.backgroundColor = ColorData.darkturquoise
     }

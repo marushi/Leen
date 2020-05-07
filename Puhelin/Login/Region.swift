@@ -47,12 +47,16 @@ class Region: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource {
         return prefectures.count
     }
     
-    //ドラムロールの各項目
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return prefectures[row]
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let label = UILabel()
+        label.text = prefectures[row]
+        label.textColor = .black
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 18)
+        return label
     }
 
-    //選択した犬の名前をラベルに設定
+    //選択した項目をラベルに設定
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         region.text = prefectures[row]
     }

@@ -33,39 +33,35 @@ class MyProfileCell: UICollectionViewCell {
     }
     
     func setData(_ row: Int){
+        backView.layer.shadowOffset = CGSize(width: 0, height: 1.0)
+        backView.layer.shadowColor = UIColor.black.cgColor
+        backView.layer.shadowOpacity = 0.6
+        backView.layer.shadowRadius = 1
+        photo.tintColor = ColorData.darkturquoise
         switch row {
         case 0:
             photo.image = UIImage(systemName: "folder")
             titleLabel.text = "本人確認"
-            let ident = UserDefaults.standard.integer(forKey: "identification")
+            contentLabel.isHidden = false
+            let ident = UserDefaults.standard.integer(forKey: UserDefaultsData.identification)
             if ident == 0 {
                 contentLabel.text = "未提出"
-                backView.layer.shadowOffset = CGSize(width: 0, height: 1.0)
-                backView.layer.shadowColor = UIColor.darkGray.cgColor
-                backView.layer.shadowOpacity = 0.6
-                backView.layer.shadowRadius = 1
-                photo.tintColor = ColorData.darkturquoise
             }else if ident == 1{
                 contentLabel.text = "申請中"
-                self.backView.layer.shadowOffset = CGSize(width: 0, height: 0)
+                backView.layer.shadowOffset = CGSize(width: 0, height: 0)
                 backView.layer.shadowOpacity = 0
                 backView.layer.shadowRadius = 0
                 photo.tintColor = .lightGray
             }else if ident == 2 {
                 contentLabel.text = "確認済み"
-                self.backView.layer.shadowOffset = CGSize(width: 0, height: 0)
+                backView.layer.shadowOffset = CGSize(width: 0, height: 0)
                 backView.layer.shadowOpacity = 0
                 backView.layer.shadowRadius = 0
                 photo.tintColor = .lightGray
+            }else {
+                contentLabel.text = "確認エラー"
+                photo.tintColor = .red
             }
-            /*case 1:
-            photo.image = UIImage(systemName: "book")
-            titleLabel.text = "使い方"
-            contentLabel.isHidden = true*/
-        /*case 1:
-            photo.image = UIImage(systemName: "bell")
-            titleLabel.text = "お知らせ"
-            contentLabel.isHidden = true*/
         case 1:
             photo.image = UIImage(systemName: "hand.thumbsup")
             titleLabel.text = "いいね履歴"

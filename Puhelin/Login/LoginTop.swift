@@ -43,6 +43,7 @@ class LoginTop: UIViewController {
             HUD.show(.progress)
             let uid = self.userDefaults.string(forKey: "uid")
             //情報を取ってくる
+            //女性かどうか
             let ref = Firestore.firestore().collection(Const.FemalePath).document(uid!)
             ref.getDocument(){(document,error) in
                 if let error = error {
@@ -50,6 +51,7 @@ class LoginTop: UIViewController {
                     return
                 }
                 self.userData = MyProfileData(document: document!)
+                //男性かどうか
                 if self.userData?.signupDate == nil {
                     let Ref = Firestore.firestore().collection(Const.MalePath).document(uid!)
                     Ref.getDocument(){(document2,error) in
@@ -58,19 +60,17 @@ class LoginTop: UIViewController {
                             return
                         }
                         self.userData = MyProfileData(document: document2!)
-                        //性別を登録
+                        //男性の場合
                         self.userDefaults.set(1, forKey: "gender")
                         self.loginFunction()
                     }
                 }else{
-                    //性別を登録
+                    //女性の場合
                     self.userDefaults.set(2, forKey: "gender")
                     self.loginFunction()
                 }
-                
             }
         }
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -105,8 +105,30 @@ class LoginTop: UIViewController {
             let NavigationController = self.storyboard?.instantiateViewController(identifier: "NavigationController")
             HUD.hide()
             self.present(NavigationController!,animated: true,completion: nil)
-            
+        
         }else {
+            //データがある場合(過去にログイン済みの場合）
+            //課金データと本人確認データをuserdefaultsに入れる
+            //いいね数
+            if let remaingood:Int = self.userData?.remainGoodNum{
+                self.userDefaults.set(remaingood, forKey: UserDefaultsData.remainGoodNum)
+            }
+            //いいね制限
+            if let goodLimit:Int = self.userData?.goodLimit{
+                self.userDefaults.set(goodLimit, forKey: UserDefaultsData.goodLimit)
+            }
+            //マッチング券
+            if let matchingTicket:Int = self.userData?.matchingTicket{
+                self.userDefaults.set(matchingTicket, forKey: UserDefaultsData.matchingNum)
+            }
+            //回復券
+            if let recoveryTicket:Int = self.userData?.recoveryTicket{
+                self.userDefaults.set(recoveryTicket, forKey: UserDefaultsData.ticketNum)
+            }
+            //本人確認
+            if let ident:Int = self.userData?.identification{
+                self.userDefaults.set(ident, forKey: UserDefaultsData.identification)
+            }
             //---データ用のスナップショットを登録する---
             //selectData
             if self.selectLis == nil {

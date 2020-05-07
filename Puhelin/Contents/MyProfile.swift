@@ -36,10 +36,16 @@ class MyProfile: UIViewController {
     let sectionInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0 , right: 0)
     let sectionInsets1 = UIEdgeInsets(top: 0, left: 15, bottom: 0 , right: 0)
     let itemsPerRow: CGFloat = 3
+    let fromAppDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.barTintColor = .white
         self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.titleTextAttributes = [
+        // 文字の色
+            .foregroundColor: UIColor.black
+        ]
 
         //テーブルビューの設定
         collectionView.delegate = self
@@ -51,7 +57,6 @@ class MyProfile: UIViewController {
         menuTitle.layer.shadowColor = UIColor.black.cgColor
         menuTitle.layer.shadowOpacity = 0.6
         menuTitle.layer.shadowRadius = 2
-        menuTitle.backgroundColor = ColorData.salmon
         backView.isHidden = true
         //セルの登録
         collectionView.register(UINib(nibName: "goodpointCell", bundle: nil), forCellWithReuseIdentifier: "goodpointCell")
@@ -64,41 +69,21 @@ class MyProfile: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         self.tabBarController?.tabBar.isHidden = false
-        self.navigationController?.navigationBar.barTintColor = .systemBackground
+        self.collectionView.reloadData()
         backView.isHidden = true
-        // 画像の表示
-        if dataListener == nil{
-            let ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!)
-                dataListener = ref.addSnapshotListener(){ (querysnapshot , error) in
-                if let error = error {
-                    print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
-                    return
-                }
-                    //自分の情報を設定
-                    if querysnapshot?.get("photoId") as? String != "" && querysnapshot?.get("photoId") != nil{
-                        self.photo.contentMode = .scaleAspectFill
-                        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(querysnapshot?.get("photoId") as! String)
-                        self.photo.sd_setImage(with: imageRef)
-                    }else{
-                        self.photo.contentMode = .scaleAspectFit
-                        if self.userDefaults.integer(forKey: "gender") == 1 {
-                            self.photo.image = UIImage(named: "male")
-                        }else{
-                            self.photo.image = UIImage(named: "female")
-                        }
-                        
-                    }
-                    self.nameLabel.text = querysnapshot?.get("name") as? String
-                    self.ageLabel.text = String(querysnapshot?.get("age") as! Int) + "歳"
-                    self.regionLabel.text = querysnapshot?.get("region") as? String
-                    
-            }
-        }
+        setMyData()
         
         
-        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
         //本人確認の完了待機
         if userDefaults.integer(forKey: "identification") == 1 {
+            self.collectionView1.reloadData()
             if identListener == nil {
                 let Ref = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!)
                 identListener = Ref.addSnapshotListener() { (querySnapshot, error) in
@@ -106,37 +91,40 @@ class MyProfile: UIViewController {
                         print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
                         return
                     }
-                    let identBool:Bool? = querySnapshot?.get("identification") as? Bool
-                    if identBool == true {
-                        self.userDefaults.set(2, forKey: "identification")
-                        self.identListener.remove()
+                    
+                    if let ident:Int = querySnapshot?.get("identification") as? Int{
+                        if ident != 0 && ident != 1 {
+                            self.userDefaults.set(ident, forKey: "identification")
+                            self.collectionView1.reloadData()
+                            self.identListener.remove()
+                            self.identListener = nil
+                        }
                     }
-                    self.collectionView.reloadData()
                 }
             }
         }
-        
-        //お知らせの新着情報待機
-        if infoListener == nil {
-            let infoRef = Firestore.firestore().collection(UserDefaultsData.init().myDB!).document(userDefaults.string(forKey: "uid")!).collection(Const.InformationPath)
-            infoListener = infoRef.addSnapshotListener() { (querySnapshot, error) in
-                if let error = error {
-                    print("DEBUG_PRINT: snapshotの取得が失敗しました。 \(error)")
-                    return
-                }
-                self.infoData = querySnapshot!.documents.map { document in
-                    print("DEBUG_PRINT: document取得 \(document.documentID)")
-                    let infodata = InformationData(document: document)
-                    return infodata
-                }
-            }
-        }
-        self.collectionView.reloadData()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        self.navigationController?.navigationBar.barTintColor = .systemBackground
+    func setMyData(){
+        ProfileData = fromAppDelegate.myProfileData
+        let photoId = ProfileData?.photoId
+        if photoId != "" && photoId != nil{
+            self.photo.contentMode = .scaleAspectFill
+            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(photoId!)
+            self.photo.sd_setImage(with: imageRef)
+        }else{
+            self.photo.contentMode = .scaleAspectFit
+            if self.userDefaults.integer(forKey: "gender") == 1 {
+                self.photo.image = UIImage(named: "male")
+            }else{
+                self.photo.image = UIImage(named: "female")
+            }
+        }
+        self.nameLabel.text = ProfileData?.name
+        if let age = ProfileData?.age {
+            self.ageLabel.text = String(age) + "歳"
+        }
+        self.regionLabel.text = ProfileData?.region
     }
     
     //スクロールで隠す
@@ -151,6 +139,7 @@ class MyProfile: UIViewController {
     //プロフィールを表示
     @IBAction func myprofile(_ sender: Any) {
         let profile = self.storyboard?.instantiateViewController(identifier: "Profile") as! Profile
+        profile.profileData = ProfileData
         profile.ButtonMode = 3
         self.navigationController?.pushViewController(profile, animated: true)
     }
@@ -264,7 +253,8 @@ extension MyProfile:UICollectionViewDelegate,UICollectionViewDataSource,UICollec
         }else{
             switch indexPath.row {
             case 0:
-                if self.userDefaults.integer(forKey: "identification") != 0 {
+                let num = self.userDefaults.integer(forKey: "identification")
+                if num == 1 || num == 2 {
                     return
                 }
                 let ident = self.storyboard?.instantiateViewController(identifier: "Identification") as! Identification

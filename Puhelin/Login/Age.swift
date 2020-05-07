@@ -53,6 +53,14 @@ class Age: UIViewController{
         textfield5.addBorderBottom(height: 2, color: .lightGray)
         textfield6.addBorderBottom(height: 2, color: .lightGray)
         textfield7.addBorderBottom(height: 2, color: .lightGray)
+        textfield0.attributedPlaceholder = NSAttributedString(string: "-", attributes: [.foregroundColor : UIColor.lightGray])
+        textfield1.attributedPlaceholder = NSAttributedString(string: "-", attributes: [.foregroundColor : UIColor.lightGray])
+        textfield2.attributedPlaceholder = NSAttributedString(string: "-", attributes: [.foregroundColor : UIColor.lightGray])
+        textfield3.attributedPlaceholder = NSAttributedString(string: "-", attributes: [.foregroundColor : UIColor.lightGray])
+        textfield4.attributedPlaceholder = NSAttributedString(string: "0", attributes: [.foregroundColor : UIColor.lightGray])
+        textfield5.attributedPlaceholder = NSAttributedString(string: "1", attributes: [.foregroundColor : UIColor.lightGray])
+        textfield6.attributedPlaceholder = NSAttributedString(string: "0", attributes: [.foregroundColor : UIColor.lightGray])
+        textfield7.attributedPlaceholder = NSAttributedString(string: "1", attributes: [.foregroundColor : UIColor.lightGray])
                         
     }
     

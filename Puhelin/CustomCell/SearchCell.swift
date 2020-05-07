@@ -9,6 +9,8 @@
 import UIKit
 import Firebase
 import FirebaseUI
+import SkeletonView
+
 
 class SearchCell: UICollectionViewCell {
 
@@ -62,19 +64,11 @@ class SearchCell: UICollectionViewCell {
         view.layer.cornerRadius = 10
         view.layer.maskedCorners = [.layerMinXMaxYCorner,.layerMaxXMaxYCorner]
         sentenceMes.backgroundColor = ColorData.snow
+        
     }
     
     //データセット
-    func setData(_ userid: String) {
-        
-        //相手の情報を検索
-        let ref = Firestore.firestore().collection(UserDefaultsData.init().opDB!).document(userid)
-        ref.getDocument() {(data,error) in
-            if let error = error {
-                print(error)
-                return
-            }
-            let userData = MyProfileData(document: data!)
+    func setData(_ userData: MyProfileData) {
             // 画像の表示
             //自分の情報を設定
             if userData.photoId != "" && userData.photoId != nil{
@@ -88,7 +82,6 @@ class SearchCell: UICollectionViewCell {
                 }else{
                     self.photo.image = UIImage(named: "female")
                 }
-                
             }
             
             //その他データ
@@ -135,8 +128,8 @@ class SearchCell: UICollectionViewCell {
             }
             
             //本人確認済みかどうか
-            if userData.identification == true {
-                self.identLabel.isHidden = false
+            if userData.identification == 2 {
+                //self.identLabel.isHidden = false
                 self.phoneimage.isHidden = false
                 self.phoneLabel.isHidden = false
             } else {
@@ -158,9 +151,5 @@ class SearchCell: UICollectionViewCell {
                 self.dateLabel.isHidden = true
             }
         }
-        
-        
-        
-    }
-
 }
+
