@@ -10,8 +10,8 @@
 ビデオ通話の前は日程調整のメッセージしか送ることができず、ビデオ通話をしてお互いに好意をもっていたときに初めて自由なチャットができるトークルームが作られます。<br>
 
 【言語等】<br>
-swift<br>
-xcode<br>
+・swift<br>
+・xcode<br>
 
 【使用したツール】<br>
 ・Firebase（FireStore, CloudFunctions, Auth, Storage)<br>
